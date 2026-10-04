@@ -1,5 +1,5 @@
 /* Langue (français / arabe), en-tête et pied de page communs, petites fonctions */
-const MAJ = "05/10/2026";   // date de la dernière vérification des règles (mise à jour par le robot surveillance.yml)
+const MAJ = "04/10/2026";   // date de la dernière vérification des règles (mise à jour par le robot surveillance.yml)
 const ANNEE = 2026;          // année des règles affichée sur le site (changée par le robot en janvier)
 
 (function () {
