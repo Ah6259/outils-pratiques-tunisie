@@ -117,5 +117,12 @@ const anneesIsolees = f => [...lire(f).matchAll(/(?<![\d\/\-])(202\d)(?![\d\/\-]
 check(`toutes les pages affichent l'année ${ANNEE}`,
   ["index.html", "salaire-net/index.html", "impot-revenu/index.html", "a-propos/index.html"].every(f => anneesIsolees(f).every(a => a === ANNEE)));
 
+
+// une image qui explique le thème dans le bandeau de chaque calculateur (règle commune)
+for (const p of ["index.html", "salaire-net/index.html", "impot-revenu/index.html"]) {
+  const m = lire(p).match(/<img class="illus" src="([^"]+)"/);
+  check(`${p} : illustration du bandeau présente`, !!m && existsSync(join(root, dirname(p), m[1])));
+}
+
 console.log(erreurs ? `\n${erreurs} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(erreurs ? 1 : 0);
