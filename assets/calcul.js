@@ -17,6 +17,9 @@ const REGLES = {
   ]
 };
 
+/* Arrondi au millime (3 décimales), le petit ajout corrige les erreurs d'arrondi des nombres à virgule */
+const millime = v => Math.round(v * 1000 + 1e-7) / 1000;
+
 /* Impôt annuel (IRPP) selon le barème progressif, avec le détail par tranche */
 function irppAnnuel(imposable) {
   let reste = Math.max(0, imposable), bas = 0, total = 0;
@@ -51,8 +54,10 @@ function brutVersNet(brutMensuel, famille) {
   const irpp = irppAnnuel(imp.imposable);
   const css = cssAnnuelle(imp.imposable);
   const netAn = brutAn - cnssAn - irpp.total - css;
+  // comme sur une fiche de paie : chaque retenue mensuelle est arrondie au millime, puis on soustrait
+  const ligne = { cnss: millime(cnssAn / 12), irpp: millime(irpp.total / 12), css: millime(css / 12) };
   return {
-    brut: brutMensuel, cnss: cnssAn / 12, irpp: irpp.total / 12, css: css / 12, net: netAn / 12,
+    brut: brutMensuel, ...ligne, net: millime(millime(brutMensuel) - ligne.cnss - ligne.irpp - ligne.css),
     an: { brut: brutAn, cnss: cnssAn, fraisPro: imp.fraisPro, deductions: imp.deductions,
           imposable: imp.imposable, irpp: irpp.total, css, net: netAn },
     tranches: irpp.detail
@@ -67,7 +72,13 @@ function netVersBrut(netMensuel, famille) {
     const milieu = (bas + haut) / 2;
     if (brutVersNet(milieu, famille).net < netMensuel) bas = milieu; else haut = milieu;
   }
-  return brutVersNet(haut, famille);
+  // plusieurs bruts donnent le même net au millime : on préfère le plus rond (2 500 plutôt que 2 499,999)
+  const vise = millime(netMensuel);
+  for (const pas of [1, 0.1, 0.01, 0.001]) {
+    const rond = millime(Math.round(haut / pas) * pas);
+    if (brutVersNet(rond, famille).net === vise) return brutVersNet(rond, famille);
+  }
+  return brutVersNet(millime(haut), famille);
 }
 
 /* Isolé (U+2066…U+2069) pour rester lisible au milieu d'un texte arabe */

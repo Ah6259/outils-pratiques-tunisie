@@ -37,7 +37,11 @@ check("déductions : chef + 2 enfants = 500", c.imposableAnnuel(20000, { chef: t
 check("déductions : 6 enfants comptés comme 4", c.imposableAnnuel(20000, { chef: true, enfants: 6 }).deductions === 700);
 check("la famille augmente le net", c.brutVersNet(1500, { chef: true, enfants: 2 }).net > c.brutVersNet(1500, {}).net);
 // Calcul inverse net -> brut
-check("net 1 849,310 -> brut 2 500", Math.abs(c.netVersBrut(1849.31, {}).brut - 2500) < 0.01);
+check("net 1 849,310 -> brut 2 500 (montant rond)", c.netVersBrut(1849.31, {}).brut === 2500);
+// Références du simulateur de paie-tunisie.com (relevées le 05/10/2026) : chaque ligne arrondie au millime
+for (const [brut, famille, net] of [[2500, {}, 1849.310], [1500, {}, 1189.706], [1500, { chef: true, enfants: 2 }, 1200.332],
+                                    [800, {}, 684.262], [5000, { chef: true, enfants: 3 }, 3348.256]])
+  check(`paie-tunisie.com : ${brut} brut ${JSON.stringify(famille)} -> ${net}`, c.brutVersNet(brut, famille).net.toFixed(3) === net.toFixed(3));
 check("net -> brut cohérent pour 900 DT", proche(c.brutVersNet(c.netVersBrut(900, {}).brut, {}).net, 900));
 check("le net augmente avec le brut", [500, 1000, 2000, 4000, 8000].every((b, i, t) => !i || c.brutVersNet(b, {}).net > c.brutVersNet(t[i - 1], {}).net));
 check("format tunisien : 1 849,310 DT", c.dt(1849.31).replace(/[⁦⁩  ]/g, "") === "1849,310DT");
@@ -57,7 +61,7 @@ const texte = el => el.textContent.replace(/[⁦⁩  ]/g, " ").replace(/\s+/g,
 
 let w = await page("salaire-net/index.html");
 let d = w.document;
-check("salaire : résultat affiché au chargement (1 500 DT -> 1 189,707)", texte(d.getElementById("grand")).includes("1 189,707"));
+check("salaire : résultat affiché au chargement (1 500 DT -> 1 189,706)", texte(d.getElementById("grand")).includes("1 189,706"));
 check("salaire : tableau CNSS / impôt / CSS / net", d.querySelectorAll("#tableau tr").length === 5);
 d.getElementById("montant").value = "2500";
 d.getElementById("montant").dispatchEvent(new w.Event("input"));
