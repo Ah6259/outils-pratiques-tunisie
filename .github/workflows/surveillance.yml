@@ -1,0 +1,76 @@
+# Vérifie chaque mois (et chaque jour en janvier) que les règles de paie n'ont pas changé,
+# met à jour la date « Règles à jour au … » et, mi-janvier, l'année du site.
+# Si les règles changent ou si la vérification échoue : une alerte (issue GitHub) est ouverte -> email à Ahmed.
+# Le commit mensuel sert aussi de « battement de cœur » (GitHub met en pause les robots après 60 jours sans activité).
+name: Surveillance des règles
+on:
+  schedule:
+    - cron: "17 6 1 * *"     # le 1er de chaque mois, 7h17 à Tunis
+    - cron: "17 6 * 1 *"     # chaque jour en janvier (loi de finances)
+  workflow_dispatch:
+permissions:
+  contents: write
+  issues: write
+concurrency:
+  group: robot
+  cancel-in-progress: false
+jobs:
+  verifier:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: npm install --no-save --no-package-lock jsdom
+      - name: Vérifier les règles (paie-tunisie.com)
+        id: verif
+        run: |
+          set +e
+          python tools/verifier_regles.py
+          echo "code=$?" >> "$GITHUB_OUTPUT"
+      - name: Tests avant publication
+        if: steps.verif.outputs.code == '0'
+        run: |
+          python tools/test_robot.py
+          node tools/test_site.mjs
+      - name: Publier (date de vérification, année) ou battement de cœur
+        if: steps.verif.outputs.code == '0'
+        run: |
+          git config user.name "robot-outils"
+          git config user.email "robot-outils@users.noreply.github.com"
+          git add -A -- . ':!ecarts.txt'
+          if git diff --cached --quiet; then
+            git commit --allow-empty -m "Battement de coeur : regles verifiees, inchangees"
+          else
+            git commit -m "Regles verifiees le $(date +%d/%m/%Y) : identiques"
+          fi
+          git push
+      - name: Fermer les alertes résolues
+        if: steps.verif.outputs.code == '0'
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          for n in $(gh issue list --label alerte-robot --state open --json number -q '.[].number'); do
+            gh issue close "$n" --comment "Résolu : la vérification du $(date +%d/%m/%Y) est de nouveau correcte."
+          done
+      - name: Alerte
+        if: steps.verif.outputs.code != '0' || failure()
+        env: { GH_TOKEN: "${{ github.token }}" }
+        run: |
+          gh label create alerte-robot --color B60205 --force >/dev/null 2>&1 || true
+          if [ "${{ steps.verif.outputs.code }}" = "2" ]; then
+            titre="Les règles de paie ont changé : calculs à mettre à jour"
+            corps="Le simulateur de paie-tunisie.com ne donne plus les mêmes résultats que notre site (nouvelle loi de finances ?).
+          Écarts :
+          $(cat ecarts.txt 2>/dev/null)
+          Le site n'a PAS été modifié. Demander à Claude : « mets à jour les règles d'Outils pratiques »."
+          else
+            titre="Vérification des règles impossible"
+            corps="Le robot n'a pas pu vérifier les règles (simulateur injoignable, format changé ou test en échec).
+          Journal : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          fi
+          n=$(gh issue list --label alerte-robot --state open --search "$titre in:title" --json number -q '.[0].number')
+          if [ -n "$n" ]; then gh issue comment "$n" --body "Toujours vrai le $(date +%d/%m/%Y). $corps"
+          else gh issue create --title "$titre" --body "$corps" --label alerte-robot; fi

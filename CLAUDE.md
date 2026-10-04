@@ -32,7 +32,15 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 3. Capture mobile (Chrome sans écran, cadres 340/390 px) en français ET en arabe si l'affichage change.
 4. Montants au milieu d'un texte arabe : passer par `dt()` / `iso()` (isolation U+2066…U+2069).
 
+## Robots (autonomie)
+- `surveillance.yml` (1er du mois + chaque jour de janvier) : `tools/verifier_regles.py` compare 5 cas au simulateur de
+  paie-tunisie.com (tolérance 2 millimes : leurs arrondis varient) → OK : met à jour `MAJ` (page.js), et à partir du
+  15 janvier passe `ANNEE` et tous les « 2026 » isolés à la nouvelle année ; écart → issue « alerte-robot » (rien modifié).
+  Commit mensuel = battement de cœur. Preuves CGU/robots de paie-tunisie : dossier parent `preuves conditions d'utilisation6-10-05\`.
+- `tests.yml` à chaque push : `node tools/test_site.mjs` + `python tools/test_robot.py` (15 scénarios).
+- L'année n'est écrite qu'à des endroits remplaçables automatiquement ; l'image d'aperçu n'a pas d'année (og-image-v2).
+
 ## Visibilité
-- sitemap.xml + robots.txt ; FAQ Google (JSON-LD) sur les 2 calculateurs ; image d'aperçu `assets/og-image-v1.png`
+- sitemap.xml + robots.txt ; FAQ Google (JSON-LD) sur les 2 calculateurs ; image d'aperçu `assets/og-image-v2.png`
   (si on la change : **nouveau nom de fichier**, WhatsApp/Facebook gardent l'ancienne).
 - Reste à faire par Ahmed : Search Console, compte GoatCounter (statistiques).

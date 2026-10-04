@@ -95,7 +95,7 @@ check("impôt : revenu 0 -> 0,000", texte(d.getElementById("grand")).includes("0
 for (const p of ["index.html", "salaire-net/index.html", "impot-revenu/index.html", "a-propos/index.html"]) {
   const s = lire(p);
   check(`${p} : titre, description, canonical`, /<title>.+<\/title>/.test(s) && s.includes('name="description"') && s.includes('rel="canonical"'));
-  check(`${p} : image d'aperçu et icône`, s.includes("og-image-v1.png") && s.includes("logo.svg"));
+  check(`${p} : image d'aperçu et icône`, s.includes("og-image-v2.png") && s.includes("logo.svg"));
   check(`${p} : même version ?v= pour tous les fichiers`, new Set(s.match(/\?v=\d+\w/g)).size === 1);
   const w2 = await page(p);
   const pied = w2.document.getElementById("pied")?.textContent || "";
@@ -104,10 +104,18 @@ for (const p of ["index.html", "salaire-net/index.html", "impot-revenu/index.htm
   check(`${p} : date « à jour au » remplie`, [...w2.document.querySelectorAll("[data-maj]")].every(x => /\d{2}\/\d{2}\/\d{4}/.test(x.textContent)));
 }
 check("FAQ Google sur les 2 calculateurs", ["salaire-net/index.html", "impot-revenu/index.html"].every(p => lire(p).includes("FAQPage")));
-check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v1.png")));
+check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v2.png")));
 check("plan du site : 4 pages", (lire("sitemap.xml").match(/<loc>/g) || []).length === 4);
 check("robots.txt indique le plan du site", lire("robots.txt").includes("sitemap.xml"));
 check("LICENSE tous droits réservés", lire("LICENSE").includes("Tous droits réservés"));
+
+
+// une seule année partout : celle de ANNEE (assets/page.js), mise à jour par le robot en janvier
+const ANNEE = lire("assets/page.js").match(/const ANNEE = (\d{4})/)[1];
+const anneesIsolees = f => [...lire(f).matchAll(/(?<![\d\/\-])(202\d)(?![\d\/\-])/g)].map(m => m[1])
+  .filter(a => a !== "2024" && a !== "2025");   // 2024-2025 = numéro et année de la loi de finances
+check(`toutes les pages affichent l'année ${ANNEE}`,
+  ["index.html", "salaire-net/index.html", "impot-revenu/index.html", "a-propos/index.html"].every(f => anneesIsolees(f).every(a => a === ANNEE)));
 
 console.log(erreurs ? `\n${erreurs} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(erreurs ? 1 : 0);
