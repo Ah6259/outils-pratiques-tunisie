@@ -24,3 +24,11 @@ Guide réutilisable pour créer un autre site du même genre. Une ligne par éta
 ## À faire par Ahmed
 - Search Console : ajouter le site, envoyer `sitemap.xml`.
 - GoatCounter : créer un compteur pour ce site (statistiques sans cookies).
+
+## 05/10/2026 — Présentation professionnelle (demande d'Ahmed : « ça ne donne pas confiance »)
+13. **En-tête commun** (logo SVG + nom + « Calculs gratuits · règles 2026 ») et **pied de page complet** (navigation,
+    date de vérification des règles, mention non officielle, ©), injectés par `assets/page.js` sur toutes les pages.
+14. **Bandeau vert** en haut de chaque page avec fil d'Ariane et pastille « Règles à jour au … ».
+15. **Cartes** arrondies avec ombre douce, champs avec unité « DT », sélecteur Brut/Net en onglets.
+16. **Résultat** : grand montant, **barre de répartition** (net / CNSS / impôt / CSS) avec pourcentages.
+17. **Badges de confiance** (icônes SVG, pas d'emoji), section **Sources officielles**, page **À propos et méthode**.

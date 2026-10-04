@@ -63,6 +63,7 @@ let w = await page("salaire-net/index.html");
 let d = w.document;
 check("salaire : résultat affiché au chargement (1 500 DT -> 1 189,706)", texte(d.getElementById("grand")).includes("1 189,706"));
 check("salaire : tableau CNSS / impôt / CSS / net", d.querySelectorAll("#tableau tr").length === 5);
+check("salaire : barre de répartition en 4 parts", d.querySelectorAll("#barre span").length === 4);
 d.getElementById("montant").value = "2500";
 d.getElementById("montant").dispatchEvent(new w.Event("input"));
 check("salaire : 2 500 -> 1 849,310 à l'écran", texte(d.getElementById("grand")).includes("1 849,310"));
@@ -91,16 +92,20 @@ d.getElementById("revenu").value = "0"; d.getElementById("revenu").dispatchEvent
 check("impôt : revenu 0 -> 0,000", texte(d.getElementById("grand")).includes("0,000"));
 
 // ---- 3. Règles communes : référencement, aperçu, licence, cache ----------------
-for (const p of ["index.html", "salaire-net/index.html", "impot-revenu/index.html"]) {
+for (const p of ["index.html", "salaire-net/index.html", "impot-revenu/index.html", "a-propos/index.html"]) {
   const s = lire(p);
   check(`${p} : titre, description, canonical`, /<title>.+<\/title>/.test(s) && s.includes('name="description"') && s.includes('rel="canonical"'));
-  check(`${p} : image d'aperçu`, s.includes("og-image-v1.png"));
+  check(`${p} : image d'aperçu et icône`, s.includes("og-image-v1.png") && s.includes("logo.svg"));
   check(`${p} : même version ?v= pour tous les fichiers`, new Set(s.match(/\?v=\d+\w/g)).size === 1);
-  check(`${p} : mention © et site non officiel`, s.includes("©") && (s.includes("non officiel") || s.includes("pas un service officiel")));
+  const w2 = await page(p);
+  const pied = w2.document.getElementById("pied")?.textContent || "";
+  check(`${p} : en-tête avec logo`, !!w2.document.querySelector("#entete .logo-mark"));
+  check(`${p} : pied de page ©, non officiel, date de vérification`, pied.includes("©") && pied.includes("pas un service officiel") && /\d{2}\/\d{2}\/\d{4}/.test(pied));
+  check(`${p} : date « à jour au » remplie`, [...w2.document.querySelectorAll("[data-maj]")].every(x => /\d{2}\/\d{2}\/\d{4}/.test(x.textContent)));
 }
 check("FAQ Google sur les 2 calculateurs", ["salaire-net/index.html", "impot-revenu/index.html"].every(p => lire(p).includes("FAQPage")));
 check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v1.png")));
-check("plan du site : 3 pages", (lire("sitemap.xml").match(/<loc>/g) || []).length === 3);
+check("plan du site : 4 pages", (lire("sitemap.xml").match(/<loc>/g) || []).length === 4);
 check("robots.txt indique le plan du site", lire("robots.txt").includes("sitemap.xml"));
 check("LICENSE tous droits réservés", lire("LICENSE").includes("Tous droits réservés"));
 

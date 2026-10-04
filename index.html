@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr" dir="ltr">
+<html lang="fr" dir="ltr" data-racine="">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,43 +11,74 @@
 <meta property="og:image" content="https://ah6259.github.io/outils-pratiques-tunisie/assets/og-image-v1.png">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0B7A53">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;800&family=Noto+Kufi+Arabic:wght@400;600;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261005b">
-<script src="assets/page.js?v=20261005b"></script>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css?v=20261005d">
+<script src="assets/page.js?v=20261005d"></script>
 </head>
 <body>
-<header class="top">
-  <a class="logo" href="./"><span>●</span> <span data-l="fr">Outils pratiques Tunisie</span><span data-l="ar">أدوات عملية تونس</span></a>
-  <button class="langue" type="button">العربية</button>
-</header>
-<main class="wrap">
-  <h1><span data-l="fr">Les calculs du quotidien, gratuits et à jour</span><span data-l="ar">حسابات الحياة اليومية، مجانية ومحيَّنة</span></h1>
-  <p class="intro"><span data-l="fr">Des outils simples pour la Tunisie, en français et en arabe, selon les règles de 2026.</span><span data-l="ar">أدوات بسيطة لتونس، بالعربية والفرنسية، حسب قواعد 2026.</span></p>
+<header class="entete" id="entete"></header>
 
+<section class="hero">
+  <div class="wrap">
+    <h1><span data-l="fr">Les calculs du quotidien en Tunisie, gratuits et à jour</span><span data-l="ar">حسابات الحياة اليومية في تونس، مجانية ومحيَّنة</span></h1>
+    <p class="intro"><span data-l="fr">Salaire, impôt… des résultats identiques aux fiches de paie, selon les règles officielles de 2026. En français et en arabe.</span><span data-l="ar">الأجر، الضريبة… نتائج مطابقة لبطاقات الخلاص، حسب القواعد الرسمية لسنة 2026. بالعربية والفرنسية.</span></p>
+    <span class="maj"><span data-l="fr">Règles à jour au</span><span data-l="ar">قواعد محيَّنة في</span>&nbsp;<span data-maj></span></span>
+  </div>
+</section>
+
+<main class="wrap chevauche">
   <div class="outils">
     <a class="carte outil" href="salaire-net/">
-      <h2>💼 <span data-l="fr">Salaire brut ⇄ net</span><span data-l="ar">الأجر الخام ⇄ الصافي</span></h2>
-      <p><span data-l="fr">CNSS, impôt sur le revenu et CSS, avec chef de famille et enfants.</span><span data-l="ar">الضمان الاجتماعي والضريبة والمساهمة التضامنية، مع رئيس العائلة والأبناء.</span></p>
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M3 7h18v12H3z"/><path d="M8 7V5h8v2"/><path d="M3 12h18"/></svg></span>
+      <span><h2><span data-l="fr">Salaire brut ⇄ net</span><span data-l="ar">الأجر الخام ⇄ الصافي</span></h2>
+      <p><span data-l="fr">CNSS, impôt et CSS, avec chef de famille et enfants.</span><span data-l="ar">الضمان الاجتماعي والضريبة والمساهمة، مع رئيس العائلة والأبناء.</span></p></span><span class="fleche">→</span>
     </a>
     <a class="carte outil" href="impot-revenu/">
-      <h2>🧾 <span data-l="fr">Impôt sur le revenu (IRPP)</span><span data-l="ar">الضريبة على الدخل</span></h2>
-      <p><span data-l="fr">Le barème à 8 tranches appliqué à votre revenu, tranche par tranche.</span><span data-l="ar">الجدول ذو الشرائح الثماني مطبَّقًا على دخلك.</span></p>
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M7 3h10v18l-2.5-1.5L12 21l-2.5-1.5L7 21z"/><path d="M10 8h4M10 12h4"/></svg></span>
+      <span><h2><span data-l="fr">Impôt sur le revenu (IRPP)</span><span data-l="ar">الضريبة على الدخل</span></h2>
+      <p><span data-l="fr">Le barème à 8 tranches, tranche par tranche.</span><span data-l="ar">الجدول ذو الشرائح الثماني، شريحة بشريحة.</span></p></span><span class="fleche">→</span>
     </a>
     <div class="carte outil bientot">
-      <h2>🏠 <span data-l="fr">Crédit immobilier et auto</span><span data-l="ar">القرض العقاري والسيارة</span><span class="badge"><span data-l="fr">bientôt</span><span data-l="ar">قريبًا</span></span></h2>
-      <p><span data-l="fr">Mensualité et coût total de votre crédit.</span><span data-l="ar">القسط الشهري والكلفة الجملية لقرضك.</span></p>
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/></svg></span>
+      <span><h2><span data-l="fr">Crédit immobilier et auto</span><span data-l="ar">القرض العقاري والسيارة</span><span class="badge"><span data-l="fr">bientôt</span><span data-l="ar">قريبًا</span></span></h2>
+      <p><span data-l="fr">Mensualité et coût total de votre crédit.</span><span data-l="ar">القسط الشهري والكلفة الجملية لقرضك.</span></p></span>
     </div>
     <div class="carte outil bientot">
-      <h2>🧑‍💼 <span data-l="fr">Auto-entrepreneur</span><span data-l="ar">المبادر الذاتي</span><span class="badge"><span data-l="fr">bientôt</span><span data-l="ar">قريبًا</span></span></h2>
-      <p><span data-l="fr">Suis-je éligible ? Combien vais-je payer ?</span><span data-l="ar">هل أنا معني؟ كم سأدفع؟</span></p>
+      <span class="ic"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></span>
+      <span><h2><span data-l="fr">Auto-entrepreneur</span><span data-l="ar">المبادر الذاتي</span><span class="badge"><span data-l="fr">bientôt</span><span data-l="ar">قريبًا</span></span></h2>
+      <p><span data-l="fr">Suis-je éligible ? Combien vais-je payer ?</span><span data-l="ar">هل أنا معني؟ كم سأدفع؟</span></p></span>
     </div>
     <div class="carte outil bientot">
-      <h2>📄 <span data-l="fr">Documents prêts à remplir</span><span data-l="ar">وثائق جاهزة للتعمير</span><span class="badge"><span data-l="fr">bientôt</span><span data-l="ar">قريبًا</span></span></h2>
-      <p><span data-l="fr">CV, lettres, reçu de loyer…</span><span data-l="ar">سيرة ذاتية، رسائل، وصل كراء…</span></p>
+      <span class="ic"><svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 13h6M9 17h6"/></svg></span>
+      <span><h2><span data-l="fr">Documents prêts à remplir</span><span data-l="ar">وثائق جاهزة للتعمير</span><span class="badge"><span data-l="fr">bientôt</span><span data-l="ar">قريبًا</span></span></h2>
+      <p><span data-l="fr">CV, lettres, reçu de loyer…</span><span data-l="ar">سيرة ذاتية، رسائل، وصل كراء…</span></p></span>
     </div>
   </div>
+
+  <div class="confiance" style="margin-top:14px">
+    <div class="badge-c"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg><span data-l="fr">Identique aux fiches de paie</span><span data-l="ar">مطابق لبطاقات الخلاص</span></div>
+    <div class="badge-c"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-l="fr">Aucune donnée envoyée</span><span data-l="ar">لا تُرسل أي معطيات</span></div>
+    <div class="badge-c"><svg viewBox="0 0 24 24"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7z"/></svg><span data-l="fr">Gratuit, sans inscription</span><span data-l="ar">مجاني، دون تسجيل</span></div>
+  </div>
+
+  <section class="carte">
+    <h2><span data-l="fr">Pourquoi nous faire confiance ?</span><span data-l="ar">لماذا تثق بنا؟</span></h2>
+    <ul class="sources" data-l="fr">
+      <li>Les règles viennent des <b>textes officiels</b> (loi de finances 2025, taux de la CNSS 2026), cités sur chaque page.</li>
+      <li>Les résultats sont <b>comparés à un simulateur de paie</b> tunisien : identiques au millime.</li>
+      <li>Chaque modification est <b>vérifiée automatiquement</b> avant d'être mise en ligne.</li>
+    </ul>
+    <ul class="sources" data-l="ar">
+      <li>القواعد مأخوذة من <b>النصوص الرسمية</b> (قانون المالية 2025، نسب الضمان الاجتماعي 2026)، ومذكورة في كل صفحة.</li>
+      <li>النتائج <b>مقارنة بمحاكي أجور</b> تونسي: متطابقة إلى المليم.</li>
+      <li>كل تعديل <b>يُفحص آليًا</b> قبل نشره.</li>
+    </ul>
+    <p class="liens" style="margin:8px 0 0"><a href="a-propos/"><span data-l="fr">En savoir plus sur notre méthode →</span><span data-l="ar">← المزيد عن منهجيتنا</span></a></p>
+  </section>
 </main>
-<footer>© 2026 Outils pratiques Tunisie — <span data-l="fr">résultats indicatifs, ce site n'est pas un service officiel. Calculs faits dans votre téléphone, aucune donnée envoyée.</span><span data-l="ar">نتائج تقريبية، هذا الموقع ليس خدمة رسمية. الحساب يتم في هاتفك، لا تُرسل أي معطيات.</span></footer>
+<footer id="pied"></footer>
 </body>
 </html>

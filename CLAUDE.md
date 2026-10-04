@@ -13,7 +13,8 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 ## Le site
 - En ligne : https://ah6259.github.io/outils-pratiques-tunisie/ — dépôt `Ah6259/outils-pratiques-tunisie` (GitHub Pages, branche main).
 - Créé le 04/10/2026. Calculateurs gratuits, **français + arabe** (bouton, ou `?lang=ar` dans l'adresse).
-- Pages : accueil, `salaire-net/` (brut ⇄ net, chef de famille, enfants), `impot-revenu/` (IRPP tranche par tranche).
+- Pages : accueil, `salaire-net/` (brut ⇄ net, chef de famille, enfants), `impot-revenu/` (IRPP tranche par tranche), `a-propos/` (méthode, données, limites, sources).
+- Présentation « professionnelle » (05/10) : en-tête et pied de page communs injectés par `assets/page.js` (date `MAJ` à changer à chaque vérification des règles), bandeau vert, badges de confiance SVG, sources officielles sur chaque page.
   Bientôt : crédit, auto-entrepreneur, documents prêts à remplir (payants plus tard, Konnect/Flouci).
 - Tout est calculé **dans le téléphone** du visiteur : aucune donnée envoyée, aucun serveur.
 
@@ -25,7 +26,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - Références qui doivent toujours tomber juste (paie-tunisie.com) : 2 500 → 1 849,310 ; 1 500 → 1 189,706 ; 800 → 684,262.
 
 ## Avant chaque publication
-1. `node tools/test_site.mjs` (57 vérifications, dont 5 références relevées sur le simulateur de paie-tunisie.com : calculs de référence, pages FR/AR, aperçu, licence…).
+1. `node tools/test_site.mjs` (70 vérifications, dont 5 références relevées sur le simulateur de paie-tunisie.com : calculs de référence, pages FR/AR, aperçu, licence…).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
 2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages (cache des téléphones) — le test le vérifie.
 3. Capture mobile (Chrome sans écran, cadres 340/390 px) en français ET en arabe si l'affichage change.

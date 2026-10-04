@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr" dir="ltr">
+<html lang="fr" dir="ltr" data-racine="../">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,9 +11,11 @@
 <meta property="og:image" content="https://ah6259.github.io/outils-pratiques-tunisie/assets/og-image-v1.png">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0B7A53">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;800&family=Noto+Kufi+Arabic:wght@400;600;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261005b">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=20261005d">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"Quel est le barème de l'impôt sur le revenu en Tunisie en 2026 ?","acceptedAnswer":{"@type":"Answer","text":"Le barème de la loi de finances 2025, toujours appliqué en 2026, compte 8 tranches annuelles : 0 % jusqu'à 5 000 DT, 15 % de 5 000 à 10 000 DT, 25 % de 10 000 à 20 000 DT, 30 % de 20 000 à 30 000 DT, 33 % de 30 000 à 40 000 DT, 36 % de 40 000 à 50 000 DT, 38 % de 50 000 à 70 000 DT et 40 % au-delà de 70 000 DT."}},
@@ -21,36 +23,46 @@
 {"@type":"Question","name":"Qu'est-ce que la contribution sociale de solidarité (CSS) ?","acceptedAnswer":{"@type":"Answer","text":"Une contribution de 0,5 % du revenu imposable qui s'ajoute à l'impôt sur le revenu ; elle n'est pas due si le revenu imposable annuel ne dépasse pas 5 000 DT."}}
 ]}
 </script>
-<script src="../assets/calcul.js?v=20261005b"></script>
-<script src="../assets/page.js?v=20261005b"></script>
+<script src="../assets/calcul.js?v=20261005d"></script>
+<script src="../assets/page.js?v=20261005d"></script>
 </head>
 <body>
-<header class="top">
-  <a class="logo" href="../"><span>●</span> <span data-l="fr">Outils pratiques Tunisie</span><span data-l="ar">أدوات عملية تونس</span></a>
-  <button class="langue" type="button">العربية</button>
-</header>
-<main class="wrap">
-  <h1><span data-l="fr">Impôt sur le revenu en Tunisie (2026)</span><span data-l="ar">الضريبة على الدخل في تونس (2026)</span></h1>
-  <p class="intro"><span data-l="fr">Entrez votre revenu imposable de l'année : le barème à 8 tranches est appliqué tranche par tranche.</span><span data-l="ar">أدخل دخلك السنوي الخاضع للضريبة: يُطبَّق الجدول ذو الشرائح الثماني شريحة بشريحة.</span></p>
+<header class="entete" id="entete"></header>
 
+<section class="hero">
+  <div class="wrap">
+    <p class="fil"><a href="../"><span data-l="fr">Accueil</span><span data-l="ar">الرئيسية</span></a> › <span data-l="fr">Impôt sur le revenu</span><span data-l="ar">الضريبة على الدخل</span></p>
+    <h1><span data-l="fr">Impôt sur le revenu en Tunisie (2026)</span><span data-l="ar">الضريبة على الدخل في تونس (2026)</span></h1>
+    <p class="intro"><span data-l="fr">Le barème officiel à 8 tranches appliqué à votre revenu, tranche par tranche.</span><span data-l="ar">الجدول الرسمي ذو الشرائح الثماني مطبَّقًا على دخلك، شريحة بشريحة.</span></p>
+    <span class="maj"><span data-l="fr">Règles à jour au</span><span data-l="ar">قواعد محيَّنة في</span>&nbsp;<span data-maj></span></span>
+  </div>
+</section>
+
+<main class="wrap chevauche">
   <section class="carte">
-    <div class="champ">
-      <label for="revenu"><span data-l="fr">Revenu net imposable annuel (DT)</span><span data-l="ar">الدخل الصافي السنوي الخاضع للضريبة (دينار)</span></label>
-      <input id="revenu" type="number" inputmode="decimal" min="0" step="100" value="20000">
+    <div class="champ" style="margin:0">
+      <label for="revenu"><span data-l="fr">Revenu net imposable de l'année</span><span data-l="ar">الدخل الصافي السنوي الخاضع للضريبة</span></label>
+      <div class="saisie"><input id="revenu" type="number" inputmode="decimal" min="0" step="100" value="20000"><span class="unite">DT</span></div>
       <p class="avert"><span data-l="fr">Salarié ? Utilisez plutôt le <a href="../salaire-net/">calcul brut → net</a> : il retire d'abord la CNSS, les frais professionnels et les déductions de famille.</span><span data-l="ar">أجير؟ استعمل <a href="../salaire-net/">حساب الخام ← الصافي</a>: يطرح أولًا الضمان الاجتماعي والمصاريف المهنية وطرح العائلة.</span></p>
     </div>
   </section>
 
   <section class="carte resultat" aria-live="polite">
-    <div class="petit"><span data-l="fr">Impôt sur le revenu de l'année</span><span data-l="ar">الضريبة على الدخل للسنة</span></div>
+    <div class="res-titre"><span data-l="fr">Impôt sur le revenu de l'année</span><span data-l="ar">الضريبة على الدخل للسنة</span></div>
     <div class="grand" id="grand"></div>
     <div class="petit" id="sous"></div>
-    <table id="tableau" style="margin-top:8px"></table>
-    <a class="partage" id="partage" target="_blank" rel="noopener"><span data-l="fr">➦ Partager sur WhatsApp</span><span data-l="ar">➦ شارك على واتساب</span></a>
+    <table id="tableau" style="margin-top:10px"></table>
+    <div class="actions"><a class="partage" id="partage" target="_blank" rel="noopener"></a></div>
   </section>
 
+  <div class="confiance">
+    <div class="badge-c"><svg viewBox="0 0 24 24"><path d="M4 19h16M6 16V9M10 16V5M14 16v-6M18 16v-9"/></svg><span data-l="fr">Barème officiel 2026</span><span data-l="ar">الجدول الرسمي 2026</span></div>
+    <div class="badge-c"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg><span data-l="fr">Détail tranche par tranche</span><span data-l="ar">تفصيل شريحة بشريحة</span></div>
+    <div class="badge-c"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-l="fr">Aucune donnée envoyée</span><span data-l="ar">لا تُرسل أي معطيات</span></div>
+  </div>
+
   <section class="carte">
-    <h2 style="font-size:18px;margin:0 0 8px"><span data-l="fr">Le barème (loi de finances 2025, toujours appliqué en 2026)</span><span data-l="ar">الجدول (قانون المالية 2025، المعمول به في 2026)</span></h2>
+    <h2><span data-l="fr">Le barème (loi de finances 2025, appliqué en 2026)</span><span data-l="ar">الجدول (قانون المالية 2025، المعمول به في 2026)</span></h2>
     <table>
       <tr><td><span data-l="fr">0 à 5 000 DT</span><span data-l="ar">من 0 إلى 5000 دينار</span></td><td>0 %</td></tr>
       <tr><td><span data-l="fr">5 000 à 10 000 DT</span><span data-l="ar">من 5000 إلى 10000</span></td><td>15 %</td></tr>
@@ -61,10 +73,16 @@
       <tr><td><span data-l="fr">50 000 à 70 000 DT</span><span data-l="ar">من 50000 إلى 70000</span></td><td>38 %</td></tr>
       <tr><td><span data-l="fr">Plus de 70 000 DT</span><span data-l="ar">أكثر من 70000</span></td><td>40 %</td></tr>
     </table>
-    <p class="avert"><span data-l="fr">S'y ajoute la contribution sociale de solidarité : 0,5 % du revenu imposable (rien si moins de 5 000 DT). Résultat indicatif, ce site n'est pas un service officiel.</span><span data-l="ar">تُضاف المساهمة الاجتماعية التضامنية: 0,5 % من الدخل الخاضع للضريبة (لا شيء إذا كان أقل من 5000 دينار). نتيجة تقريبية، هذا الموقع ليس خدمة رسمية.</span></p>
+    <p class="avert"><span data-l="fr">S'y ajoute la contribution sociale de solidarité : 0,5 % du revenu imposable (rien si moins de 5 000 DT).</span><span data-l="ar">تُضاف المساهمة الاجتماعية التضامنية: 0,5 % من الدخل الخاضع للضريبة (لا شيء إذا كان أقل من 5000 دينار).</span></p>
+  </section>
+
+  <section class="carte">
+    <h2><span data-l="fr">Source officielle</span><span data-l="ar">المصدر الرسمي</span></h2>
+    <ul class="sources" data-l="fr"><li>Loi n° 2024-48 du 9 décembre 2024 portant loi de finances pour 2025, article 36 (barème à 8 tranches, revenus à partir du 1ᵉʳ janvier 2025).</li></ul>
+    <ul class="sources" data-l="ar"><li>القانون عدد 48 لسنة 2024 المؤرخ في 9 ديسمبر 2024 المتعلق بقانون المالية لسنة 2025، الفصل 36 (جدول بثماني شرائح، للمداخيل بداية من 1 جانفي 2025).</li></ul>
   </section>
 </main>
-<footer>© 2026 Outils pratiques Tunisie — <span data-l="fr">calculs faits dans votre téléphone, aucune donnée envoyée.</span><span data-l="ar">الحساب يتم في هاتفك، لا تُرسل أي معطيات.</span></footer>
+<footer id="pied"></footer>
 
 <script>
 function calculer(){
@@ -78,7 +96,9 @@ function calculer(){
   document.getElementById("tableau").innerHTML = r.detail.map(t =>
     `<tr><td>${iso(ent(t.de) + " → " + ent(t.a) + " DT · " + Math.round(t.taux*100) + " %")}</td><td>${dt(t.impot)}</td></tr>`).join("") +
     `<tr class="total"><td>${T("Total","المجموع")}</td><td>${dt(r.total)}</td></tr>`;
-  document.getElementById("partage").href = lienWhatsApp(
+  const p = document.getElementById("partage");
+  p.innerHTML = ICONE_WHATSAPP + T("Partager sur WhatsApp", "شارك على واتساب");
+  p.href = lienWhatsApp(
     T(`Impôt sur le revenu en Tunisie pour ${dt(rev)} par an : ${dt(r.total)}. Calculez le vôtre :`,
       `الضريبة على الدخل في تونس لدخل ${dt(rev)} سنويًا: ${dt(r.total)}. احسب ضريبتك:`));
 }
