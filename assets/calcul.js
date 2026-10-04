@@ -11,6 +11,7 @@ const REGLES = {
   enfantsMax: 4,
   cssTaux: 0.005,             // contribution sociale de solidarité
   cssSeuil: 5000,             // pas de CSS si revenu imposable annuel <= 5 000 DT
+  cssReduiteJusqua: 2026,     // taux réduit de 0,5 % prorogé par la LF 2026 (art. 87) pour 2026 SEULEMENT ; sinon 1 %
   bareme: [                   // [plafond annuel de la tranche, taux]
     [5000, 0], [10000, 0.15], [20000, 0.25], [30000, 0.30],
     [40000, 0.33], [50000, 0.36], [70000, 0.38], [Infinity, 0.40]

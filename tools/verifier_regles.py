@@ -8,6 +8,7 @@
    (les règles restent valables puisqu'elles donnent toujours les mêmes résultats).
 4. Différence -> code de sortie 2 : les règles ont changé (nouvelle loi de finances) -> le robot ouvre une alerte.
    Simulateur injoignable -> code de sortie 3 : on ne change rien, alerte si ça dure.
+   Année au-delà de la CSS réduite votée -> code 4 : alerte « vérifier la loi de finances » (rien ne change).
 
 Usage : python tools/verifier_regles.py [--sans-reseau]   (--sans-reseau : seulement le contrôle de cohérence)
 """
@@ -126,6 +127,14 @@ def main():
     ecrire_maj(aujourd_hui.strftime("%d/%m/%Y"))
     _, annee = lire_constantes()
     # en janvier (après le 15, quand la loi de finances est appliquée par les logiciels de paie)
+    css_jusqua = int(re.search(r"cssReduiteJusqua: (\d{4})", (ROOT / "assets" / "calcul.js").read_text(encoding="utf-8")).group(1))
+    if aujourd_hui.year > css_jusqua:
+        # le taux réduit de la CSS n'est voté que jusqu'à css_jusqua : ne pas passer à la nouvelle année sans
+        # confirmation (prolongation ou retour à 1 %) -> alerte, même si paie-tunisie n'a pas encore changé
+        (ROOT / "ecarts.txt").write_text(f"Le taux réduit de la CSS (0,5 %) n'était voté que jusqu'à {css_jusqua}. "
+                                         "Vérifier la loi de finances : prolongation ou retour à 1 %.", encoding="utf-8")
+        print(f"ATTENTION : CSS réduite votée jusqu'à {css_jusqua} seulement -> vérification humaine")
+        return 4
     if aujourd_hui.year > annee and (aujourd_hui.month > 1 or aujourd_hui.day >= 15):
         changer_annee(annee, aujourd_hui.year)
         print(f"Année du site : {annee} -> {aujourd_hui.year}")

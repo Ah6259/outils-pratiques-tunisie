@@ -66,6 +66,10 @@ jobs:
           Écarts :
           $(cat ecarts.txt 2>/dev/null)
           Le site n'a PAS été modifié. Demander à Claude : « mets à jour les règles d'Outils pratiques »."
+          elif [ "${{ steps.verif.outputs.code }}" = "4" ]; then
+            titre="Nouvelle année : vérifier le taux de la CSS (loi de finances)"
+            corps="$(cat ecarts.txt 2>/dev/null)
+          Le site n'a PAS été modifié. Demander à Claude : « vérifie la loi de finances pour Outils pratiques »."
           else
             titre="Vérification des règles impossible"
             corps="Le robot n'a pas pu vérifier les règles (simulateur injoignable, format changé ou test en échec).

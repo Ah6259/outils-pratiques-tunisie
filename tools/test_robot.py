@@ -65,7 +65,14 @@ check("écart d'1 millime toléré -> code 0", code == 0)
 code, m = lancer(d, identique, dt.date(2027, 1, 3))
 check("début janvier : année pas encore changée", m.lire_constantes()[1] == 2026)
 
-# 3. le 16 janvier, règles toujours identiques : tout le site passe en 2027
+# 2 bis. 16 janvier 2027 : la CSS réduite n'est votée que pour 2026 -> alerte (code 4), rien ne change
+code, m = lancer(d, identique, dt.date(2027, 1, 16))
+check("2027 sans confirmation de la CSS -> code 4 (alerte)", code == 4)
+check("2027 sans confirmation de la CSS : année inchangée", m.lire_constantes()[1] == 2026)
+
+# 3. loi de finances 2027 vérifiée (CSS confirmée pour 2027), règles identiques : tout le site passe en 2027
+calc = d / "assets" / "calcul.js"
+calc.write_text(calc.read_text(encoding="utf-8").replace("cssReduiteJusqua: 2026", "cssReduiteJusqua: 2027"), encoding="utf-8")
 code, m = lancer(d, identique, dt.date(2027, 1, 16))
 check("16 janvier : ANNEE = 2027", m.lire_constantes()[1] == 2027)
 s = (d / "salaire-net" / "index.html").read_text(encoding="utf-8")
