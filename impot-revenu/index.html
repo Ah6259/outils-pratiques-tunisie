@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calcul impôt sur le revenu Tunisie 2026 (IRPP, barème 8 tranches) | Outils pratiques Tunisie</title>
+<meta name="description" content="Calculez gratuitement votre impôt sur le revenu (IRPP) en Tunisie avec le barème 2025-2026 à 8 tranches, tranche par tranche, avec la contribution sociale de solidarité. حساب الضريبة على الدخل في تونس.">
+<link rel="canonical" href="https://ah6259.github.io/outils-pratiques-tunisie/impot-revenu/">
+<meta property="og:title" content="Impôt sur le revenu en Tunisie (2026)">
+<meta property="og:description" content="Le barème à 8 tranches appliqué à votre revenu, tranche par tranche. Gratuit, en français et en arabe.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;800&family=Noto+Kufi+Arabic:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=20261004a">
+<script src="../assets/calcul.js?v=20261004a"></script>
+<script src="../assets/page.js?v=20261004a"></script>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="../"><span>●</span> <span data-l="fr">Outils pratiques Tunisie</span><span data-l="ar">أدوات عملية تونس</span></a>
+  <button class="langue" type="button">العربية</button>
+</header>
+<main class="wrap">
+  <h1><span data-l="fr">Impôt sur le revenu en Tunisie (2026)</span><span data-l="ar">الضريبة على الدخل في تونس (2026)</span></h1>
+  <p class="intro"><span data-l="fr">Entrez votre revenu imposable de l'année : le barème à 8 tranches est appliqué tranche par tranche.</span><span data-l="ar">أدخل دخلك السنوي الخاضع للضريبة: يُطبَّق الجدول ذو الشرائح الثماني شريحة بشريحة.</span></p>
+
+  <section class="carte">
+    <div class="champ">
+      <label for="revenu"><span data-l="fr">Revenu net imposable annuel (DT)</span><span data-l="ar">الدخل الصافي السنوي الخاضع للضريبة (دينار)</span></label>
+      <input id="revenu" type="number" inputmode="decimal" min="0" step="100" value="20000">
+      <p class="avert"><span data-l="fr">Salarié ? Utilisez plutôt le <a href="../salaire-net/">calcul brut → net</a> : il retire d'abord la CNSS, les frais professionnels et les déductions de famille.</span><span data-l="ar">أجير؟ استعمل <a href="../salaire-net/">حساب الخام ← الصافي</a>: يطرح أولًا الضمان الاجتماعي والمصاريف المهنية وطرح العائلة.</span></p>
+    </div>
+  </section>
+
+  <section class="carte resultat" aria-live="polite">
+    <div class="petit"><span data-l="fr">Impôt sur le revenu de l'année</span><span data-l="ar">الضريبة على الدخل للسنة</span></div>
+    <div class="grand" id="grand"></div>
+    <div class="petit" id="sous"></div>
+    <table id="tableau" style="margin-top:8px"></table>
+    <a class="partage" id="partage" target="_blank" rel="noopener"><span data-l="fr">➦ Partager sur WhatsApp</span><span data-l="ar">➦ شارك على واتساب</span></a>
+  </section>
+
+  <section class="carte">
+    <h2 style="font-size:18px;margin:0 0 8px"><span data-l="fr">Le barème (loi de finances 2025, toujours appliqué en 2026)</span><span data-l="ar">الجدول (قانون المالية 2025، المعمول به في 2026)</span></h2>
+    <table>
+      <tr><td><span data-l="fr">0 à 5 000 DT</span><span data-l="ar">من 0 إلى 5000 دينار</span></td><td>0 %</td></tr>
+      <tr><td><span data-l="fr">5 000 à 10 000 DT</span><span data-l="ar">من 5000 إلى 10000</span></td><td>15 %</td></tr>
+      <tr><td><span data-l="fr">10 000 à 20 000 DT</span><span data-l="ar">من 10000 إلى 20000</span></td><td>25 %</td></tr>
+      <tr><td><span data-l="fr">20 000 à 30 000 DT</span><span data-l="ar">من 20000 إلى 30000</span></td><td>30 %</td></tr>
+      <tr><td><span data-l="fr">30 000 à 40 000 DT</span><span data-l="ar">من 30000 إلى 40000</span></td><td>33 %</td></tr>
+      <tr><td><span data-l="fr">40 000 à 50 000 DT</span><span data-l="ar">من 40000 إلى 50000</span></td><td>36 %</td></tr>
+      <tr><td><span data-l="fr">50 000 à 70 000 DT</span><span data-l="ar">من 50000 إلى 70000</span></td><td>38 %</td></tr>
+      <tr><td><span data-l="fr">Plus de 70 000 DT</span><span data-l="ar">أكثر من 70000</span></td><td>40 %</td></tr>
+    </table>
+    <p class="avert"><span data-l="fr">S'y ajoute la contribution sociale de solidarité : 0,5 % du revenu imposable (rien si moins de 5 000 DT). Résultat indicatif, ce site n'est pas un service officiel.</span><span data-l="ar">تُضاف المساهمة الاجتماعية التضامنية: 0,5 % من الدخل الخاضع للضريبة (لا شيء إذا كان أقل من 5000 دينار). نتيجة تقريبية، هذا الموقع ليس خدمة رسمية.</span></p>
+  </section>
+</main>
+<footer>© 2026 Outils pratiques Tunisie — <span data-l="fr">calculs faits dans votre téléphone, aucune donnée envoyée.</span><span data-l="ar">الحساب يتم في هاتفك، لا تُرسل أي معطيات.</span></footer>
+
+<script>
+function calculer(){
+  const rev = Math.max(0, parseFloat(document.getElementById("revenu").value) || 0);
+  const r = irppAnnuel(rev), css = cssAnnuelle(rev);
+  document.getElementById("grand").textContent = dt(r.total);
+  const taux = rev > 0 ? (r.total / rev * 100).toFixed(1).replace(".", ",") : "0";
+  document.getElementById("sous").textContent =
+    T(`soit ${dt(r.total / 12)} par mois · taux moyen ${iso(taux + " %")} · + CSS ${dt(css)}`,
+      `أي ${dt(r.total / 12)} شهريًا · النسبة المتوسطة ${iso(taux + " %")} · + المساهمة ${dt(css)}`);
+  document.getElementById("tableau").innerHTML = r.detail.map(t =>
+    `<tr><td>${iso(ent(t.de) + " → " + ent(t.a) + " DT · " + Math.round(t.taux*100) + " %")}</td><td>${dt(t.impot)}</td></tr>`).join("") +
+    `<tr class="total"><td>${T("Total","المجموع")}</td><td>${dt(r.total)}</td></tr>`;
+  document.getElementById("partage").href = lienWhatsApp(
+    T(`Impôt sur le revenu en Tunisie pour ${dt(rev)} par an : ${dt(r.total)}. Calculez le vôtre :`,
+      `الضريبة على الدخل في تونس لدخل ${dt(rev)} سنويًا: ${dt(r.total)}. احسب ضريبتك:`));
+}
+document.getElementById("revenu").addEventListener("input", calculer);
+document.addEventListener("langue", calculer);
+</script>
+</body>
+</html>

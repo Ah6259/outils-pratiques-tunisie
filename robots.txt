@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ah6259.github.io/outils-pratiques-tunisie/sitemap.xml

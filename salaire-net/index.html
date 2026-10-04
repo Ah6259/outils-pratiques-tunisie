@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="fr" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Salaire brut en net Tunisie 2026 — calcul CNSS, IRPP, CSS | Outils pratiques Tunisie</title>
+<meta name="description" content="Calculez gratuitement votre salaire net en Tunisie en 2026 à partir du brut (ou l'inverse) : CNSS 9,68 %, impôt sur le revenu (IRPP, barème 2025-2026), CSS 0,5 %, chef de famille et enfants. حساب الأجر الصافي في تونس.">
+<link rel="canonical" href="https://ah6259.github.io/outils-pratiques-tunisie/salaire-net/">
+<meta property="og:title" content="Salaire brut → net en Tunisie (2026)">
+<meta property="og:description" content="CNSS, impôt sur le revenu et CSS calculés en 2 secondes. Gratuit, en français et en arabe.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;800&family=Noto+Kufi+Arabic:wght@400;600;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=20261004a">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Comment calculer le salaire net en Tunisie en 2026 ?","acceptedAnswer":{"@type":"Answer","text":"Du salaire brut, on retire la CNSS salariale (9,68 %), puis l'impôt sur le revenu (IRPP) calculé sur l'année avec le barème à 8 tranches, après une déduction de 10 % pour frais professionnels (2 000 DT par an au maximum) et les déductions de famille, puis la contribution sociale de solidarité (0,5 % du revenu imposable)."}},
+{"@type":"Question","name":"Quel est le taux de la CNSS pour le salarié ?","acceptedAnswer":{"@type":"Answer","text":"9,68 % du salaire brut : 9,18 % de cotisation CNSS plus 0,50 % pour la perte d'emploi."}},
+{"@type":"Question","name":"Quel est le barème de l'impôt sur le revenu en Tunisie ?","acceptedAnswer":{"@type":"Answer","text":"Depuis la loi de finances 2025 : 0 % jusqu'à 5 000 DT par an, 15 % de 5 000 à 10 000, 25 % de 10 000 à 20 000, 30 % de 20 000 à 30 000, 33 % de 30 000 à 40 000, 36 % de 40 000 à 50 000, 38 % de 50 000 à 70 000 et 40 % au-delà."}}
+]}
+</script>
+<script src="../assets/calcul.js?v=20261004a"></script>
+<script src="../assets/page.js?v=20261004a"></script>
+</head>
+<body>
+<header class="top">
+  <a class="logo" href="../"><span>●</span> <span data-l="fr">Outils pratiques Tunisie</span><span data-l="ar">أدوات عملية تونس</span></a>
+  <button class="langue" type="button">العربية</button>
+</header>
+<main class="wrap">
+  <h1><span data-l="fr">Salaire brut ⇄ net en Tunisie (2026)</span><span data-l="ar">حساب الأجر الخام والصافي في تونس (2026)</span></h1>
+  <p class="intro"><span data-l="fr">CNSS, impôt sur le revenu et contribution sociale, calculés selon les règles en vigueur en 2026.</span><span data-l="ar">الضمان الاجتماعي والضريبة على الدخل والمساهمة الاجتماعية التضامنية حسب القواعد المعمول بها في 2026.</span></p>
+
+  <section class="carte">
+    <div class="champ">
+      <label><span data-l="fr">Je connais mon salaire…</span><span data-l="ar">أعرف أجري…</span></label>
+      <div class="choix" data-nom="sens">
+        <button type="button" data-v="brut" class="on"><span data-l="fr">Brut</span><span data-l="ar">الخام</span></button>
+        <button type="button" data-v="net"><span data-l="fr">Net (je cherche le brut)</span><span data-l="ar">الصافي (أبحث عن الخام)</span></button>
+      </div>
+    </div>
+    <div class="champ">
+      <label for="montant"><span data-l="fr">Montant par mois (DT)</span><span data-l="ar">المبلغ الشهري (دينار)</span></label>
+      <input id="montant" type="number" inputmode="decimal" min="0" step="10" value="1500">
+    </div>
+    <div class="ligne2">
+      <div class="champ">
+        <label class="case"><input id="chef" type="checkbox"> <span data-l="fr">Chef de famille</span><span data-l="ar">رئيس عائلة</span></label>
+      </div>
+      <div class="champ">
+        <label for="enfants"><span data-l="fr">Enfants à charge</span><span data-l="ar">الأبناء في الكفالة</span></label>
+        <select id="enfants"><option>0</option><option>1</option><option>2</option><option>3</option><option>4</option></select>
+      </div>
+    </div>
+  </section>
+
+  <section class="carte resultat" aria-live="polite">
+    <div class="petit" id="titre-res"></div>
+    <div class="grand" id="grand"></div>
+    <table id="tableau"></table>
+    <a class="partage" id="partage" target="_blank" rel="noopener"><span data-l="fr">➦ Partager sur WhatsApp</span><span data-l="ar">➦ شارك على واتساب</span></a>
+  </section>
+
+  <section class="carte">
+    <details>
+      <summary><span data-l="fr">Voir le détail du calcul de l'impôt</span><span data-l="ar">تفاصيل حساب الضريبة</span></summary>
+      <table id="detail"></table>
+    </details>
+  </section>
+
+  <section class="carte">
+    <h2 style="font-size:18px;margin:0 0 8px"><span data-l="fr">Comment c'est calculé ?</span><span data-l="ar">كيف يتم الحساب؟</span></h2>
+    <div data-l="fr">
+      <ol>
+        <li><b>CNSS salarié : 9,68 %</b> du brut (9,18 % + 0,50 % perte d'emploi).</li>
+        <li><b>Frais professionnels :</b> 10 % du salaire après CNSS, au maximum 2 000 DT par an.</li>
+        <li><b>Famille :</b> 300 DT par an pour le chef de famille, 100 DT par enfant (4 enfants au maximum).</li>
+        <li><b>Impôt sur le revenu (IRPP)</b>, barème annuel : 0 % jusqu'à 5 000 DT · 15 % jusqu'à 10 000 · 25 % jusqu'à 20 000 · 30 % jusqu'à 30 000 · 33 % jusqu'à 40 000 · 36 % jusqu'à 50 000 · 38 % jusqu'à 70 000 · 40 % au-delà.</li>
+        <li><b>Contribution sociale de solidarité (CSS) :</b> 0,5 % du revenu imposable (rien si moins de 5 000 DT par an).</li>
+      </ol>
+    </div>
+    <div data-l="ar">
+      <ol>
+        <li><b>الضمان الاجتماعي (الأجير): 9,68 %</b> من الأجر الخام (9,18 % + 0,50 % فقدان مواطن الشغل).</li>
+        <li><b>المصاريف المهنية:</b> 10 % من الأجر بعد الضمان الاجتماعي، في حدود 2000 دينار في السنة.</li>
+        <li><b>العائلة:</b> 300 دينار سنويًا لرئيس العائلة، و100 دينار عن كل طفل (4 أطفال على أقصى تقدير).</li>
+        <li><b>الضريبة على الدخل</b> حسب الجدول السنوي: 0 % إلى 5000 دينار · 15 % إلى 10000 · 25 % إلى 20000 · 30 % إلى 30000 · 33 % إلى 40000 · 36 % إلى 50000 · 38 % إلى 70000 · 40 % فما فوق.</li>
+        <li><b>المساهمة الاجتماعية التضامنية:</b> 0,5 % من الدخل الخاضع للضريبة (لا شيء إذا كان أقل من 5000 دينار سنويًا).</li>
+      </ol>
+    </div>
+    <p class="avert"><span data-l="fr">Résultat indicatif pour un salarié du secteur privé non agricole, payé 12 mois par an, sans primes ni avantages. Votre fiche de paie peut différer légèrement (arrondis, primes, 13ᵉ mois, autres déductions). Ce site n'est pas un service officiel.</span><span data-l="ar">نتيجة تقريبية لأجير في القطاع الخاص غير الفلاحي، يتقاضى 12 شهرًا في السنة، دون منح أو امتيازات. قد تختلف بطاقة الخلاص قليلًا. هذا الموقع ليس خدمة رسمية.</span></p>
+  </section>
+
+  <p><a href="../impot-revenu/"><span data-l="fr">→ Calculer l'impôt sur le revenu annuel</span><span data-l="ar">← حساب الضريبة السنوية على الدخل</span></a></p>
+</main>
+<footer>© 2026 Outils pratiques Tunisie — <span data-l="fr">calculs faits dans votre téléphone, aucune donnée envoyée.</span><span data-l="ar">الحساب يتم في هاتفك، لا تُرسل أي معطيات.</span></footer>
+
+<script>
+function famille(){ return { chef: document.getElementById("chef").checked, enfants: +document.getElementById("enfants").value }; }
+function lignes(rows){ return rows.map(([a,b,cl]) => `<tr${cl?` class="${cl}"`:""}><td>${a}</td><td${cl==="m"?' class="moins"':""}>${b}</td></tr>`).join(""); }
+function calculer(){
+  const m = Math.max(0, parseFloat(document.getElementById("montant").value) || 0);
+  const sens = choixValeur("sens");
+  const r = sens === "net" ? netVersBrut(m, famille()) : brutVersNet(m, famille());
+  document.getElementById("titre-res").textContent = sens === "net" ? T("Salaire brut nécessaire par mois","الأجر الخام الضروري شهريًا") : T("Votre salaire net par mois","أجرك الصافي شهريًا");
+  document.getElementById("grand").textContent = dt(sens === "net" ? r.brut : r.net);
+  document.getElementById("tableau").innerHTML = lignes([
+    [T("Salaire brut","الأجر الخام"), dt(r.brut)],
+    [T("CNSS (9,68 %)","الضمان الاجتماعي (9,68 %)"), "− " + dt(r.cnss), "m"],
+    [T("Impôt sur le revenu (IRPP)","الضريبة على الدخل"), "− " + dt(r.irpp), "m"],
+    [T("Contribution sociale (CSS)","المساهمة الاجتماعية التضامنية"), "− " + dt(r.css), "m"],
+    [T("Salaire net","الأجر الصافي"), dt(r.net), "total"]
+  ]);
+  const a = r.an;
+  document.getElementById("detail").innerHTML = lignes([
+    [T("Brut annuel","الخام السنوي"), dt(a.brut)],
+    [T("− CNSS","− الضمان الاجتماعي"), dt(a.cnss)],
+    [T("− Frais professionnels","− المصاريف المهنية"), dt(a.fraisPro)],
+    [T("− Déductions famille","− طرح العائلة"), dt(a.deductions)],
+    [T("Revenu imposable annuel","الدخل السنوي الخاضع للضريبة"), dt(a.imposable), "total"],
+    ...r.tranches.map(t => [T("Tranche ","شريحة ") + iso(ent(t.de) + " → " + ent(t.a) + " DT · " + Math.round(t.taux*100) + " %"), dt(t.impot)]),
+    [T("Impôt annuel","الضريبة السنوية"), dt(a.irpp), "total"],
+    [T("CSS annuelle","المساهمة السنوية"), dt(a.css)]
+  ]);
+  document.getElementById("partage").href = lienWhatsApp(
+    T(`Salaire brut ${dt(r.brut)} = net ${dt(r.net)} par mois en Tunisie (2026). Calculez le vôtre :`,
+      `أجر خام ${dt(r.brut)} = صافي ${dt(r.net)} شهريًا في تونس (2026). احسب أجرك:`));
+}
+["montant","chef","enfants"].forEach(id => document.getElementById(id).addEventListener("input", calculer));
+document.addEventListener("recalcul", calculer);
+document.addEventListener("langue", calculer);
+</script>
+</body>
+</html>
