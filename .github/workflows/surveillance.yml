@@ -11,6 +11,8 @@ on:
 permissions:
   contents: write
   issues: write
+env:
+  TZ: Africa/Tunis   # dates à l'heure de Tunis
 concurrency:
   group: robot
   cancel-in-progress: false
