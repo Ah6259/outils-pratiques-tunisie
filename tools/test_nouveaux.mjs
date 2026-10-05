@@ -117,7 +117,7 @@ check("règles de la retenue datées, sources officielles", /\d{2}\/\d{2}\/\d{4}
 // ================= 4. PAGES (comme un navigateur) =================
 async function page(chemin, lang = "fr") {
   const dossier = dirname(join(root, chemin));
-  const html = lire(chemin).replace(/<script([^>]*) src="([^"?]+)(\?[^"]*)?"([^>]*)><\/script>/g,
+  const html = lire(chemin).replace(/<script([^>]*) src="(?!https?:)([^"?]+)(\?[^"]*)?"([^>]*)><\/script>/g,
     (_, a, src) => `<script>${readFileSync(join(dossier, src), "utf8")}</script>`);
   const dom = new JSDOM(html, { url: `https://ah6259.github.io/outils-pratiques-tunisie/${chemin.replace("index.html", "")}?lang=${lang}`,
                                runScripts: "dangerously", pretendToBeVisual: true });
@@ -197,7 +197,7 @@ for (const p of PAGES) {
 
 // ================= 5. Règles communes : référencement, sources, sécurité =================
 const vRef = lire("salaire-net/index.html").match(/style\.css\?v=(\w+)/)[1];
-const DOMAINES_OK = ["ah6259.github.io", "fonts.googleapis.com", "fonts.gstatic.com", "schema.org", "wa.me",
+const DOMAINES_OK = ["ah6259.github.io", "gc.zgo.at", "fonts.googleapis.com", "fonts.gstatic.com", "schema.org", "wa.me",
   "www.bct.gov.tn", "jibaya.tn", "www.cnss.tn", "www.autoentrepreneur.tn", "tej.finances.gov.tn",
   "commons.wikimedia.org", "creativecommons.org"];   // + crédits des photos (Wikimedia Commons, licences)
 // Noms des concurrents : JAMAIS dans ce dépôt public (règle d'Ahmed). Liste locale dans tools/.concurrents (ignoré par git),
@@ -208,7 +208,7 @@ if (!CONCURRENTS) console.log("SAUTÉ vérification des concurrents (tools/.conc
 const sansConcurrent = t => !CONCURRENTS || !CONCURRENTS.test(t);
 for (const p of PAGES) {
   const s = lire(p);
-  check(`${p} : titre, description, canonical, aperçu, icône`, /<title>.+<\/title>/.test(s) && s.includes('name="description"') && s.includes('rel="canonical"') && s.includes("og-image-v3.png") && s.includes("logo.svg"));
+  check(`${p} : titre, description, canonical, aperçu, icône`, /<title>.+<\/title>/.test(s) && s.includes('name="description"') && s.includes('rel="canonical"') && s.includes("og-image-v4.jpg") && s.includes("logo.svg"));
   check(`${p} : CSP, noai, referrer`, s.includes("Content-Security-Policy") && s.includes("noai, noimageai") && s.includes('name="referrer"'));
   const faq = s.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
   let ld = null; try { ld = JSON.parse(faq[1]); } catch (e) {}

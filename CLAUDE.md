@@ -76,9 +76,12 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - L'année n'est écrite qu'à des endroits remplaçables automatiquement ; l'image d'aperçu n'a pas d'année.
 
 ## Visibilité
-- sitemap.xml (7 pages) + robots.txt ; FAQ Google (JSON-LD) sur les 5 calculateurs ; image d'aperçu `assets/og-image-v3.png` (avec la photo des pièces)
-  (si on la change : **nouveau nom de fichier**, WhatsApp/Facebook gardent l'ancienne).
-- Reste à faire par Ahmed : Search Console (renvoyer le sitemap), compte GoatCounter (statistiques).
+- sitemap.xml (7 pages) + robots.txt ; FAQ Google (JSON-LD) sur les 5 calculateurs ; image d'aperçu `assets/og-image-v4.jpg` (avec la photo des pièces ; JPEG < 250 Ko, sinon WhatsApp n'affiche qu'une petite vignette ; balise `og:image:type`)
+  (si on la change : **nouveau nom de fichier**, WhatsApp/Facebook gardent l'ancienne). L'ancien `og-image-v3.png` peut être supprimé.
+- **Statistiques GoatCounter** (sans cookies, 05/10/2026) sur toutes les pages : compteur partagé
+  `https://prix-eaux-tunisie.goatcounter.com` (pages séparées par chemin `/outils-pratiques-tunisie/…`) ;
+  CSP : `script-src` + `https://gc.zgo.at`, `connect-src` / `img-src` + le compteur. Mentionné dans À propos. Les tests le vérifient.
+- Reste à faire par Ahmed : Search Console (renvoyer le sitemap).
 
 ## Photos et protection (05/10/2026)
 - Bandeaux : **vraies photos libres de droits** (Wikimedia Commons) : `assets/photo-pieces-dinar.jpg`

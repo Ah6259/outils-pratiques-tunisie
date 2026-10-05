@@ -52,7 +52,7 @@ async function page(chemin, lang = "fr", modifier = js => js) {
   // comme un navigateur : chaque <script src> est remplacé par son contenu, puis tout s'exécute dans l'ordre
   // (modifier : permet de tester une variante d'un script, ex. URL_DOCUMENTS remplie)
   const dossier = dirname(join(root, chemin));
-  const html = lire(chemin).replace(/<script([^>]*) src="([^"?]+)(\?[^"]*)?"([^>]*)><\/script>/g,
+  const html = lire(chemin).replace(/<script([^>]*) src="(?!https?:)([^"?]+)(\?[^"]*)?"([^>]*)><\/script>/g,
     (_, a, src) => `<script>${modifier(readFileSync(join(dossier, src), "utf8"), src)}</script>`);
   const dom = new JSDOM(html, { url: `https://ah6259.github.io/outils-pratiques-tunisie/${chemin.replace("index.html", "")}?lang=${lang}`,
                                runScripts: "dangerously", pretendToBeVisual: true });
@@ -100,7 +100,7 @@ const AVEC_PHOTO = TOUTES.filter(p => p !== "a-propos/index.html");
 for (const p of TOUTES) {
   const s = lire(p);
   check(`${p} : titre, description, canonical`, /<title>.+<\/title>/.test(s) && s.includes('name="description"') && s.includes('rel="canonical"'));
-  check(`${p} : image d'aperçu et icône`, s.includes("og-image-v3.png") && s.includes("logo.svg"));
+  check(`${p} : image d'aperçu et icône`, s.includes("og-image-v4.jpg") && s.includes("logo.svg"));
   check(`${p} : même version ?v= pour tous les fichiers`, new Set(s.match(/\?v=\d+\w/g)).size === 1);
   const w2 = await page(p);
   const pied = w2.document.getElementById("pied")?.textContent || "";
@@ -109,7 +109,8 @@ for (const p of TOUTES) {
   check(`${p} : date « à jour au » remplie`, [...w2.document.querySelectorAll("[data-maj]")].every(x => /\d{2}\/\d{2}\/\d{4}/.test(x.textContent)));
 }
 check("FAQ Google sur les 2 calculateurs", ["salaire-net/index.html", "impot-revenu/index.html"].every(p => lire(p).includes("FAQPage")));
-check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v3.png")));
+check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v4.jpg")));
+check("image d'aperçu JPEG < 250 Ko (sinon WhatsApp n'affiche qu'une petite vignette)", existsSync(join(root, "assets/og-image-v4.jpg")) && statSync(join(root, "assets/og-image-v4.jpg")).size < 250000 && TOUTES.every(p => lire(p).includes('<meta property="og:image:type" content="image/jpeg">')));
 const locs = [...lire("sitemap.xml").matchAll(/<loc>https:\/\/ah6259\.github\.io\/outils-pratiques-tunisie\/([^<]*)<\/loc>/g)].map(m => m[1]);
 check("plan du site : 7 pages (accueil, 3 + 3 calculateurs, à propos)", (lire("sitemap.xml").match(/<loc>/g) || []).length === 7 && locs.length === 7);
 check("plan du site : chaque adresse mène à une page existante", locs.every(l => existsSync(join(root, l, "index.html"))));
@@ -199,8 +200,11 @@ const pageJs = lire("assets/page.js"), css = lire("assets/style.css");
 for (const p of TOUTES) {
   const s = lire(p);
   check(`${p} : meta noai, noimageai`, /<meta name="robots" content="noai, noimageai">/.test(s));
-  check(`${p} : CSP stricte (scripts du site seulement)`, /http-equiv="Content-Security-Policy" content="[^"]*script-src 'self';/.test(s)
+  check(`${p} : CSP stricte (scripts du site + GoatCounter seulement)`, /http-equiv="Content-Security-Policy" content="[^"]*script-src 'self' https:\/\/gc\.zgo\.at;/.test(s)
         && !/script-src[^;]*unsafe/.test(s));
+  check(`${p} : statistiques GoatCounter (sans cookies) chargées, CSP compatible`,
+        s.includes('<script data-goatcounter="https://prix-eaux-tunisie.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>')
+        && /connect-src[^;]*https:\/\/prix-eaux-tunisie\.goatcounter\.com/.test(s) && /img-src[^;]*https:\/\/prix-eaux-tunisie\.goatcounter\.com/.test(s));
   check(`${p} : aucun script dans la page (sinon bloqué par la CSP)`, (s.match(/<script(?![^>]*\bsrc=)(?![^>]*ld\+json)[^>]*>/g) || []).length === 0);
   check(`${p} : referrer strict-origin-when-cross-origin`, s.includes('<meta name="referrer" content="strict-origin-when-cross-origin">'));
   check(`${p} : script anti-copie chargé (page.js)`, /<script src="(\.\.\/)?assets\/page\.js\?v=/.test(s));
