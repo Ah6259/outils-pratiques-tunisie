@@ -63,3 +63,6 @@ Guide réutilisable pour créer un autre site du même genre. Une ligne par éta
 - Test `node tools/test_sw.mjs` : exécute sw.js dans un faux navigateur (cache + réseau simulés) ; sabotage vérifié
   (HTML en « cache d'abord », POST intercepté, mauvaise portée → le test sonne).
 - Vieille version bloquée sur un téléphone : changer `CACHE_VERSION` dans `sw.js`.
+
+## 05/10/2026 (soir) — icône et « gratuit »
+- Icône des 4 opérations (famille commune des sites) ; « gratuit » dans tous les titres Google.

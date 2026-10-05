@@ -116,3 +116,11 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   `page.js` : pas de clic droit/glisser sur les images, source ajoutée au texte copié, anti-iframe ; montants calculés
   (`.resultat`), champs et liens restent copiables. Liens externes des nouvelles pages : nouvelle fenêtre + `noopener`,
   uniquement vers des sources officielles (BCT, jibaya.tn, CNSS, autoentrepreneur.tn, TEJ) et Wikimedia/Creative Commons.
+
+## Mise à jour du 05/10/2026 (soir)
+- **Icône (famille commune des 5 sites)** : un seul symbole en aplats 2-3 tons, accent doré `#F2B33D`, sans texte ni brillance (règle d'Ahmed : jamais d'effet « image IA » ni de clip-art). Ce site : **les 4 opérations (+ − × =), la touche = en doré**. Source = `assets/logo.svg` ; PNG 192/512 = dessin arrondi, maskable 512 et iPhone 180 = même dessin sur carré plein, symbole à 78 %. Générateur (hors dépôt) : `_claude code project/icones des sites - generateur.py`. Changer l'icône → renouveler `CACHE_VERSION` de `sw.js`.
+- **« Gratuit » mis en avant** (titres Google, descriptions, aperçus de partage, manifeste), seulement là où c'est vrai. La future partie payante n'est jamais annoncée à l'avance (décision d'Ahmed).
+- **Aperçus WhatsApp** : tous les sites sont réglés pareil (1200 × 630, JPEG léger). WhatsApp sur PC fait de petites vignettes : envoyer les liens depuis le téléphone (ou transférer un message préparé sur le téléphone).
+- **Règle d'Ahmed : tout tourne sur internet (GitHub), sans son PC ni son intervention, « même s'il meurt ».**
+- Titres : « calcul gratuit » ajouté là où il manquait (retenue à la source).
+- Plus tard (validé par Ahmed) : cadre discret APRÈS chaque résultat vers l'annuaire des comptables (« Chiffres et conseil »), seulement quand cet annuaire existera. Aucun lien vers le mariage (garder le sérieux du site).

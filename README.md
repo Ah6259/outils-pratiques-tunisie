@@ -39,3 +39,6 @@ puis le test doit retomber exactement sur le simulateur de référence avant pub
 relus sur la page de la Banque centrale, puis les tests).
 **Chaque janvier** : revoir aussi à la main les pages Auto-entrepreneur et Retenue à la source (titres avec l'année, taux, montants) :
 le robot ne change pas leurs dates exprès (dates officielles fixes).
+
+## Nouveautés
+- 05/10/2026 : nouvelle icône (les 4 opérations) et « calcul gratuit » dans les titres Google.
