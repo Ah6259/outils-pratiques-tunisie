@@ -1,2 +1,4 @@
 node_modules/
 ecarts.txt
+tools/.reference
+__pycache__/

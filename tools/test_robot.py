@@ -55,7 +55,7 @@ check("règles identiques -> code 0", code == 0)
 check("date de vérification mise à jour (01/11/2026)", maj == "01/11/2026")
 check("année inchangée en novembre", annee == 2026)
 
-# 1 bis. un écart d'un millime chez paie-tunisie (leurs arrondis varient) n'est PAS une alerte
+# 1 bis. un écart d'un millime chez le simulateur de référence (ses arrondis varient) n'est PAS une alerte
 def un_millime():
     n = identique(); n[3] = f"{float(n[3]) - 0.001:.3f}"; return n
 code, m = lancer(d, un_millime, dt.date(2026, 11, 2))

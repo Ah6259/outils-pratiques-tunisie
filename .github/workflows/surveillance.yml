@@ -27,8 +27,9 @@ jobs:
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
       - run: npm install --no-save --no-package-lock jsdom
-      - name: Vérifier les règles (paie-tunisie.com)
+      - name: Vérifier les règles (simulateur de référence)
         id: verif
+        env: { REF_URL: "${{ secrets.REF_URL }}" }
         run: |
           set +e
           python tools/verifier_regles.py
@@ -64,7 +65,7 @@ jobs:
           gh label create alerte-robot --color B60205 --force >/dev/null 2>&1 || true
           if [ "${{ steps.verif.outputs.code }}" = "2" ]; then
             titre="Les règles de paie ont changé : calculs à mettre à jour"
-            corps="Le simulateur de paie-tunisie.com ne donne plus les mêmes résultats que notre site (nouvelle loi de finances ?).
+            corps="Le simulateur de référence ne donne plus les mêmes résultats que notre site (nouvelle loi de finances ?).
           Écarts :
           $(cat ecarts.txt 2>/dev/null)
           Le site n'a PAS été modifié. Demander à Claude : « mets à jour les règles d'Outils pratiques »."

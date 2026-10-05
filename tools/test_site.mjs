@@ -15,7 +15,7 @@ const proche = (a, b) => Math.abs(a - b) < 0.0015;   // au millime près
 
 // ---- 1. Calculs comparés à des résultats de référence -----------------------
 const c = createRequire(import.meta.url)(join(root, "assets/calcul.js"));
-// Référence publiée (SmartPaie, « Calcul du salaire net en Tunisie 2026 ») : 2 500 DT brut, célibataire
+// Exemple publié (guide de paie 2026) : 2 500 DT brut, célibataire
 let r = c.brutVersNet(2500, {});
 check("2 500 brut : CNSS 242,000", proche(r.cnss, 242));
 check("2 500 brut : IRPP 398,233 / mois", proche(r.irpp, 398.233));
@@ -38,10 +38,10 @@ check("déductions : 6 enfants comptés comme 4", c.imposableAnnuel(20000, { che
 check("la famille augmente le net", c.brutVersNet(1500, { chef: true, enfants: 2 }).net > c.brutVersNet(1500, {}).net);
 // Calcul inverse net -> brut
 check("net 1 849,310 -> brut 2 500 (montant rond)", c.netVersBrut(1849.31, {}).brut === 2500);
-// Références du simulateur de paie-tunisie.com (relevées le 05/10/2026) : chaque ligne arrondie au millime
+// Références du simulateur de référence (relevées le 05/10/2026) : chaque ligne arrondie au millime
 for (const [brut, famille, net] of [[2500, {}, 1849.310], [1500, {}, 1189.706], [1500, { chef: true, enfants: 2 }, 1200.332],
                                     [800, {}, 684.262], [5000, { chef: true, enfants: 3 }, 3348.256]])
-  check(`paie-tunisie.com : ${brut} brut ${JSON.stringify(famille)} -> ${net}`, c.brutVersNet(brut, famille).net.toFixed(3) === net.toFixed(3));
+  check(`simulateur de référence : ${brut} brut ${JSON.stringify(famille)} -> ${net}`, c.brutVersNet(brut, famille).net.toFixed(3) === net.toFixed(3));
 check("net -> brut cohérent pour 900 DT", proche(c.brutVersNet(c.netVersBrut(900, {}).brut, {}).net, 900));
 check("le net augmente avec le brut", [500, 1000, 2000, 4000, 8000].every((b, i, t) => !i || c.brutVersNet(b, {}).net > c.brutVersNet(t[i - 1], {}).net));
 check("format tunisien : 1 849,310 DT", c.dt(1849.31).replace(/[⁦⁩  ]/g, "") === "1849,310DT");

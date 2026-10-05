@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 """Surveillance des règles de paie (lancé par .github/workflows/surveillance.yml).
 
-1. Interroge le simulateur gratuit de paie-tunisie.com avec 5 cas de référence (lentement).
+1. Interroge un simulateur de paie de référence (adresse : secret GitHub REF_URL, ou fichier local tools/.reference)
+   avec 5 cas de référence (lentement).
 2. Compare avec nos calculs (assets/calcul.js, via Node).
 3. Tout est identique -> met à jour la date « Règles vérifiées le … » (MAJ dans assets/page.js) ;
    en janvier, si l'année affichée est dépassée, passe tout le site à la nouvelle année
@@ -27,7 +28,9 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CAS = [(2500, False, 0), (1500, False, 0), (1500, True, 2), (800, False, 0), (5000, True, 3)]
-URL = "https://paie-tunisie.com/"
+import os
+URL = os.environ.get("REF_URL") or ((ROOT / "tools" / ".reference").read_text(encoding="utf-8").strip()
+                                    if (ROOT / "tools" / ".reference").exists() else "")
 P = "ctl00$MainContent$ctl00$ctl02$ctl06$ctl04$"
 CHEF, ENF, BRUT, NET = P + "ctl07$CheckBox", P + "ctl08$NumericInput", P + "ctl09$NumericInput", P + "ctl10$NumericInput"
 TOLERANCE = 0.002   # DT
@@ -42,7 +45,7 @@ def nos_nets():
     return json.loads(subprocess.run(["node", "-e", code], capture_output=True, text=True, check=True).stdout)
 
 
-# ---------- simulateur paie-tunisie (formulaire ASP.NET) ----------
+# ---------- simulateur de référence (formulaire ASP.NET) ----------
 def _ouvreur():
     ctx = ssl.create_default_context(); ctx.check_hostname = False; ctx.verify_mode = ssl.CERT_NONE
     op = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(http.cookiejar.CookieJar()),
@@ -113,12 +116,12 @@ def main():
     try:
         eux = leurs_nets()
     except Exception as e:
-        print(f"ÉCHEC : simulateur paie-tunisie injoignable ou modifié : {e}")
+        print(f"ÉCHEC : simulateur de référence injoignable ou modifié : {e}")
         return 3
     print("cas       :", CAS); print("nous      :", nous); print("paie-tun. :", eux)
-    # paie-tunisie varie lui-même d'un millime selon les fois (arrondis) ; un changement de loi fait bouger
+    # le simulateur de référence varie lui-même d'un millime selon les fois (arrondis) ; un changement de loi fait bouger
     # le net de plusieurs dinars : on tolère donc 2 millimes d'écart
-    ecarts = [f"{b} brut (chef={c}, enfants={e}) : nous {n} / paie-tunisie {x}"
+    ecarts = [f"{b} brut (chef={c}, enfants={e}) : nous {n} / référence {x}"
               for (b, c, e), n, x in zip(CAS, nous, eux) if abs(float(n) - float(x)) > TOLERANCE]
     if ecarts:
         Path(ROOT / "ecarts.txt").write_text("\n".join(ecarts), encoding="utf-8")
@@ -130,7 +133,7 @@ def main():
     css_jusqua = int(re.search(r"cssReduiteJusqua: (\d{4})", (ROOT / "assets" / "calcul.js").read_text(encoding="utf-8")).group(1))
     if aujourd_hui.year > css_jusqua:
         # le taux réduit de la CSS n'est voté que jusqu'à css_jusqua : ne pas passer à la nouvelle année sans
-        # confirmation (prolongation ou retour à 1 %) -> alerte, même si paie-tunisie n'a pas encore changé
+        # confirmation (prolongation ou retour à 1 %) -> alerte, même si la référence n'a pas encore changé
         (ROOT / "ecarts.txt").write_text(f"Le taux réduit de la CSS (0,5 %) n'était voté que jusqu'à {css_jusqua}. "
                                          "Vérifier la loi de finances : prolongation ou retour à 1 %.", encoding="utf-8")
         print(f"ATTENTION : CSS réduite votée jusqu'à {css_jusqua} seulement -> vérification humaine")

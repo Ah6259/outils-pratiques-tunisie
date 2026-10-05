@@ -23,10 +23,10 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   chef de famille 300 DT/an, 100 DT par enfant (4 max) ; barème LF 2025 à 8 tranches (0/15/25/30/33/36/38/40 %) ;
   CSS 0,5 % du revenu imposable si > 5 000 DT/an. 12 salaires égaux par an, sans primes.
 - Chaque retenue mensuelle (CNSS, IRPP, CSS) est **arrondie au millime** avant de calculer le net, comme sur une fiche de paie.
-- Références qui doivent toujours tomber juste (paie-tunisie.com) : 2 500 → 1 849,310 ; 1 500 → 1 189,706 ; 800 → 684,262.
+- Références qui doivent toujours tomber juste (simulateur de référence) : 2 500 → 1 849,310 ; 1 500 → 1 189,706 ; 800 → 684,262.
 
 ## Avant chaque publication
-1. `node tools/test_site.mjs` (70 vérifications, dont 5 références relevées sur le simulateur de paie-tunisie.com : calculs de référence, pages FR/AR, aperçu, licence…).
+1. `node tools/test_site.mjs` (70 vérifications, dont 5 références relevées sur le simulateur de référence : calculs de référence, pages FR/AR, aperçu, licence…).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
 2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages (cache des téléphones) — le test le vérifie.
 3. Capture mobile (Chrome sans écran, cadres 340/390 px) en français ET en arabe si l'affichage change.
@@ -34,9 +34,10 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 
 ## Robots (autonomie)
 - `surveillance.yml` (1er du mois + chaque jour de janvier) : `tools/verifier_regles.py` compare 5 cas au simulateur de
-  paie-tunisie.com (tolérance 2 millimes : leurs arrondis varient) → OK : met à jour `MAJ` (page.js), et à partir du
+  référence (adresse dans le secret GitHub REF_URL, et localement dans tools/.reference non suivi par git ; tolérance 2 millimes : leurs arrondis varient) → OK : met à jour `MAJ` (page.js), et à partir du
   15 janvier passe `ANNEE` et tous les « 2026 » isolés à la nouvelle année ; écart → issue « alerte-robot » (rien modifié).
-  Commit mensuel = battement de cœur. Preuves CGU/robots de paie-tunisie : dossier parent `preuves conditions d'utilisation6-10-05\`.
+  Commit mensuel = battement de cœur. Preuves CGU/robots du simulateur de référence : dossier parent (hors dépôt) `preuves conditions d'utilisation6-10-05\`.
+- **Ne jamais citer de concurrent** sur le site ni dans ce dépôt public (règle d'Ahmed).
 - `tests.yml` à chaque push : `node tools/test_site.mjs` + `python tools/test_robot.py` (15 scénarios).
 - L'année n'est écrite qu'à des endroits remplaçables automatiquement ; l'image d'aperçu n'a pas d'année (og-image-v2).
 
