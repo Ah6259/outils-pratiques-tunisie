@@ -40,3 +40,16 @@ Guide réutilisable pour créer un autre site du même genre. Une ligne par éta
 - **Image d'aperçu v3** (1200 × 630) : page HTML temporaire avec la photo, capturée par Chrome sans écran → `assets/og-image-v3.png`.
 - **Protection** : robots.txt anti-IA, meta noai, CSP, anti-copie légère et anti-iframe dans page.js ; scripts des pages sortis
   dans `assets/salaire.js` et `assets/impot.js`. Le test vérifie tout (et un sabotage volontaire le fait bien sonner).
+
+## 05/10/2026 — Trois nouveaux calculateurs : crédit, auto-entrepreneur, retenue à la source
+- **Sources officielles** lues à la main et sauvegardées hors du dépôt (BCT pour le TMM, DGI/jibaya.tn, CNSS, cahier des charges TEJ),
+  avec leurs conditions d'utilisation ; chaque chiffre de référence du test vérifié à la main (formule, exemples officiels TEJ).
+- **Intégration** : vraies cartes sur l'accueil, liens dans le pied de page, sitemap à 7 pages, une seule version `?v=` pour tout le site.
+- **Carte « Documents prêts à remplir »** : renvoie vers un futur site séparé ; une seule constante (`URL_DOCUMENTS` dans page.js) à remplir le jour venu.
+- **Photos réelles** pour les 3 bandeaux (Wikimedia Commons, licence lue sur la page, preuve + copie Internet Archive, recadrées en 700 × 500, ≤ 150 Ko).
+- **Tests** : `test_nouveaux.mjs` ajouté à tests.yml ; test « chaque lien de l'accueil et du pied mène à une page existante » ;
+  noms des concurrents sortis du dépôt public (fichier local ignoré par git) ; sabotage volontaire d'une copie → tous les défauts détectés.
+- **Robot** : vérification mensuelle du TMM sur la page d'accueil de la BCT → alerte si différent (jamais de modification automatique) ;
+  nouveaux scénarios de panne dans test_robot.py (TMM changé, mois périmé, BCT injoignable, page changée, passage d'année).
+- **Captures mobiles** : la fenêtre de Chrome sans écran ne descend pas sous ~500 px → page locale avec deux cadres de 340 et 390 px
+  pointant vers les fichiers (`file:///…?lang=fr` et `?lang=ar`).

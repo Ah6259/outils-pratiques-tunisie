@@ -1,6 +1,7 @@
 # Vérifie chaque mois (et chaque jour en janvier) que les règles de paie n'ont pas changé,
 # met à jour la date « Règles à jour au … » et, mi-janvier, l'année du site.
 # Si les règles changent ou si la vérification échoue : une alerte (issue GitHub) est ouverte -> email à Ahmed.
+# Vérifie aussi le TMM de la Banque centrale (page Crédit) : s'il change, alerte (le site n'est pas modifié).
 # Le commit mensuel sert aussi de « battement de cœur » (GitHub met en pause les robots après 60 jours sans activité).
 name: Surveillance des règles
 on:
@@ -34,13 +35,16 @@ jobs:
           set +e
           python tools/verifier_regles.py
           echo "code=$?" >> "$GITHUB_OUTPUT"
+      # code 0 = tout va bien ; 5 = TMM à mettre à jour ; 6 = TMM illisible -> la paie est vérifiée, on publie la date
+      # (le TMM du site n'est jamais modifié par le robot) ET une alerte est ouverte plus bas pour le TMM
       - name: Tests avant publication
-        if: steps.verif.outputs.code == '0'
+        if: contains(fromJSON('["0","5","6"]'), steps.verif.outputs.code)
         run: |
           python tools/test_robot.py
           node tools/test_site.mjs
+          node tools/test_nouveaux.mjs
       - name: Publier (date de vérification, année) ou battement de cœur
-        if: steps.verif.outputs.code == '0'
+        if: contains(fromJSON('["0","5","6"]'), steps.verif.outputs.code)
         run: |
           git config user.name "robot-outils"
           git config user.email "robot-outils@users.noreply.github.com"
@@ -69,6 +73,16 @@ jobs:
           Écarts :
           $(cat ecarts.txt 2>/dev/null)
           Le site n'a PAS été modifié. Demander à Claude : « mets à jour les règles d'Outils pratiques »."
+          elif [ "${{ steps.verif.outputs.code }}" = "5" ]; then
+            titre="Crédit : le TMM de la Banque centrale a changé"
+            corps="$(cat ecarts.txt 2>/dev/null)
+          Source : https://www.bct.gov.tn/ (Principaux taux). Le TMM du site n'a PAS été modifié.
+          Demander à Claude : « mets à jour le TMM d'Outils pratiques »."
+          elif [ "${{ steps.verif.outputs.code }}" = "6" ]; then
+            titre="Crédit : lecture du TMM impossible"
+            corps="$(cat ecarts.txt 2>/dev/null)
+          La page de la Banque centrale n'a pas pu être lue (site en panne, blocage ou format changé). Rien n'a été modifié.
+          Journal : ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           elif [ "${{ steps.verif.outputs.code }}" = "4" ]; then
             titre="Nouvelle année : vérifier le taux de la CSS (loi de finances)"
             corps="$(cat ecarts.txt 2>/dev/null)

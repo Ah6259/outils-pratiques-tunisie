@@ -2,3 +2,4 @@ node_modules/
 ecarts.txt
 tools/.reference
 __pycache__/
+tools/.concurrents

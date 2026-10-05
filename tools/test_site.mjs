@@ -48,11 +48,12 @@ check("le net augmente avec le brut", [500, 1000, 2000, 4000, 8000].every((b, i,
 check("format tunisien : 1 849,310 DT", c.dt(1849.31).replace(/[⁦⁩  ]/g, "") === "1849,310DT");
 
 // ---- 2. Pages (simulées sans navigateur) -------------------------------------
-async function page(chemin, lang = "fr") {
+async function page(chemin, lang = "fr", modifier = js => js) {
   // comme un navigateur : chaque <script src> est remplacé par son contenu, puis tout s'exécute dans l'ordre
+  // (modifier : permet de tester une variante d'un script, ex. URL_DOCUMENTS remplie)
   const dossier = dirname(join(root, chemin));
   const html = lire(chemin).replace(/<script([^>]*) src="([^"?]+)(\?[^"]*)?"([^>]*)><\/script>/g,
-    (_, a, src) => `<script>${readFileSync(join(dossier, src), "utf8")}</script>`);
+    (_, a, src) => `<script>${modifier(readFileSync(join(dossier, src), "utf8"), src)}</script>`);
   const dom = new JSDOM(html, { url: `https://ah6259.github.io/outils-pratiques-tunisie/${chemin.replace("index.html", "")}?lang=${lang}`,
                                runScripts: "dangerously", pretendToBeVisual: true });
   await new Promise(ok => dom.window.addEventListener("load", ok));
@@ -93,7 +94,10 @@ d.getElementById("revenu").value = "0"; d.getElementById("revenu").dispatchEvent
 check("impôt : revenu 0 -> 0,000", texte(d.getElementById("grand")).includes("0,000"));
 
 // ---- 3. Règles communes : référencement, aperçu, licence, cache ----------------
-for (const p of ["index.html", "salaire-net/index.html", "impot-revenu/index.html", "a-propos/index.html"]) {
+const TOUTES = ["index.html", "salaire-net/index.html", "impot-revenu/index.html", "a-propos/index.html",
+                "credit/index.html", "auto-entrepreneur/index.html", "retenue-source/index.html"];
+const AVEC_PHOTO = TOUTES.filter(p => p !== "a-propos/index.html");
+for (const p of TOUTES) {
   const s = lire(p);
   check(`${p} : titre, description, canonical`, /<title>.+<\/title>/.test(s) && s.includes('name="description"') && s.includes('rel="canonical"'));
   check(`${p} : image d'aperçu et icône`, s.includes("og-image-v3.png") && s.includes("logo.svg"));
@@ -106,7 +110,41 @@ for (const p of ["index.html", "salaire-net/index.html", "impot-revenu/index.htm
 }
 check("FAQ Google sur les 2 calculateurs", ["salaire-net/index.html", "impot-revenu/index.html"].every(p => lire(p).includes("FAQPage")));
 check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v3.png")));
-check("plan du site : 4 pages", (lire("sitemap.xml").match(/<loc>/g) || []).length === 4);
+const locs = [...lire("sitemap.xml").matchAll(/<loc>https:\/\/ah6259\.github\.io\/outils-pratiques-tunisie\/([^<]*)<\/loc>/g)].map(m => m[1]);
+check("plan du site : 7 pages (accueil, 3 + 3 calculateurs, à propos)", (lire("sitemap.xml").match(/<loc>/g) || []).length === 7 && locs.length === 7);
+check("plan du site : chaque adresse mène à une page existante", locs.every(l => existsSync(join(root, l, "index.html"))));
+check("toutes les pages : même version ?v= partout (cache des téléphones)", new Set(TOUTES.flatMap(p => lire(p).match(/\?v=\w+/g) || [])).size === 1);
+
+// chaque lien de l'accueil (cartes) et du pied de page (sur chaque page) mène à une page existante
+const cible = (p, href) => { const u = new URL(href, `https://ah6259.github.io/outils-pratiques-tunisie/${p.replace("index.html", "")}`);
+  if (u.host !== "ah6259.github.io") return null;
+  const chemin = decodeURIComponent(u.pathname.replace("/outils-pratiques-tunisie/", ""));
+  return join(root, chemin.endsWith("/") || chemin === "" ? join(chemin, "index.html") : chemin); };
+w = await page("index.html"); d = w.document;
+const cartes = [...d.querySelectorAll("main .outils a[href]")];
+check("accueil : 5 calculateurs en vrais liens (salaire, impôt, crédit, auto-entrepreneur, retenue)",
+  ["salaire-net/", "impot-revenu/", "credit/", "auto-entrepreneur/", "retenue-source/"].every(h => cartes.some(a => a.getAttribute("href") === h)));
+// Documents Tunisie est en ligne depuis le 05/10/2026 : plus aucune carte « bientôt »
+check("accueil : plus aucune carte « bientôt »", d.querySelectorAll(".outil.bientot").length === 0);
+check("accueil : carte Documents = lien vers notre site Documents Tunisie", texte(d.getElementById("carte-documents")).includes("Sur notre site Documents Tunisie")
+  && d.getElementById("carte-documents").tagName === "A");
+for (const p of TOUTES) {
+  const w2 = p === "index.html" ? w : await page(p);
+  const liens = [...w2.document.querySelectorAll(p === "index.html" ? "main a[href], #pied a[href], #entete a[href]" : "#pied a[href], #entete a[href], .fil a[href]")]
+    .map(a => a.getAttribute("href")).filter(h => !/^(https?:|mailto:|#)/.test(h));
+  const casses = liens.filter(h => { const f = cible(p, h); return !f || !existsSync(f.split("#")[0]); });
+  check(`${p} : ${liens.length} liens internes (accueil, pied, en-tête) vers des pages existantes${casses.length ? " — cassés : " + casses.join(", ") : ""}`, liens.length >= 7 && casses.length === 0);
+}
+check("pied de page : liens vers les 5 calculateurs et À propos", ["salaire-net/", "impot-revenu/", "credit/", "auto-entrepreneur/", "retenue-source/", "a-propos/"]
+  .every(h => [...w.document.querySelectorAll("#pied nav a")].some(a => a.getAttribute("href") === h)));
+// URL_DOCUMENTS (assets/page.js) : remplie depuis la mise en ligne de Documents Tunisie (05/10/2026)
+check("URL_DOCUMENTS : constante unique dans page.js, adresse du site Documents Tunisie", (pageJsSrc => (pageJsSrc.match(/^const URL_DOCUMENTS = /gm) || []).length === 1
+  && /^const URL_DOCUMENTS = "https:\/\/ah6259\.github\.io\/documents-tunisie\/";/m.test(pageJsSrc))(lire("assets/page.js")));
+const wDoc = w;
+const carteDoc = wDoc.document.getElementById("carte-documents");
+check("URL_DOCUMENTS remplie : la carte devient un lien (nouvel onglet), sans badge « bientôt »", carteDoc.tagName === "A"
+  && carteDoc.href === "https://ah6259.github.io/documents-tunisie/" && carteDoc.target === "_blank" && carteDoc.rel.includes("noopener")
+  && !carteDoc.querySelector(".badge") && !carteDoc.classList.contains("bientot"));
 check("robots.txt indique le plan du site", lire("robots.txt").includes("sitemap.xml"));
 check("LICENSE tous droits réservés", lire("LICENSE").includes("Tous droits réservés"));
 
@@ -127,7 +165,7 @@ const aPropos = lire("a-propos/index.html");
 const dossierPreuves = join(root, "..", "preuves conditions d'utilisation");
 const lisezMoi = existsSync(dossierPreuves) ? readdirSync(dossierPreuves).map(d => join(dossierPreuves, d, "photos", "LISEZ-MOI.md"))
   .filter(existsSync).map(f => readFileSync(f, "utf8")).join("\n") : null;
-for (const p of ["index.html", "salaire-net/index.html", "impot-revenu/index.html"]) {
+for (const p of AVEC_PHOTO) {
   const d2 = new JSDOM(lire(p)).window.document;
   const fig = d2.querySelector("figure.illus");
   const img = fig?.querySelector("img");
@@ -144,8 +182,8 @@ for (const p of ["index.html", "salaire-net/index.html", "impot-revenu/index.htm
   if (lisezMoi === null) console.log(`SAUTÉ preuve de licence de ${fichier} (dossier des preuves absent, normal sur GitHub)`);
   else check(`${p} : preuve de licence sauvegardée pour ${fichier}`, !!source && lisezMoi.includes(source));
 }
-check("plus aucun dessin SVG dans les bandeaux", !["index.html", "salaire-net/index.html", "impot-revenu/index.html"]
-  .some(p => /illus-(paie|impot)\.svg/.test(lire(p))));
+check("plus aucun dessin SVG dans les bandeaux", !AVEC_PHOTO.some(p => /illus-[\w-]+\.svg/.test(lire(p))));
+check("dessins provisoires supprimés (illus-credit, illus-auto, illus-retenue)", ["credit", "auto", "retenue"].every(n => !existsSync(join(root, `assets/illus-${n}.svg`))));
 
 // ---- 4. Sécurité, robots d'IA et anti-copie (consigne d'Ahmed du 05/10/2026) ------------------------
 const robots = lire("robots.txt");
@@ -158,7 +196,7 @@ for (const ua of ["GPTBot", "ChatGPT-User", "OAI-SearchBot", "ClaudeBot", "Claud
   check(`robots.txt interdit ${ua}`, regle(ua) === "interdit");
 check("robots.txt laisse passer Googlebot, Bingbot et les autres", regle("Googlebot") === "permis" && regle("Bingbot") === "permis" && regle("\\*") === "permis");
 const pageJs = lire("assets/page.js"), css = lire("assets/style.css");
-for (const p of ["index.html", "salaire-net/index.html", "impot-revenu/index.html", "a-propos/index.html"]) {
+for (const p of TOUTES) {
   const s = lire(p);
   check(`${p} : meta noai, noimageai`, /<meta name="robots" content="noai, noimageai">/.test(s));
   check(`${p} : CSP stricte (scripts du site seulement)`, /http-equiv="Content-Security-Policy" content="[^"]*script-src 'self';/.test(s)
@@ -171,6 +209,8 @@ for (const p of ["index.html", "salaire-net/index.html", "impot-revenu/index.htm
 check("anti-copie : clic droit et glisser bloqués sur les images", pageJs.includes('"contextmenu"') && pageJs.includes('"dragstart"') && /img\{[^}]*-webkit-touch-callout:none/.test(css));
 check("anti-copie : source ajoutée au texte copié", pageJs.includes('"copy"') && pageJs.includes("© tous droits réservés"));
 check("anti-copie : anti-iframe d'un autre site", pageJs.includes("window.top === window.self"));
+for (const p of AVEC_PHOTO.filter(p => p !== "index.html"))
+  check(`${p} : le montant calculé (#grand) est dans une zone copiable (.resultat)`, !!new JSDOM(lire(p)).window.document.querySelector(".resultat #grand"));
 check("montants calculés, champs et liens restent copiables", /\.resultat,\.resultat \*,input,select,textarea,a\{user-select:text/.test(css)
       && pageJs.includes('".resultat, input, select, textarea, a"'));
 // le calculateur reste utilisable avec la protection

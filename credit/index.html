@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="fr" dir="ltr" data-racine="../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="robots" content="noai, noimageai">
+<title>Simulateur crédit immobilier et auto Tunisie — mensualité, TMM, tableau d'amortissement | Outils pratiques Tunisie</title>
+<meta name="description" content="Calculez gratuitement la mensualité de votre crédit immobilier ou auto en Tunisie : taux fixe ou TMM + marge, apport, assurance, coût total et tableau d'amortissement. حساب القسط الشهري للقرض في تونس.">
+<link rel="canonical" href="https://ah6259.github.io/outils-pratiques-tunisie/credit/">
+<link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
+<meta name="theme-color" content="#0B7A53">
+<meta property="og:title" content="Crédit immobilier et auto en Tunisie : mensualité et coût total">
+<meta property="og:description" content="Taux fixe ou TMM + marge, apport, assurance, tableau d'amortissement. Gratuit, en français et en arabe.">
+<meta property="og:image" content="https://ah6259.github.io/outils-pratiques-tunisie/assets/og-image-v3.png">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/style.css?v=20261005l">
+<link rel="stylesheet" href="../assets/nouveaux.css?v=20261005l">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"Comment calculer la mensualité d'un crédit en Tunisie ?","acceptedAnswer":{"@type":"Answer","text":"Pour un crédit à mensualités constantes : mensualité = capital × r / (1 − (1 + r) puissance −n), où r est le taux annuel divisé par 12 et n le nombre de mois. Exemple : 100 000 DT sur 20 ans à 10 % par an donnent 965,022 DT par mois, hors assurance."}},
+{"@type":"Question","name":"Qu'est-ce que le TMM ?","acceptedAnswer":{"@type":"Answer","text":"Le TMM est le taux moyen du marché monétaire, publié chaque mois par la Banque centrale de Tunisie. Les crédits à taux variable sont souvent exprimés en « TMM + marge » : si le TMM change, la mensualité change aussi."}},
+{"@type":"Question","name":"Que comprend le coût total du crédit ?","acceptedAnswer":{"@type":"Answer","text":"Le coût total = la somme des intérêts payés sur toute la durée + l'assurance si elle est payée chaque mois. Les frais de dossier, de garantie et de notaire, propres à chaque banque, ne sont pas compris : demandez-les à votre banque."}}
+]}
+</script>
+<script src="../assets/calcul.js?v=20261005l"></script>
+<script src="../assets/page.js?v=20261005l"></script>
+<script src="../assets/calcul-credit.js?v=20261005l"></script>
+</head>
+<body>
+<header class="entete" id="entete"></header>
+
+<section class="hero">
+  <div class="wrap">
+    <figure class="illus" data-source="https://commons.wikimedia.org/wiki/File:Tunis_Maison_Medina.jpg">
+      <span class="cadre-photo"><img src="../assets/photo-maison-tunis.jpg" alt="Maison blanche aux fenêtres bleues, médina de Tunis" data-alt-ar="منزل أبيض بنوافذ زرقاء، مدينة تونس العتيقة" width="700" height="500"></span>
+      <figcaption><span data-l="fr">Photo</span><span data-l="ar">صورة</span> : <a href="https://commons.wikimedia.org/wiki/File:Tunis_Maison_Medina.jpg" rel="noopener" target="_blank">Rais67</a>, <a href="https://creativecommons.org/publicdomain/mark/1.0/" rel="license noopener" target="_blank"><span data-l="fr">domaine public</span><span data-l="ar">ملك عام</span></a>, Wikimedia Commons</figcaption>
+    </figure>
+    <p class="fil"><a href="../"><span data-l="fr">Accueil</span><span data-l="ar">الرئيسية</span></a> › <span data-l="fr">Crédit</span><span data-l="ar">القرض</span></p>
+    <h1><span data-l="fr">Crédit immobilier et auto en Tunisie</span><span data-l="ar">قرض السكن والسيارة في تونس</span></h1>
+    <p class="intro"><span data-l="fr">Mensualité, coût total et tableau d'amortissement, à taux fixe ou « TMM + marge ».</span><span data-l="ar">القسط الشهري والكلفة الجملية وجدول الاستهلاك، بنسبة قارة أو « TMM + هامش ».</span></p>
+    <span class="maj"><span data-l="fr">Règles à jour au</span><span data-l="ar">قواعد محيَّنة في</span>&nbsp;<span data-maj></span></span>
+  </div>
+</section>
+
+<main class="wrap chevauche">
+  <section class="carte">
+    <div class="grille2">
+      <div class="champ">
+        <label for="prix"><span data-l="fr">Prix du bien</span><span data-l="ar">ثمن العقار أو السيارة</span></label>
+        <div class="saisie"><input id="prix" type="number" inputmode="decimal" min="0" step="1000" value="150000"><span class="unite">DT</span></div>
+      </div>
+      <div class="champ">
+        <label for="apport"><span data-l="fr">Apport personnel</span><span data-l="ar">التمويل الذاتي</span></label>
+        <div class="saisie"><input id="apport" type="number" inputmode="decimal" min="0" step="1000" value="30000"><span class="unite">DT</span></div>
+      </div>
+    </div>
+    <div class="champ">
+      <label for="duree"><span data-l="fr">Durée</span><span data-l="ar">المدة</span></label>
+      <div class="grille2">
+        <input id="duree" type="number" inputmode="numeric" min="1" step="1" value="20">
+        <div class="choix" data-nom="unite">
+          <button type="button" data-v="ans" class="on"><span data-l="fr">Années</span><span data-l="ar">سنوات</span></button>
+          <button type="button" data-v="mois"><span data-l="fr">Mois</span><span data-l="ar">أشهر</span></button>
+        </div>
+      </div>
+    </div>
+    <div class="champ">
+      <label><span data-l="fr">Type de taux</span><span data-l="ar">نوع النسبة</span></label>
+      <div class="choix" data-nom="mode">
+        <button type="button" data-v="fixe" class="on"><span data-l="fr">Taux fixe</span><span data-l="ar">نسبة قارة</span></button>
+        <button type="button" data-v="tmm"><span data-l="fr">TMM + marge</span><span data-l="ar">TMM + هامش</span></button>
+      </div>
+    </div>
+    <div class="champ" id="bloc-fixe">
+      <label for="taux"><span data-l="fr">Taux annuel</span><span data-l="ar">النسبة السنوية</span></label>
+      <div class="saisie"><input id="taux" type="number" inputmode="decimal" min="0" step="0.05" value="10"><span class="unite">%</span></div>
+    </div>
+    <div id="bloc-tmm" class="cache">
+      <div class="grille2">
+        <div class="champ">
+          <label for="tmm">TMM</label>
+          <div class="saisie"><input id="tmm" type="number" inputmode="decimal" min="0" step="0.01"><span class="unite">%</span></div>
+        </div>
+        <div class="champ">
+          <label for="marge"><span data-l="fr">Marge de la banque</span><span data-l="ar">هامش البنك</span></label>
+          <div class="saisie"><input id="marge" type="number" inputmode="decimal" min="0" step="0.05" value="3"><span class="unite">%</span></div>
+        </div>
+      </div>
+      <p class="info" id="tmm-info"></p>
+      <p class="attention cache" id="tmm-vieux"></p>
+    </div>
+    <div class="champ" style="margin:0">
+      <label for="assurance"><span data-l="fr">Assurance (facultatif, % par an du montant emprunté)</span><span data-l="ar">التأمين (اختياري، % سنويًا من المبلغ المقترض)</span></label>
+      <div class="saisie"><input id="assurance" type="number" inputmode="decimal" min="0" step="0.05" value="0"><span class="unite">%</span></div>
+      <p class="aide"><span data-l="fr">Le taux d'assurance est donné par votre banque ou votre assureur. Laissez 0 si vous ne le connaissez pas.</span><span data-l="ar">نسبة التأمين يحددها البنك أو شركة التأمين. اترك 0 إن لم تكن تعرفها.</span></p>
+    </div>
+  </section>
+
+  <section class="carte resultat" aria-live="polite">
+    <div class="res-titre"><span data-l="fr">Votre mensualité</span><span data-l="ar">قسطك الشهري</span></div>
+    <div class="grand" id="grand"></div>
+    <div class="sous-total" id="resume"></div>
+    <div class="barre" id="barre" aria-hidden="true"></div>
+    <div class="legende" id="legende"></div>
+    <table id="tableau"></table>
+    <div class="actions"><a class="partage" id="partage" target="_blank" rel="noopener"></a></div>
+  </section>
+
+  <div class="confiance">
+    <div class="badge-c"><svg viewBox="0 0 24 24"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg><span data-l="fr">Formule bancaire classique</span><span data-l="ar">المعادلة البنكية المعتمدة</span></div>
+    <div class="badge-c"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-l="fr">Aucune donnée envoyée</span><span data-l="ar">لا تُرسل أي معطيات</span></div>
+    <div class="badge-c"><svg viewBox="0 0 24 24"><path d="M4 19h16M6 16V9M10 16V5M14 16v-6M18 16v-9"/></svg><span data-l="fr">TMM de la Banque centrale</span><span data-l="ar">TMM البنك المركزي</span></div>
+  </div>
+
+  <section class="carte">
+    <details>
+      <summary><span data-l="fr">Tableau d'amortissement (mois par mois)</span><span data-l="ar">جدول الاستهلاك (شهرًا بشهر)</span></summary>
+      <div class="defile"><table class="amort" id="amort"></table></div>
+    </details>
+  </section>
+
+  <section class="carte">
+    <h2><span data-l="fr">Comment c'est calculé ?</span><span data-l="ar">كيف يتم الحساب؟</span></h2>
+    <ol class="etapes" data-l="fr">
+      <li><b>Montant emprunté</b> = prix du bien − apport personnel.</li>
+      <li><b>Taux annuel</b> = votre taux fixe, ou TMM + marge de la banque.</li>
+      <li><b>Mensualité</b> (constante) : M = C × r ÷ (1 − (1 + r)<sup>−n</sup>), avec C = capital emprunté, r = taux annuel ÷ 12 et n = nombre de mois.</li>
+      <li>Chaque mois, les <b>intérêts</b> = capital restant × r ; le reste de la mensualité rembourse le capital.</li>
+      <li><b>Assurance</b> (si indiquée) = montant emprunté × taux d'assurance ÷ 12, chaque mois.</li>
+      <li>Chaque ligne est arrondie au millime ; la dernière mensualité solde exactement le capital restant.</li>
+    </ol>
+    <ol class="etapes" data-l="ar">
+      <li><b>المبلغ المقترض</b> = الثمن − التمويل الذاتي.</li>
+      <li><b>النسبة السنوية</b> = النسبة القارة، أو TMM + هامش البنك.</li>
+      <li><b>القسط الشهري</b> (ثابت): <span dir="ltr" style="white-space:nowrap">M = C × r ÷ (1 − (1 + r)<sup>−n</sup>)</span>، حيث <span dir="ltr">C</span> رأس المال المقترض، و <span dir="ltr">r</span> النسبة السنوية مقسومة على 12، و <span dir="ltr">n</span> عدد الأشهر.</li>
+      <li>كل شهر، <b>الفوائد</b> = رأس المال المتبقي × <span dir="ltr">r</span>، وبقية القسط تسدد رأس المال.</li>
+      <li><b>التأمين</b> (إن وُجد) = المبلغ المقترض × نسبة التأمين ÷ 12، كل شهر.</li>
+      <li>كل سطر مدوَّر إلى المليم، والقسط الأخير يسدد بالضبط رأس المال المتبقي.</li>
+    </ol>
+    <p class="avert"><span data-l="fr">Résultat indicatif. Avec un taux variable (TMM + marge), la mensualité change quand le TMM change : ce calcul suppose un TMM constant. Les frais de dossier, de garantie, de notaire et les conditions d'octroi dépendent de chaque banque : demandez une offre écrite.</span><span data-l="ar">نتيجة تقريبية. مع نسبة متغيرة (TMM + هامش) يتغير القسط عند تغير TMM: هذا الحساب يفترض TMM ثابتًا. مصاريف الملف والضمان والتوثيق وشروط المنح تختلف من بنك إلى آخر: اطلب عرضًا كتابيًا.</span></p>
+  </section>
+
+  <section class="carte">
+    <h2><span data-l="fr">Sources officielles</span><span data-l="ar">المصادر الرسمية</span></h2>
+    <ul class="sources" data-l="fr">
+      <li>Banque centrale de Tunisie, <a href="https://www.bct.gov.tn/" target="_blank" rel="noopener">www.bct.gov.tn</a> — « Principaux taux » : taux moyen du marché monétaire (TMM) du mois, cité tel que publié.</li>
+      <li>Formule des prêts à mensualités constantes (calcul actuariel standard), vérifiée sur des exemples calculés à la main.</li>
+    </ul>
+    <ul class="sources" data-l="ar">
+      <li>البنك المركزي التونسي، <a href="https://www.bct.gov.tn/" target="_blank" rel="noopener">www.bct.gov.tn</a> — « أهم النسب »: نسبة الفائدة المتوسطة في السوق النقدية (TMM) للشهر، كما نُشرت.</li>
+      <li>معادلة القروض ذات الأقساط الثابتة (حساب اكتواري معياري)، مراقَبة بأمثلة محسوبة يدويًا.</li>
+    </ul>
+  </section>
+
+  <p class="liens"><a href="../salaire-net/"><span data-l="fr">→ Calculer votre salaire net</span><span data-l="ar">← احسب أجرك الصافي</span></a></p>
+</main>
+<footer id="pied"></footer>
+
+<script src="../assets/credit.js?v=20261005l"></script>
+</body>
+</html>

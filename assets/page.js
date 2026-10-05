@@ -1,6 +1,9 @@
 /* Langue (français / arabe), en-tête et pied de page communs, petites fonctions */
 const MAJ = "05/10/2026";   // date de la dernière vérification des règles (mise à jour par le robot surveillance.yml)
 const ANNEE = 2026;          // année des règles affichée sur le site (changée par le robot en janvier)
+// Site « Documents Tunisie » : laisser vide tant qu'il n'est pas en ligne (la carte de l'accueil reste « bientôt »).
+// Quand il sera publié : const URL_DOCUMENTS = "https://ah6259.github.io/documents-tunisie/";
+const URL_DOCUMENTS = "https://ah6259.github.io/documents-tunisie/";
 
 (function () {
   const html = document.documentElement;
@@ -30,6 +33,9 @@ const ANNEE = 2026;          // année des règles affichée sur le site (chang�
         <nav>
           <a href="${racine}salaire-net/">${T("Salaire brut ⇄ net", "الأجر الخام ⇄ الصافي")}</a>
           <a href="${racine}impot-revenu/">${T("Impôt sur le revenu", "الضريبة على الدخل")}</a>
+          <a href="${racine}credit/">${T("Crédit immobilier et auto", "القرض العقاري والسيارة")}</a>
+          <a href="${racine}auto-entrepreneur/">${T("Auto-entrepreneur", "المبادر الذاتي")}</a>
+          <a href="${racine}retenue-source/">${T("Retenue à la source", "الخصم من المورد")}</a>
           <a href="${racine}a-propos/">${T("À propos et méthode", "من نحن والمنهجية")}</a>
         </nav>
         <p>${T(`Règles vérifiées le ${MAJ} : loi de finances 2025 (barème de l'impôt), taux de la CNSS 2026.`,
@@ -55,7 +61,18 @@ const ANNEE = 2026;          // année des règles affichée sur le site (chang�
     cadre();
     document.dispatchEvent(new Event("langue"));
   }
-  document.addEventListener("DOMContentLoaded", () => appliquer(langue));
+  // carte « Documents prêts à remplir » de l'accueil : devient un lien quand URL_DOCUMENTS est rempli
+  function carteDocuments() {
+    const c = document.getElementById("carte-documents");
+    if (!URL_DOCUMENTS || !c || c.tagName === "A") return;
+    const a = document.createElement("a");
+    a.className = "carte outil"; a.id = c.id; a.href = URL_DOCUMENTS; a.target = "_blank"; a.rel = "noopener";
+    a.innerHTML = c.innerHTML;
+    const badge = a.querySelector(".badge"); if (badge) badge.remove();
+    a.insertAdjacentHTML("beforeend", '<span class="fleche">→</span>');
+    c.replaceWith(a);
+  }
+  document.addEventListener("DOMContentLoaded", () => { carteDocuments(); appliquer(langue); });
 })();
 
 /* Boutons de choix (un seul actif) : <div class="choix" data-nom="x"><button data-v="..."> */
