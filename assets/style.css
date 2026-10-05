@@ -135,7 +135,7 @@ html[lang="fr"] [data-l="fr"],html[lang="ar"] [data-l="ar"]{display:revert}
 /* ---- photo du bandeau (vraie photo libre de droits, crédit dessous) ---- */
 .hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) 124px;gap:12px;align-items:center}
 .hero .wrap > *{grid-column:1}
-.hero .illus{grid-column:2;grid-row:1 / span 5;margin:0;width:124px}
+.hero .illus{grid-column:2;grid-row:1 / span 2;align-self:start;margin:4px 0 0;width:124px}   /* en face du titre (demande d Ahmed) */
 .illus .cadre-photo{position:relative;display:block;border-radius:14px;overflow:hidden;
   box-shadow:0 10px 24px rgba(0,0,0,.28),0 0 0 3px rgba(255,255,255,.16)}
 .illus .cadre-photo::after{content:"";position:absolute;inset:0;pointer-events:none;
