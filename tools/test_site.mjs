@@ -222,5 +222,9 @@ const suivis = execSync("git ls-files", { cwd: root, encoding: "utf8" }).split("
 const fuite = suivis.filter(f => /(api[_-]?key|secret|token|password)\s*[:=]\s*["'][A-Za-z0-9_\-]{12,}|ghp_[A-Za-z0-9]{20,}|AIza[0-9A-Za-z_\-]{30,}|\b\d{8,10}:[A-Za-z0-9_\-]{30,}|[A-Za-z0-9._%+-]+@(gmail|yahoo|hotmail|outlook)\.[a-z]+/i.test(lire(f)));
 check(`aucun secret ni e-mail privé dans le dépôt${fuite.length ? " : " + fuite.join(", ") : ""}`, fuite.length === 0);
 
+// pas de traduction automatique du navigateur (pages bilingues : Chrome se trompait de langue et traduisait en anglais)
+for (const p of ["index.html","salaire-net/index.html","impot-revenu/index.html","a-propos/index.html","credit/index.html","auto-entrepreneur/index.html","retenue-source/index.html"])
+  check(`${p} : traduction automatique désactivée (notranslate)`, lire(p).includes('content="notranslate"') && /<html[^>]*translate="no"/.test(lire(p)));
+
 console.log(erreurs ? `\n${erreurs} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(erreurs ? 1 : 0);
