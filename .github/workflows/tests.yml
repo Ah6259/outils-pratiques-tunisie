@@ -21,4 +21,5 @@ jobs:
           python -c "import yaml,glob;[yaml.safe_load(open(f,encoding='utf-8')) for f in glob.glob('.github/workflows/*.yml')]"
       - run: node tools/test_site.mjs
       - run: node tools/test_nouveaux.mjs
+      - run: node tools/test_sw.mjs
       - run: python tools/test_robot.py

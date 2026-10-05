@@ -115,3 +115,11 @@ document.addEventListener("copy", e => {
   try { memeSite = window.top.location.hostname === location.hostname; } catch (e) { memeSite = false; }
   if (!memeSite) { try { window.top.location.href = location.href; } catch (e) { document.documentElement.style.display = "none"; } }
 })();
+
+/* Installation sur le téléphone : service worker PRUDENT (sw.js : réseau d'abord pour les pages et les données).
+   Seulement en https (jamais en file: pendant les tests locaux). */
+if ("serviceWorker" in navigator && location.protocol === "https:") {
+  window.addEventListener("load", () => {
+    try { navigator.serviceWorker.register("/outils-pratiques-tunisie/sw.js", { scope: "/outils-pratiques-tunisie/" }).catch(() => {}); } catch (e) { /* rien : le site marche sans */ }
+  });
+}

@@ -44,12 +44,13 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   net 5 771,500 ; non-résident 10 000 HT → 1 785 + TVA retenue 1 900, net 8 215. Depuis le 1er janvier 2026, certificats sur TEJ seulement.
 
 ## Avant chaque publication
-1. Les trois tests (tout doit être vert) :
+1. Les quatre tests (tout doit être vert) :
    `node tools/test_site.mjs` (≈ 215 vérifications : calculs de référence, pages FR/AR, liens de l'accueil et du pied, photos, sécurité…),
    `node tools/test_nouveaux.mjs` (≈ 140 : crédit, auto-entrepreneur, retenue ; accepte un dossier en argument pour tester une copie),
-   `PYTHONIOENCODING=utf-8 python tools/test_robot.py` (31 scénarios du robot).
+   `PYTHONIOENCODING=utf-8 python tools/test_robot.py` (31 scénarios du robot),
+   `node tools/test_sw.mjs` (service worker : réseau d'abord, exclusions, meta iPhone ; accepte un dossier en argument).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
-2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261005k`) — les tests le vérifient.
+2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261005p`) — les tests le vérifient.
 3. Capture mobile 340/390 px en français ET en arabe si l'affichage change : Chrome sans écran sur une page HTML locale
    contenant deux `<iframe>` (340 et 390 px) vers les fichiers `file:///…?lang=fr|ar` (la fenêtre de Chrome sans écran ne descend
    pas sous ~500 px ; l'anti-iframe de page.js laisse passer `file:`).
@@ -71,7 +72,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   à revoir **à la main** en janvier avec la loi de finances (l'alerte CSS de janvier 2027 le rappellera).
 - **Ne jamais citer de concurrent** sur le site ni dans ce dépôt public (règle d'Ahmed). La liste servant au test est dans
   `tools/.concurrents` (local, ignoré par git ; vérification sautée sur GitHub).
-- `tests.yml` à chaque push : YAML des robots valide + `test_site.mjs` + `test_nouveaux.mjs` + `test_robot.py`.
+- `tests.yml` à chaque push : YAML des robots valide + `test_site.mjs` + `test_nouveaux.mjs` + `test_sw.mjs` + `test_robot.py`.
   Dans `.github/workflows/*.yml` : jamais de « : » dans un `run:` d'une ligne (utiliser `run: |`).
 - L'année n'est écrite qu'à des endroits remplaçables automatiquement ; l'image d'aperçu n'a pas d'année.
 
@@ -84,6 +85,12 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - **Installation sur le téléphone** (05/10/2026) : `manifest.webmanifest` avec `"id": "/outils-pratiques-tunisie/"` (UNIQUE : tous les
   sites d'Ahmed partagent l'origine ah6259.github.io ; sans id, Chrome disait « déjà installée »), start_url/scope `./`,
   icônes `assets/icons/` (192, 512, maskable 512, apple-touch-icon 180) tirées de `assets/logo.svg`. Lien sur chaque page ; test.
+- **Service worker** (05/10/2026, installation complète Chrome/Android + iPhone) : `sw.js` à la racine, portée `/outils-pratiques-tunisie/`,
+  enregistré à la fin de `assets/page.js` (https seulement, try/catch). **Réseau d'abord** pour les pages HTML et les données (le cache ne sert
+  que hors connexion ; sinon page « Hors connexion » FR+AR) ; CSS/JS/images avec `?v=` : cache puis mise à jour en arrière-plan.
+  Jamais en cache : non-GET, autres origines (GoatCounter, polices…), autres sites d'Ahmed. Caches nommés `outils-pratiques-tunisie-<CACHE_VERSION>`
+  (on ne supprime QUE les nôtres : l'origine est partagée). Vieille version bloquée sur un téléphone → changer `CACHE_VERSION`.
+  Meta iPhone (`apple-mobile-web-app-capable`, `-title` « Outils TN ») sur chaque page. Test : `node tools/test_sw.mjs` (faux navigateur).
 - Reste à faire par Ahmed : Search Console (renvoyer le sitemap).
 
 ## Photos et protection (05/10/2026)

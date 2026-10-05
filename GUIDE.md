@@ -53,3 +53,13 @@ Guide réutilisable pour créer un autre site du même genre. Une ligne par éta
   nouveaux scénarios de panne dans test_robot.py (TMM changé, mois périmé, BCT injoignable, page changée, passage d'année).
 - **Captures mobiles** : la fenêtre de Chrome sans écran ne descend pas sous ~500 px → page locale avec deux cadres de 340 et 390 px
   pointant vers les fichiers (`file:///…?lang=fr` et `?lang=ar`).
+
+## 05/10/2026 — Installation complète sur le téléphone (service worker)
+- `sw.js` à la racine (portée = dossier du site), enregistré par `assets/page.js` (https seulement, jamais en `file:`).
+- Stratégie prudente : **réseau d'abord** pour les pages et les données (le visiteur voit toujours la dernière version ;
+  le cache ne sert que hors connexion, sinon page « Hors connexion » FR + AR) ; fichiers `?v=` : cache puis mise à jour.
+- Jamais en cache : envois (non-GET), autres sites (statistiques, polices…), autres sites d'Ahmed sur la même adresse.
+- Meta iPhone sur chaque page (« Sur l'écran d'accueil ») : `apple-mobile-web-app-capable`, `apple-mobile-web-app-title`.
+- Test `node tools/test_sw.mjs` : exécute sw.js dans un faux navigateur (cache + réseau simulés) ; sabotage vérifié
+  (HTML en « cache d'abord », POST intercepté, mauvaise portée → le test sonne).
+- Vieille version bloquée sur un téléphone : changer `CACHE_VERSION` dans `sw.js`.

@@ -24,7 +24,11 @@ Tous droits réservés (voir LICENSE).
 | Passage à la nouvelle année (titres, textes, ©) | à partir du 15 janvier si les règles sont identiques | — |
 | Battement de cœur (commit mensuel) | chaque mois | évite la mise en pause des robots par GitHub (60 jours) |
 | `surveillance.yml` : TMM de la Banque centrale (page Crédit) | le 1er de chaque mois | TMM changé, ou mois à rafraîchir → **alerte** « Crédit : le TMM … a changé » ; page de la BCT illisible → alerte « lecture du TMM impossible » ; le TMM du site n'est jamais modifié automatiquement |
-| `tests.yml` : fichiers des robots (YAML) + les 3 tests | à chaque modification | email de GitHub en cas d'échec |
+| `tests.yml` : fichiers des robots (YAML) + les 4 tests | à chaque modification | email de GitHub en cas d'échec |
+
+**Installation sur le téléphone** : `sw.js` (service worker) = **réseau d'abord** pour les pages et les données
+(le cache ne sert que hors connexion) ; CSS/JS/images versionnés (?v=) = cache puis mise à jour. Si un téléphone garde une
+vieille version : changer `CACHE_VERSION` dans `sw.js` (vide le cache de tous les téléphones). Test : `node tools/test_sw.mjs`.
 
 **Si une alerte arrive** : demander à Claude « mets à jour les règles d'Outils pratiques » (nouveaux taux de la loi de finances,
 puis le test doit retomber exactement sur le simulateur de référence avant publication).
