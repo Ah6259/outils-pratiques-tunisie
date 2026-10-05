@@ -152,3 +152,11 @@ html[lang="fr"] [data-l="fr"],html[lang="ar"] [data-l="ar"]{display:revert}
 img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
 .hero,main .carte,.confiance{user-select:none;-webkit-user-select:none}
 .resultat,.resultat *,input,select,textarea,a{user-select:text;-webkit-user-select:text}
+
+/* ---- description sous le titre : toute la largeur, sous la photo (demande d'Ahmed) ---- */
+.hero .wrap{align-items:start}
+.hero .wrap:not(:has(.fil)) .illus{grid-row:1}
+.hero .wrap:has(.fil) .illus{grid-row:1 / span 2}
+.hero .intro,.hero .maj{grid-column:1 / -1}
+.hero .intro{font-size:16.5px;line-height:1.55;max-width:none;margin-top:8px}
+.hero .maj{justify-self:start}
