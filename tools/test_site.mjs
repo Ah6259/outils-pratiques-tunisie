@@ -110,6 +110,14 @@ for (const p of TOUTES) {
 }
 check("FAQ Google sur les 2 calculateurs", ["salaire-net/index.html", "impot-revenu/index.html"].every(p => lire(p).includes("FAQPage")));
 check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v4.jpg")));
+// manifeste : id UNIQUE = chemin du site (sinon Chrome croit le site « déjà installé » : tous les sites partagent ah6259.github.io)
+let man = {}; try { man = JSON.parse(lire("manifest.webmanifest")); } catch (e) {}
+check("manifeste présent, id unique = chemin du site, start_url/scope ./, icônes 192, 512 et maskable existantes",
+  man.id === "/outils-pratiques-tunisie/" && man.start_url === "./" && man.scope === "./" && man.display === "standalone" && !!man.name && !!man.short_name
+  && ["192x192", "512x512"].every(t => man.icons?.some(i => i.sizes === t)) && man.icons?.some(i => i.purpose === "maskable")
+  && man.icons.every(i => existsSync(join(root, i.src))) && existsSync(join(root, "assets/icons/apple-touch-icon.png")));
+check("toutes les pages : lien vers le manifeste, icône iPhone et theme-color", TOUTES.every(p => { const s = lire(p), r = p.includes("/") ? "../" : "";
+  return s.includes(`<link rel="manifest" href="${r}manifest.webmanifest">`) && s.includes(`<link rel="apple-touch-icon" href="${r}assets/icons/apple-touch-icon.png">`) && s.includes('<meta name="theme-color"'); }));
 check("image d'aperçu JPEG < 250 Ko (sinon WhatsApp n'affiche qu'une petite vignette)", existsSync(join(root, "assets/og-image-v4.jpg")) && statSync(join(root, "assets/og-image-v4.jpg")).size < 250000 && TOUTES.every(p => lire(p).includes('<meta property="og:image:type" content="image/jpeg">')));
 const locs = [...lire("sitemap.xml").matchAll(/<loc>https:\/\/ah6259\.github\.io\/outils-pratiques-tunisie\/([^<]*)<\/loc>/g)].map(m => m[1]);
 check("plan du site : 7 pages (accueil, 3 + 3 calculateurs, à propos)", (lire("sitemap.xml").match(/<loc>/g) || []).length === 7 && locs.length === 7);

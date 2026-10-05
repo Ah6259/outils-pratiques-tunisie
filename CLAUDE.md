@@ -81,6 +81,9 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - **Statistiques GoatCounter** (sans cookies, 05/10/2026) sur toutes les pages : compteur partagé
   `https://prix-eaux-tunisie.goatcounter.com` (pages séparées par chemin `/outils-pratiques-tunisie/…`) ;
   CSP : `script-src` + `https://gc.zgo.at`, `connect-src` / `img-src` + le compteur. Mentionné dans À propos. Les tests le vérifient.
+- **Installation sur le téléphone** (05/10/2026) : `manifest.webmanifest` avec `"id": "/outils-pratiques-tunisie/"` (UNIQUE : tous les
+  sites d'Ahmed partagent l'origine ah6259.github.io ; sans id, Chrome disait « déjà installée »), start_url/scope `./`,
+  icônes `assets/icons/` (192, 512, maskable 512, apple-touch-icon 180) tirées de `assets/logo.svg`. Lien sur chaque page ; test.
 - Reste à faire par Ahmed : Search Console (renvoyer le sitemap).
 
 ## Photos et protection (05/10/2026)
