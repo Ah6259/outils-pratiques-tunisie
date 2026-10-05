@@ -100,7 +100,7 @@ const AVEC_PHOTO = TOUTES.filter(p => p !== "a-propos/index.html");
 for (const p of TOUTES) {
   const s = lire(p);
   check(`${p} : titre, description, canonical`, /<title>.+<\/title>/.test(s) && s.includes('name="description"') && s.includes('rel="canonical"'));
-  check(`${p} : image d'aperçu et icône`, s.includes("og-image-v4.jpg") && s.includes("logo.svg"));
+  check(`${p} : image d'aperçu et icône`, s.includes("og-image-v5.jpg") && s.includes("logo.svg"));
   check(`${p} : même version ?v= pour tous les fichiers`, new Set(s.match(/\?v=\d+\w/g)).size === 1);
   const w2 = await page(p);
   const pied = w2.document.getElementById("pied")?.textContent || "";
@@ -109,7 +109,7 @@ for (const p of TOUTES) {
   check(`${p} : date « à jour au » remplie`, [...w2.document.querySelectorAll("[data-maj]")].every(x => /\d{2}\/\d{2}\/\d{4}/.test(x.textContent)));
 }
 check("FAQ Google sur les 2 calculateurs", ["salaire-net/index.html", "impot-revenu/index.html"].every(p => lire(p).includes("FAQPage")));
-check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v4.jpg")));
+check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v5.jpg")));
 // manifeste : id UNIQUE = chemin du site (sinon Chrome croit le site « déjà installé » : tous les sites partagent ah6259.github.io)
 let man = {}; try { man = JSON.parse(lire("manifest.webmanifest")); } catch (e) {}
 check("manifeste présent, id unique = chemin du site, start_url/scope ./, icônes 192, 512 et maskable existantes",
@@ -118,7 +118,7 @@ check("manifeste présent, id unique = chemin du site, start_url/scope ./, icôn
   && man.icons.every(i => existsSync(join(root, i.src))) && existsSync(join(root, "assets/icons/apple-touch-icon.png")));
 check("toutes les pages : lien vers le manifeste, icône iPhone et theme-color", TOUTES.every(p => { const s = lire(p), r = p.includes("/") ? "../" : "";
   return s.includes(`<link rel="manifest" href="${r}manifest.webmanifest">`) && s.includes(`<link rel="apple-touch-icon" href="${r}assets/icons/apple-touch-icon.png">`) && s.includes('<meta name="theme-color"'); }));
-check("image d'aperçu JPEG < 250 Ko (sinon WhatsApp n'affiche qu'une petite vignette)", existsSync(join(root, "assets/og-image-v4.jpg")) && statSync(join(root, "assets/og-image-v4.jpg")).size < 250000 && TOUTES.every(p => lire(p).includes('<meta property="og:image:type" content="image/jpeg">')));
+check("image d'aperçu JPEG < 250 Ko (sinon WhatsApp n'affiche qu'une petite vignette)", existsSync(join(root, "assets/og-image-v5.jpg")) && statSync(join(root, "assets/og-image-v5.jpg")).size < 250000 && TOUTES.every(p => lire(p).includes('<meta property="og:image:type" content="image/jpeg">')));
 const locs = [...lire("sitemap.xml").matchAll(/<loc>https:\/\/ah6259\.github\.io\/outils-pratiques-tunisie\/([^<]*)<\/loc>/g)].map(m => m[1]);
 check("plan du site : 7 pages (accueil, 3 + 3 calculateurs, à propos)", (lire("sitemap.xml").match(/<loc>/g) || []).length === 7 && locs.length === 7);
 check("plan du site : chaque adresse mène à une page existante", locs.every(l => existsSync(join(root, l, "index.html"))));

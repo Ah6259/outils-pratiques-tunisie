@@ -1,0 +1,28 @@
+<!doctype html>
+<!-- Modèle de l'image d'aperçu (1200x630) -> assets/og-image-v5.jpg (capture Edge/Chrome sans écran 1200x630, puis JPEG
+     Pillow qualité 88 : < 250 Ko, sinon WhatsApp n'affiche qu'une petite vignette).
+     Si on la change : NOUVEAU nom (og-image-v6.jpg) car WhatsApp/Facebook gardent l'ancienne.
+     Logo = assets/logo.svg (icône du site). Photo : assets/photo-pieces-dinar.jpg (金娜 Kim S, CC BY-SA 2.0, Wikimedia Commons). -->
+<html translate="no" lang="fr"><head><meta charset="utf-8">
+<meta name="google" content="notranslate">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@600;700;800&family=Noto+Kufi+Arabic:wght@700&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;width:1200px;height:630px;overflow:hidden}
+body{font-family:Figtree,sans-serif;color:#fff;position:relative;background:linear-gradient(160deg,#0B7A53,#085C3F)}
+.marque{position:absolute;left:72px;top:60px;display:flex;align-items:center;gap:14px;font-size:23px;font-weight:700}
+.marque img{width:52px;height:52px}
+h1{position:absolute;left:72px;top:122px;margin:0;font-size:60.8px;line-height:67.5px;font-weight:800;letter-spacing:-.01em;white-space:nowrap}
+.ar{position:absolute;left:72px;width:640px;top:277px;margin:0;font-family:"Noto Kufi Arabic",sans-serif;font-size:32px;font-weight:700;direction:rtl;text-align:right}
+.pills{position:absolute;left:72px;top:512px;display:flex;gap:14px}
+.pill{background:rgba(255,255,255,.15);border-radius:999px;height:52px;line-height:52px;padding:0 26px;font-size:22px;font-weight:700}
+.photo{position:absolute;left:750px;top:86px;width:380px;height:380px;object-fit:cover;border:6px solid rgba(255,255,255,.13);border-radius:24px}
+.credit{position:absolute;left:750px;width:392px;top:488px;text-align:center;font-size:14px;font-weight:700;opacity:.8}
+</style></head>
+<body>
+<div class="marque"><img src="../assets/logo.svg" alt="">Outils pratiques Tunisie</div>
+<h1>Salaire net, impôt…<br>calculés en 2 secondes</h1>
+<p class="ar">حساب الأجر الصافي والضريبة مجانًا</p>
+<div class="pills"><span class="pill">Gratuit</span><span class="pill">Français · العربية</span><span class="pill">Règles officielles</span></div>
+<img class="photo" src="../assets/photo-pieces-dinar.jpg" alt="">
+<div class="credit">Photo : 金娜 Kim S, CC BY-SA 2.0, Wikimedia Commons</div>
+</body></html>

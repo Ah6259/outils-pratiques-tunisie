@@ -84,7 +84,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - L'année n'est écrite qu'à des endroits remplaçables automatiquement ; l'image d'aperçu n'a pas d'année.
 
 ## Visibilité
-- sitemap.xml (7 pages) + robots.txt ; FAQ Google (JSON-LD) sur les 5 calculateurs ; image d'aperçu `assets/og-image-v4.jpg` (avec la photo des pièces ; JPEG < 250 Ko, sinon WhatsApp n'affiche qu'une petite vignette ; balise `og:image:type`)
+- sitemap.xml (7 pages) + robots.txt ; FAQ Google (JSON-LD) sur les 5 calculateurs ; image d'aperçu `assets/og-image-v5.jpg` (avec la photo des pièces et l'icône du site ; modèle `tools/og-image.html`, capture 1200×630 puis JPEG qualité 88 ; JPEG < 250 Ko, sinon WhatsApp n'affiche qu'une petite vignette ; balise `og:image:type`)
   (si on la change : **nouveau nom de fichier**, WhatsApp/Facebook gardent l'ancienne). L'ancien `og-image-v3.png` peut être supprimé.
 - **Statistiques GoatCounter** (sans cookies, 05/10/2026) sur toutes les pages : compteur partagé
   `https://prix-eaux-tunisie.goatcounter.com` (pages séparées par chemin `/outils-pratiques-tunisie/…`) ;

@@ -208,7 +208,7 @@ if (!CONCURRENTS) console.log("SAUTÉ vérification des concurrents (tools/.conc
 const sansConcurrent = t => !CONCURRENTS || !CONCURRENTS.test(t);
 for (const p of PAGES) {
   const s = lire(p);
-  check(`${p} : titre, description, canonical, aperçu, icône`, /<title>.+<\/title>/.test(s) && s.includes('name="description"') && s.includes('rel="canonical"') && s.includes("og-image-v4.jpg") && s.includes("logo.svg"));
+  check(`${p} : titre, description, canonical, aperçu, icône`, /<title>.+<\/title>/.test(s) && s.includes('name="description"') && s.includes('rel="canonical"') && s.includes("og-image-v5.jpg") && s.includes("logo.svg"));
   check(`${p} : CSP, noai, referrer`, s.includes("Content-Security-Policy") && s.includes("noai, noimageai") && s.includes('name="referrer"'));
   const faq = s.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/);
   let ld = null; try { ld = JSON.parse(faq[1]); } catch (e) {}
