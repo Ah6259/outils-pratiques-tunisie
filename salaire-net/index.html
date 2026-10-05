@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="robots" content="noai, noimageai">
 <title>Salaire brut en net Tunisie 2026 — calcul CNSS, IRPP, CSS | Outils pratiques Tunisie</title>
 <meta name="description" content="Calculez gratuitement votre salaire net en Tunisie en 2026 à partir du brut (ou l'inverse) : CNSS 9,68 %, impôt sur le revenu (IRPP, barème en vigueur en 2026), CSS 0,5 %, chef de famille et enfants. حساب الأجر الصافي في تونس.">
 <link rel="canonical" href="https://ah6259.github.io/outils-pratiques-tunisie/salaire-net/">
@@ -10,13 +13,13 @@
 <meta name="theme-color" content="#0B7A53">
 <meta property="og:title" content="Salaire brut → net en Tunisie (2026)">
 <meta property="og:description" content="CNSS, impôt sur le revenu et CSS calculés en 2 secondes. Gratuit, en français et en arabe.">
-<meta property="og:image" content="https://ah6259.github.io/outils-pratiques-tunisie/assets/og-image-v2.png">
+<meta property="og:image" content="https://ah6259.github.io/outils-pratiques-tunisie/assets/og-image-v3.png">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261005i">
+<link rel="stylesheet" href="../assets/style.css?v=20261005j">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"Comment calculer le salaire net en Tunisie en 2026 ?","acceptedAnswer":{"@type":"Answer","text":"Du salaire brut, on retire la CNSS salariale (9,68 %), puis l'impôt sur le revenu (IRPP) calculé sur l'année avec le barème à 8 tranches, après une déduction de 10 % pour frais professionnels (2 000 DT par an au maximum) et les déductions de famille, puis la contribution sociale de solidarité (0,5 % du revenu imposable). Chaque retenue mensuelle est arrondie au millime, comme sur une fiche de paie."}},
@@ -24,15 +27,18 @@
 {"@type":"Question","name":"Quel est le barème de l'impôt sur le revenu en Tunisie ?","acceptedAnswer":{"@type":"Answer","text":"Depuis la loi de finances 2025 : 0 % jusqu'à 5 000 DT par an, 15 % de 5 000 à 10 000, 25 % de 10 000 à 20 000, 30 % de 20 000 à 30 000, 33 % de 30 000 à 40 000, 36 % de 40 000 à 50 000, 38 % de 50 000 à 70 000 et 40 % au-delà."}}
 ]}
 </script>
-<script src="../assets/calcul.js?v=20261005i"></script>
-<script src="../assets/page.js?v=20261005i"></script>
+<script src="../assets/calcul.js?v=20261005j"></script>
+<script src="../assets/page.js?v=20261005j"></script>
 </head>
 <body>
 <header class="entete" id="entete"></header>
 
 <section class="hero">
   <div class="wrap">
-    <img class="illus" src="../assets/illus-paie.svg" alt="" width="190" height="162">
+    <figure class="illus" data-source="https://commons.wikimedia.org/wiki/File:Tunisian_dinars_and_millimes.jpg">
+      <span class="cadre-photo"><img src="../assets/photo-pieces-dinar.jpg" alt="Pièces de monnaie tunisiennes (100 millimes)" data-alt-ar="قطع نقدية تونسية (100 مليم)" width="700" height="500"></span>
+      <figcaption><span data-l="fr">Photo</span><span data-l="ar">صورة</span> : <a href="https://commons.wikimedia.org/wiki/File:Tunisian_dinars_and_millimes.jpg" rel="noopener">金娜 Kim S</a>, <a href="https://creativecommons.org/licenses/by-sa/2.0/" rel="license noopener">CC BY-SA 2.0</a>, Wikimedia Commons</figcaption>
+    </figure>
     <p class="fil"><a href="../"><span data-l="fr">Accueil</span><span data-l="ar">الرئيسية</span></a> › <span data-l="fr">Salaire net</span><span data-l="ar">الأجر الصافي</span></p>
     <h1><span data-l="fr">Salaire brut ⇄ net en Tunisie (2026)</span><span data-l="ar">حساب الأجر الخام والصافي في تونس (2026)</span></h1>
     <p class="intro"><span data-l="fr">CNSS, impôt sur le revenu et contribution sociale, calculés comme sur une fiche de paie.</span><span data-l="ar">الضمان الاجتماعي والضريبة على الدخل والمساهمة الاجتماعية، محسوبة كما في بطاقة الخلاص.</span></p>
@@ -125,48 +131,6 @@
 </main>
 <footer id="pied"></footer>
 
-<script>
-function famille(){ return { chef: document.getElementById("chef").checked, enfants: +document.getElementById("enfants").value }; }
-function lignes(rows){ return rows.map(([a,b,cl]) => `<tr${cl?` class="${cl}"`:""}><td>${a}</td><td${cl==="m"?' class="moins"':""}>${b}</td></tr>`).join(""); }
-function calculer(){
-  const m = Math.max(0, parseFloat(document.getElementById("montant").value) || 0);
-  const sens = choixValeur("sens");
-  const r = sens === "net" ? netVersBrut(m, famille()) : brutVersNet(m, famille());
-  document.getElementById("titre-res").textContent = sens === "net" ? T("Salaire brut nécessaire par mois","الأجر الخام الضروري شهريًا") : T("Votre salaire net par mois","أجرك الصافي شهريًا");
-  document.getElementById("grand").textContent = dt(sens === "net" ? r.brut : r.net);
-  const pc = v => r.brut > 0 ? (v / r.brut * 100) : 0;
-  const parts = [["b-net", r.net, T("Net","الصافي")], ["b-cnss", r.cnss, "CNSS"], ["b-irpp", r.irpp, T("Impôt","الضريبة")], ["b-css", r.css, "CSS"]];
-  document.getElementById("barre").innerHTML = parts.map(([c, v]) => `<span class="${c}" style="width:${pc(v)}%"></span>`).join("");
-  document.getElementById("legende").innerHTML = parts.map(([c, v, n]) =>
-    `<span><i class="${c}"></i>${n} ${iso(pc(v).toFixed(1).replace(".", ",") + " %")}</span>`).join("");
-  document.getElementById("tableau").innerHTML = lignes([
-    [T("Salaire brut","الأجر الخام"), dt(r.brut)],
-    [T("CNSS (9,68 %)","الضمان الاجتماعي (9,68 %)"), "− " + dt(r.cnss), "m"],
-    [T("Impôt sur le revenu (IRPP)","الضريبة على الدخل"), "− " + dt(r.irpp), "m"],
-    [T("Contribution sociale (CSS)","المساهمة الاجتماعية التضامنية"), "− " + dt(r.css), "m"],
-    [T("Salaire net","الأجر الصافي"), dt(r.net), "total"]
-  ]);
-  const a = r.an;
-  document.getElementById("detail").innerHTML = lignes([
-    [T("Brut annuel","الخام السنوي"), dt(a.brut)],
-    [T("− CNSS","− الضمان الاجتماعي"), dt(a.cnss)],
-    [T("− Frais professionnels","− المصاريف المهنية"), dt(a.fraisPro)],
-    [T("− Déductions famille","− طرح العائلة"), dt(a.deductions)],
-    [T("Revenu imposable annuel","الدخل السنوي الخاضع للضريبة"), dt(a.imposable), "total"],
-    ...r.tranches.map(t => [T("Tranche ","شريحة ") + iso(ent(t.de) + " → " + ent(t.a) + " DT · " + Math.round(t.taux*100) + " %"), dt(t.impot)]),
-    [T("Impôt annuel","الضريبة السنوية"), dt(a.irpp), "total"],
-    [T("CSS annuelle","المساهمة السنوية"), dt(a.css)]
-  ]);
-  const p = document.getElementById("partage");
-  p.innerHTML = ICONE_WHATSAPP + T("Partager sur WhatsApp", "شارك على واتساب");
-  p.href = lienWhatsApp(
-    T(`Salaire brut ${dt(r.brut)} = net ${dt(r.net)} par mois en Tunisie (2026). Calculez le vôtre :`,
-      `أجر خام ${dt(r.brut)} = صافي ${dt(r.net)} شهريًا في تونس (2026). احسب أجرك:`));
-}
-["montant","chef","enfants"].forEach(id => document.getElementById(id).addEventListener("input", calculer));
-document.getElementById("chef").addEventListener("change", calculer);
-document.addEventListener("recalcul", calculer);
-document.addEventListener("langue", calculer);
-</script>
+<script src="../assets/salaire.js?v=20261005j"></script>
 </body>
 </html>

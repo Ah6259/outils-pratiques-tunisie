@@ -32,3 +32,11 @@ Guide réutilisable pour créer un autre site du même genre. Une ligne par éta
 15. **Cartes** arrondies avec ombre douce, champs avec unité « DT », sélecteur Brut/Net en onglets.
 16. **Résultat** : grand montant, **barre de répartition** (net / CNSS / impôt / CSS) avec pourcentages.
 17. **Badges de confiance** (icônes SVG, pas d'emoji), section **Sources officielles**, page **À propos et méthode**.
+
+## 05/10/2026 — Vraies photos et protection contre la copie
+- **Photos réelles** (demande d'Ahmed) : recherche sur Wikimedia Commons (API publique), licence lue sur la page de chaque photo
+  (CC0, domaine public, CC BY, CC BY-SA), preuve sauvegardée hors du dépôt (HTML + métadonnées + sha256 + Internet Archive),
+  recadrage/compression avec Python Pillow (JPEG ≤ 150 Ko, sans visage, sans emblème de l'État), crédit sous la photo + page À propos.
+- **Image d'aperçu v3** (1200 × 630) : page HTML temporaire avec la photo, capturée par Chrome sans écran → `assets/og-image-v3.png`.
+- **Protection** : robots.txt anti-IA, meta noai, CSP, anti-copie légère et anti-iframe dans page.js ; scripts des pages sortis
+  dans `assets/salaire.js` et `assets/impot.js`. Le test vérifie tout (et un sabotage volontaire le fait bien sonner).

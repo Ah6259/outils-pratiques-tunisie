@@ -2,7 +2,8 @@
 //   node tools/test_site.mjs
 // jsdom s'installe une fois par PC :  npm install --no-save --no-package-lock jsdom
 import { JSDOM } from "jsdom";
-import { readFileSync, existsSync } from "fs";
+import { readFileSync, existsSync, readdirSync, statSync } from "fs";
+import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 import { createRequire } from "module";
@@ -95,7 +96,7 @@ check("impôt : revenu 0 -> 0,000", texte(d.getElementById("grand")).includes("0
 for (const p of ["index.html", "salaire-net/index.html", "impot-revenu/index.html", "a-propos/index.html"]) {
   const s = lire(p);
   check(`${p} : titre, description, canonical`, /<title>.+<\/title>/.test(s) && s.includes('name="description"') && s.includes('rel="canonical"'));
-  check(`${p} : image d'aperçu et icône`, s.includes("og-image-v2.png") && s.includes("logo.svg"));
+  check(`${p} : image d'aperçu et icône`, s.includes("og-image-v3.png") && s.includes("logo.svg"));
   check(`${p} : même version ?v= pour tous les fichiers`, new Set(s.match(/\?v=\d+\w/g)).size === 1);
   const w2 = await page(p);
   const pied = w2.document.getElementById("pied")?.textContent || "";
@@ -104,7 +105,7 @@ for (const p of ["index.html", "salaire-net/index.html", "impot-revenu/index.htm
   check(`${p} : date « à jour au » remplie`, [...w2.document.querySelectorAll("[data-maj]")].every(x => /\d{2}\/\d{2}\/\d{4}/.test(x.textContent)));
 }
 check("FAQ Google sur les 2 calculateurs", ["salaire-net/index.html", "impot-revenu/index.html"].every(p => lire(p).includes("FAQPage")));
-check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v2.png")));
+check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v3.png")));
 check("plan du site : 4 pages", (lire("sitemap.xml").match(/<loc>/g) || []).length === 4);
 check("robots.txt indique le plan du site", lire("robots.txt").includes("sitemap.xml"));
 check("LICENSE tous droits réservés", lire("LICENSE").includes("Tous droits réservés"));
@@ -118,11 +119,68 @@ check(`toutes les pages affichent l'année ${ANNEE}`,
   ["index.html", "salaire-net/index.html", "impot-revenu/index.html", "a-propos/index.html"].every(f => anneesIsolees(f).every(a => a === ANNEE)));
 
 
-// une image qui explique le thème dans le bandeau de chaque calculateur (règle commune)
+// une VRAIE PHOTO libre de droits dans le bandeau de chaque calculateur (règle commune) :
+// fichier présent, crédit + licence affichés sous la photo, crédit dans « À propos », preuve de licence sauvegardée
+const LICENCE = /CC BY-SA \d\.\d|CC BY \d\.\d|CC0|domaine public/;
+const aPropos = lire("a-propos/index.html");
+// preuves hors du dépôt (dossier parent) : vérifiées sur le PC d'Ahmed, absentes sur GitHub
+const dossierPreuves = join(root, "..", "preuves conditions d'utilisation");
+const lisezMoi = existsSync(dossierPreuves) ? readdirSync(dossierPreuves).map(d => join(dossierPreuves, d, "photos", "LISEZ-MOI.md"))
+  .filter(existsSync).map(f => readFileSync(f, "utf8")).join("\n") : null;
 for (const p of ["index.html", "salaire-net/index.html", "impot-revenu/index.html"]) {
-  const m = lire(p).match(/<img class="illus" src="([^"]+)"/);
-  check(`${p} : illustration du bandeau présente`, !!m && existsSync(join(root, dirname(p), m[1])));
+  const d2 = new JSDOM(lire(p)).window.document;
+  const fig = d2.querySelector("figure.illus");
+  const img = fig?.querySelector("img");
+  const src = img?.getAttribute("src") || "";
+  const cap = fig?.querySelector("figcaption")?.textContent || "";
+  const fichierPhoto = join(root, dirname(p), src);
+  check(`${p} : photo du bandeau présente (${src})`, !!img && /\.(jpe?g|webp)$/.test(src) && existsSync(fichierPhoto));
+  check(`${p} : photo légère (≤ 150 Ko)`, !!img && existsSync(fichierPhoto) && statSync(fichierPhoto).size <= 150_000);
+  check(`${p} : crédit et licence affichés sous la photo`, /Photo/.test(cap) && LICENCE.test(cap) && cap.includes("Wikimedia Commons")
+        && !!fig.querySelector('a[rel~="license"]'));
+  const fichier = src.split("/").pop();
+  check(`${p} : crédit de ${fichier} dans « À propos »`, !!fichier && new RegExp(`data-photo="${fichier}"[^]*?(${LICENCE.source})`).test(aPropos));
+  const source = fig?.dataset.source || "";
+  if (lisezMoi === null) console.log(`SAUTÉ preuve de licence de ${fichier} (dossier des preuves absent, normal sur GitHub)`);
+  else check(`${p} : preuve de licence sauvegardée pour ${fichier}`, !!source && lisezMoi.includes(source));
 }
+check("plus aucun dessin SVG dans les bandeaux", !["index.html", "salaire-net/index.html", "impot-revenu/index.html"]
+  .some(p => /illus-(paie|impot)\.svg/.test(lire(p))));
+
+// ---- 4. Sécurité, robots d'IA et anti-copie (consigne d'Ahmed du 05/10/2026) ------------------------
+const robots = lire("robots.txt");
+const blocs = robots.split(/\n\s*\n/).filter(b => /User-agent/i.test(b));
+const regle = ua => { const b = blocs.find(b => new RegExp(`^User-agent: ${ua}\\s*$`, "mi").test(b));
+  return b ? (/^Disallow: \/\s*$/m.test(b) ? "interdit" : "permis") : "absent"; };
+for (const ua of ["GPTBot", "ChatGPT-User", "OAI-SearchBot", "ClaudeBot", "Claude-Web", "anthropic-ai", "CCBot", "Google-Extended",
+  "Applebot-Extended", "PerplexityBot", "Bytespider", "Amazonbot", "Meta-ExternalAgent", "FacebookBot", "Diffbot", "Omgilibot",
+  "cohere-ai", "ImagesiftBot", "HTTrack", "WebCopier", "WebZIP", "Offline Explorer", "wget", "SiteSnagger"])
+  check(`robots.txt interdit ${ua}`, regle(ua) === "interdit");
+check("robots.txt laisse passer Googlebot, Bingbot et les autres", regle("Googlebot") === "permis" && regle("Bingbot") === "permis" && regle("\\*") === "permis");
+const pageJs = lire("assets/page.js"), css = lire("assets/style.css");
+for (const p of ["index.html", "salaire-net/index.html", "impot-revenu/index.html", "a-propos/index.html"]) {
+  const s = lire(p);
+  check(`${p} : meta noai, noimageai`, /<meta name="robots" content="noai, noimageai">/.test(s));
+  check(`${p} : CSP stricte (scripts du site seulement)`, /http-equiv="Content-Security-Policy" content="[^"]*script-src 'self';/.test(s)
+        && !/script-src[^;]*unsafe/.test(s));
+  check(`${p} : aucun script dans la page (sinon bloqué par la CSP)`, (s.match(/<script(?![^>]*\bsrc=)(?![^>]*ld\+json)[^>]*>/g) || []).length === 0);
+  check(`${p} : referrer strict-origin-when-cross-origin`, s.includes('<meta name="referrer" content="strict-origin-when-cross-origin">'));
+  check(`${p} : script anti-copie chargé (page.js)`, /<script src="(\.\.\/)?assets\/page\.js\?v=/.test(s));
+  check(`${p} : liens externes en rel="noopener"`, [...s.matchAll(/<a [^>]*href="https?:\/\/[^"]+"[^>]*>/g)].every(m => /rel="[^"]*noopener/.test(m[0])));
+}
+check("anti-copie : clic droit et glisser bloqués sur les images", pageJs.includes('"contextmenu"') && pageJs.includes('"dragstart"') && /img\{[^}]*-webkit-touch-callout:none/.test(css));
+check("anti-copie : source ajoutée au texte copié", pageJs.includes('"copy"') && pageJs.includes("© tous droits réservés"));
+check("anti-copie : anti-iframe d'un autre site", pageJs.includes("window.top === window.self"));
+check("montants calculés, champs et liens restent copiables", /\.resultat,\.resultat \*,input,select,textarea,a\{user-select:text/.test(css)
+      && pageJs.includes('".resultat, input, select, textarea, a"'));
+// le calculateur reste utilisable avec la protection
+w = await page("salaire-net/index.html"); d = w.document;
+d.getElementById("montant").value = "800"; d.getElementById("montant").dispatchEvent(new w.Event("input"));
+check("formulaire utilisable avec la protection : 800 -> 684,262", texte(d.getElementById("grand")).includes("684,262"));
+// aucun secret dans les fichiers suivis par git
+const suivis = execSync("git ls-files", { cwd: root, encoding: "utf8" }).split("\n").filter(f => /\.(html|js|mjs|py|yml|md|txt|json|css)$/.test(f));
+const fuite = suivis.filter(f => /(api[_-]?key|secret|token|password)\s*[:=]\s*["'][A-Za-z0-9_\-]{12,}|ghp_[A-Za-z0-9]{20,}|AIza[0-9A-Za-z_\-]{30,}|\b\d{8,10}:[A-Za-z0-9_\-]{30,}|[A-Za-z0-9._%+-]+@(gmail|yahoo|hotmail|outlook)\.[a-z]+/i.test(lire(f)));
+check(`aucun secret ni e-mail privé dans le dépôt${fuite.length ? " : " + fuite.join(", ") : ""}`, fuite.length === 0);
 
 console.log(erreurs ? `\n${erreurs} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(erreurs ? 1 : 0);

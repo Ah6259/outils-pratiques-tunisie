@@ -26,7 +26,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - Références qui doivent toujours tomber juste (simulateur de référence) : 2 500 → 1 849,310 ; 1 500 → 1 189,706 ; 800 → 684,262.
 
 ## Avant chaque publication
-1. `node tools/test_site.mjs` (70 vérifications, dont 5 références relevées sur le simulateur de référence : calculs de référence, pages FR/AR, aperçu, licence…).
+1. `node tools/test_site.mjs` (142 vérifications, dont 5 références relevées sur le simulateur de référence : calculs de référence, pages FR/AR, aperçu, licence…).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
 2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages (cache des téléphones) — le test le vérifie.
 3. Capture mobile (Chrome sans écran, cadres 340/390 px) en français ET en arabe si l'affichage change.
@@ -42,6 +42,18 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - L'année n'est écrite qu'à des endroits remplaçables automatiquement ; l'image d'aperçu n'a pas d'année (og-image-v2).
 
 ## Visibilité
-- sitemap.xml + robots.txt ; FAQ Google (JSON-LD) sur les 2 calculateurs ; image d'aperçu `assets/og-image-v2.png`
+- sitemap.xml + robots.txt ; FAQ Google (JSON-LD) sur les 2 calculateurs ; image d'aperçu `assets/og-image-v3.png` (avec la photo des pièces)
   (si on la change : **nouveau nom de fichier**, WhatsApp/Facebook gardent l'ancienne).
 - Reste à faire par Ahmed : Search Console, compte GoatCounter (statistiques).
+
+## Photos et protection (05/10/2026)
+- Bandeaux : **vraies photos libres de droits** (Wikimedia Commons) au lieu des dessins : `assets/photo-pieces-dinar.jpg`
+  (accueil + salaire-net ; 金娜 Kim S, CC BY-SA 2.0) et `assets/photo-calculatrice.jpg` (impot-revenu ; Coyau, CC BY-SA 3.0).
+  Crédit + licence sous la photo (`figure.illus` avec `data-source` = page Commons), section « Photos » (#photos) dans À propos,
+  ligne dans le pied de page. Preuves de licence (HTML, métadonnées, sha256, Internet Archive) : dossier parent (hors dépôt)
+  `preuves conditions d'utilisation/2026-10-05/photos/`. Nouvelle photo = même chaîne (le test vérifie crédit, licence et preuve).
+  Les anciens dessins `illus-paie.svg` / `illus-impot.svg` ne sont plus utilisés.
+- Sécurité / anti-copie : robots.txt interdit les robots d'IA et aspirateurs (moteurs de recherche permis) ; meta `noai, noimageai`,
+  CSP stricte (scripts du site seulement → **aucun script dans les pages** : `assets/salaire.js`, `assets/impot.js`), referrer ;
+  `page.js` : pas de clic droit/glisser sur les images, source ajoutée au texte copié, anti-iframe ; montants calculés
+  (`.resultat`), champs et liens restent copiables.

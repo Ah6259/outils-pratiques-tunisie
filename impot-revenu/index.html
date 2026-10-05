@@ -3,19 +3,22 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<meta name="robots" content="noai, noimageai">
 <title>Calcul impôt sur le revenu Tunisie 2026 (IRPP, barème 8 tranches) | Outils pratiques Tunisie</title>
 <meta name="description" content="Calculez gratuitement votre impôt sur le revenu (IRPP) en Tunisie avec le barème 2025-2026 à 8 tranches, tranche par tranche, avec la contribution sociale de solidarité. حساب الضريبة على الدخل في تونس.">
 <link rel="canonical" href="https://ah6259.github.io/outils-pratiques-tunisie/impot-revenu/">
 <meta property="og:title" content="Impôt sur le revenu en Tunisie (2026)">
 <meta property="og:description" content="Le barème à 8 tranches appliqué à votre revenu, tranche par tranche. Gratuit, en français et en arabe.">
-<meta property="og:image" content="https://ah6259.github.io/outils-pratiques-tunisie/assets/og-image-v2.png">
+<meta property="og:image" content="https://ah6259.github.io/outils-pratiques-tunisie/assets/og-image-v3.png">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="../assets/logo.svg" type="image/svg+xml">
 <meta name="theme-color" content="#0B7A53">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261005i">
+<link rel="stylesheet" href="../assets/style.css?v=20261005j">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"Quel est le barème de l'impôt sur le revenu en Tunisie en 2026 ?","acceptedAnswer":{"@type":"Answer","text":"Le barème de la loi de finances 2025, toujours appliqué en 2026, compte 8 tranches annuelles : 0 % jusqu'à 5 000 DT, 15 % de 5 000 à 10 000 DT, 25 % de 10 000 à 20 000 DT, 30 % de 20 000 à 30 000 DT, 33 % de 30 000 à 40 000 DT, 36 % de 40 000 à 50 000 DT, 38 % de 50 000 à 70 000 DT et 40 % au-delà de 70 000 DT."}},
@@ -23,15 +26,18 @@
 {"@type":"Question","name":"Qu'est-ce que la contribution sociale de solidarité (CSS) ?","acceptedAnswer":{"@type":"Answer","text":"Une contribution de 0,5 % du revenu imposable qui s'ajoute à l'impôt sur le revenu ; elle n'est pas due si le revenu imposable annuel ne dépasse pas 5 000 DT."}}
 ]}
 </script>
-<script src="../assets/calcul.js?v=20261005i"></script>
-<script src="../assets/page.js?v=20261005i"></script>
+<script src="../assets/calcul.js?v=20261005j"></script>
+<script src="../assets/page.js?v=20261005j"></script>
 </head>
 <body>
 <header class="entete" id="entete"></header>
 
 <section class="hero">
   <div class="wrap">
-    <img class="illus" src="../assets/illus-impot.svg" alt="" width="190" height="162">
+    <figure class="illus" data-source="https://commons.wikimedia.org/wiki/File:Aurora_electronic_calculator_DT210_05.jpg">
+      <span class="cadre-photo"><img src="../assets/photo-calculatrice.jpg" alt="Clavier d'une calculatrice" data-alt-ar="لوحة مفاتيح آلة حاسبة" width="900" height="643"></span>
+      <figcaption><span data-l="fr">Photo</span><span data-l="ar">صورة</span> : <a href="https://commons.wikimedia.org/wiki/File:Aurora_electronic_calculator_DT210_05.jpg" rel="noopener">Coyau</a>, <a href="https://creativecommons.org/licenses/by-sa/3.0/" rel="license noopener">CC BY-SA 3.0</a>, Wikimedia Commons</figcaption>
+    </figure>
     <p class="fil"><a href="../"><span data-l="fr">Accueil</span><span data-l="ar">الرئيسية</span></a> › <span data-l="fr">Impôt sur le revenu</span><span data-l="ar">الضريبة على الدخل</span></p>
     <h1><span data-l="fr">Impôt sur le revenu en Tunisie (2026)</span><span data-l="ar">الضريبة على الدخل في تونس (2026)</span></h1>
     <p class="intro"><span data-l="fr">Le barème officiel à 8 tranches appliqué à votre revenu, tranche par tranche.</span><span data-l="ar">الجدول الرسمي ذو الشرائح الثماني مطبَّقًا على دخلك، شريحة بشريحة.</span></p>
@@ -85,26 +91,6 @@
 </main>
 <footer id="pied"></footer>
 
-<script>
-function calculer(){
-  const rev = Math.max(0, parseFloat(document.getElementById("revenu").value) || 0);
-  const r = irppAnnuel(rev), css = cssAnnuelle(rev);
-  document.getElementById("grand").textContent = dt(r.total);
-  const taux = rev > 0 ? (r.total / rev * 100).toFixed(1).replace(".", ",") : "0";
-  document.getElementById("sous").textContent =
-    T(`soit ${dt(r.total / 12)} par mois · taux moyen ${iso(taux + " %")} · + CSS ${dt(css)}`,
-      `أي ${dt(r.total / 12)} شهريًا · النسبة المتوسطة ${iso(taux + " %")} · + المساهمة ${dt(css)}`);
-  document.getElementById("tableau").innerHTML = r.detail.map(t =>
-    `<tr><td>${iso(ent(t.de) + " → " + ent(t.a) + " DT · " + Math.round(t.taux*100) + " %")}</td><td>${dt(t.impot)}</td></tr>`).join("") +
-    `<tr class="total"><td>${T("Total","المجموع")}</td><td>${dt(r.total)}</td></tr>`;
-  const p = document.getElementById("partage");
-  p.innerHTML = ICONE_WHATSAPP + T("Partager sur WhatsApp", "شارك على واتساب");
-  p.href = lienWhatsApp(
-    T(`Impôt sur le revenu en Tunisie pour ${dt(rev)} par an : ${dt(r.total)}. Calculez le vôtre :`,
-      `الضريبة على الدخل في تونس لدخل ${dt(rev)} سنويًا: ${dt(r.total)}. احسب ضريبتك:`));
-}
-document.getElementById("revenu").addEventListener("input", calculer);
-document.addEventListener("langue", calculer);
-</script>
+<script src="../assets/impot.js?v=20261005j"></script>
 </body>
 </html>

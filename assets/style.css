@@ -41,7 +41,7 @@ h1{font-size:clamp(24px,6.4vw,34px);line-height:1.15;margin:0 0 8px;letter-spaci
 .hero p.intro{margin:0;opacity:.92;max-width:600px}
 .maj{display:inline-flex;align-items:center;gap:6px;white-space:nowrap;margin-top:14px;font-size:13px;font-weight:600;
   background:rgba(255,255,255,.14);border-radius:999px;padding:5px 12px}
-.maj::before{content:"";width:7px;height:7px;border-radius:50%;background:#7CF0BE}
+.maj::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:#7CF0BE}
 .chevauche{margin-top:-44px}
 
 /* ---- cartes ---- */
@@ -132,9 +132,23 @@ html[lang="fr"] [data-l="fr"],html[lang="ar"] [data-l="ar"]{display:revert}
   .logo-nom small{display:none}
 }
 
-/* ---- illustration du bandeau (une image vaut mieux que mille mots) ---- */
-.hero .wrap{display:grid;grid-template-columns:1fr 128px;gap:10px;align-items:center}
+/* ---- photo du bandeau (vraie photo libre de droits, crédit dessous) ---- */
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1fr) 124px;gap:12px;align-items:center}
 .hero .wrap > *{grid-column:1}
-.hero .illus{grid-column:2;grid-row:1 / span 5;width:128px;height:auto;filter:drop-shadow(0 8px 18px rgba(0,0,0,.18))}
-@media (min-width:640px){ .hero .wrap{grid-template-columns:1fr 190px} .hero .illus{width:190px} }
-@media (max-width:360px){ .hero .wrap{grid-template-columns:1fr 96px} .hero .illus{width:96px} }
+.hero .illus{grid-column:2;grid-row:1 / span 5;margin:0;width:124px}
+.illus .cadre-photo{position:relative;display:block;border-radius:14px;overflow:hidden;
+  box-shadow:0 10px 24px rgba(0,0,0,.28),0 0 0 3px rgba(255,255,255,.16)}
+.illus .cadre-photo::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(180deg,rgba(8,92,63,0) 55%,rgba(8,92,63,.35) 100%)}
+.illus img{display:block;width:100%;height:auto;aspect-ratio:7/5;object-fit:cover}
+.illus figcaption{margin-top:5px;font-size:9.5px;line-height:1.3;color:rgba(255,255,255,.78);overflow-wrap:anywhere}
+.illus figcaption a{color:inherit}
+.credits-photos li{margin-bottom:6px}
+.note-photos{font-size:13px;color:var(--doux);margin:8px 0 0}
+@media (min-width:640px){ .hero .wrap{grid-template-columns:minmax(0,1fr) 210px} .hero .illus{width:210px} .illus figcaption{font-size:11px} }
+@media (max-width:360px){ .hero .wrap{grid-template-columns:minmax(0,1fr) 104px} .hero .illus{width:104px} }
+
+/* ---- protection légère contre la copie (voir page.js) ---- */
+img{-webkit-user-drag:none;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.hero,main .carte,.confiance{user-select:none;-webkit-user-select:none}
+.resultat,.resultat *,input,select,textarea,a{user-select:text;-webkit-user-select:text}
