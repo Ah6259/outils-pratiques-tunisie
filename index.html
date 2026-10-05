@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="google" content="notranslate">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://prix-eaux-tunisie.goatcounter.com; connect-src 'self' https://prix-eaux-tunisie.goatcounter.com; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://gc.zgo.at; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://prix-eaux-tunisie.goatcounter.com; connect-src 'self' https://prix-eaux-tunisie.goatcounter.com https://formspree.io; object-src 'none'; base-uri 'self'; form-action 'self' https://formspree.io">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="robots" content="noai, noimageai">
 <title>Outils pratiques Tunisie — calculs gratuits : salaire net, impôt 2026, crédit, retenue à la source</title>
@@ -25,8 +25,9 @@
 <meta name="theme-color" content="#0B7A53">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/style.css?v=20261005q">
-<script src="assets/page.js?v=20261005q"></script>
+<link rel="stylesheet" href="assets/style.css?v=20261005r">
+<script src="assets/page.js?v=20261005r"></script>
+<script src="assets/avis.js?v=20261005r"></script>
 </head>
 <body>
 <header class="entete" id="entete"></header>
@@ -96,6 +97,35 @@
       <li>كل تعديل <b>يُفحص آليًا</b> قبل نشره.</li>
     </ul>
     <p class="liens" style="margin:8px 0 0"><a href="a-propos/"><span data-l="fr">En savoir plus sur notre méthode →</span><span data-l="ar">← المزيد عن منهجيتنا</span></a></p>
+  </section>
+  <section class="carte avis" id="avis" aria-labelledby="avis-titre">
+    <h2 id="avis-titre"><span data-l="fr">Votre avis</span><span data-l="ar">رأيك يهمّنا</span></h2>
+    <p class="avis-intro"><span data-l="fr">Une remarque, une erreur, une idée ? Écrivez-nous : chaque message est lu.</span><span data-l="ar">ملاحظة، خطأ، فكرة؟ اكتب لنا: كل رسالة تُقرأ.</span></p>
+    <form id="avis-form" action="https://formspree.io/f/mwlpakqj" method="POST">
+      <fieldset>
+        <legend><span data-l="fr">Votre note (facultatif)</span><span data-l="ar">تقييمك (اختياري)</span></legend>
+        <div class="avis-notes">
+          <label><input type="radio" name="note" value="😀 Très bien"><span class="emoji" aria-hidden="true">😀</span><span class="avis-cache"><span data-l="fr">Très bien</span><span data-l="ar">ممتاز</span></span></label>
+          <label><input type="radio" name="note" value="🙂 Bien"><span class="emoji" aria-hidden="true">🙂</span><span class="avis-cache"><span data-l="fr">Bien</span><span data-l="ar">جيد</span></span></label>
+          <label><input type="radio" name="note" value="😐 Moyen"><span class="emoji" aria-hidden="true">😐</span><span class="avis-cache"><span data-l="fr">Moyen</span><span data-l="ar">متوسط</span></span></label>
+          <label><input type="radio" name="note" value="🙁 Pas bien"><span class="emoji" aria-hidden="true">🙁</span><span class="avis-cache"><span data-l="fr">Pas bien</span><span data-l="ar">سيئ</span></span></label>
+        </div>
+      </fieldset>
+      <label class="avis-etiquette" for="avis-message"><span data-l="fr">Votre message</span><span data-l="ar">رسالتك</span></label>
+      <textarea id="avis-message" name="message" required maxlength="1000" rows="4" data-ph-fr="Ce qui vous plaît, ce qui manque, une erreur à corriger…" data-ph-ar="ما يعجبك، ما ينقص، خطأ يجب تصحيحه…"></textarea>
+      <span class="avis-compte" id="avis-compte" aria-live="off">0 / 1000</span>
+      <label class="avis-etiquette" for="avis-email"><span data-l="fr">Votre e-mail (facultatif, pour vous répondre)</span><span data-l="ar">بريدك الإلكتروني (اختياري، للرد عليك)</span></label>
+      <input type="email" id="avis-email" name="email" autocomplete="email" maxlength="200" data-ph-fr="nom@example.com" data-ph-ar="nom@example.com">
+      <input type="hidden" name="site" value="Outils pratiques Tunisie">
+      <input type="hidden" name="page" value="">
+      <input type="hidden" name="_subject" value="Avis — Outils pratiques Tunisie">
+      <input type="text" name="_gotcha" class="avis-piege" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="avis-actions">
+        <button type="submit" class="avis-envoyer"><span data-l="fr">Envoyer</span><span data-l="ar">إرسال</span></button>
+        <span id="avis-status" role="status" aria-live="polite"></span>
+      </div>
+      <p class="avis-mention"><span data-l="fr">Votre avis est envoyé au créateur du site (service Formspree). Rien n'est envoyé sans clic sur « Envoyer ».</span><span data-l="ar">يُرسل رأيك إلى صاحب الموقع (خدمة ⁨Formspree⁩). لا يُرسل أي شيء دون الضغط على «إرسال».</span></p>
+    </form>
   </section>
 </main>
 <footer id="pied"></footer>

@@ -37,6 +37,7 @@ const URL_DOCUMENTS = "https://ah6259.github.io/documents-tunisie/";
           <a href="${racine}auto-entrepreneur/">${T("Auto-entrepreneur", "المبادر الذاتي")}</a>
           <a href="${racine}retenue-source/">${T("Retenue à la source", "الخصم من المورد")}</a>
           <a href="${racine}a-propos/">${T("À propos et méthode", "من نحن والمنهجية")}</a>
+          <a href="${racine}#avis">${T("Votre avis", "رأيك")}</a>
         </nav>
         <p>${T(`Règles vérifiées le ${MAJ} : loi de finances 2025 (barème de l'impôt), taux de la CNSS 2026.`,
                `قواعد تم التثبت منها في ${MAJ}: قانون المالية 2025 (جدول الضريبة)، نسب الضمان الاجتماعي 2026.`)}</p>

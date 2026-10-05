@@ -21,7 +21,13 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - **Documents prêts à remplir** = futur site séparé « Documents Tunisie ». Sur l'accueil : carte « bientôt » (texte « Sur notre site Documents Tunisie »).
   Quand il sera en ligne : remplir **une seule constante** `URL_DOCUMENTS` dans `assets/page.js`
   (`"https://ah6259.github.io/documents-tunisie/"`) → la carte devient un lien (nouvel onglet), sans badge. Le test vérifie les deux états.
-- Tout est calculé **dans le téléphone** du visiteur : aucune donnée envoyée, aucun serveur.
+- Tout est calculé **dans le téléphone** du visiteur : aucune donnée envoyée, aucun serveur (seule exception : « Votre avis », envoyé au clic).
+- **Votre avis** (05/10/2026, règle d'Ahmed : sur chacun de ses sites) : section `#avis` en bas de l'accueil (carte FR + AR, note
+  😀🙂😐🙁 facultative, message obligatoire ≤ 1000 caractères, e-mail facultatif), lien « Votre avis » dans le pied de page (`page.js`).
+  `assets/avis.js` (fichier externe) envoie par `fetch` à `https://formspree.io/f/mwlpakqj` (Accept JSON) seulement au clic, avec
+  les champs cachés `site` = « Outils pratiques Tunisie », `page`, `_subject` et le piège `_gotcha`. CSP : `connect-src` et
+  `form-action` + `https://formspree.io` sur toutes les pages ; champs sélectionnables malgré l'anti-copie ; le service worker
+  laisse passer formspree.io. Formspree gratuit = 50 envois/mois pour TOUS les sites (même formulaire).
 
 ## Règles de calcul — salaire et impôt (assets/calcul.js, objet `REGLES`) — À METTRE À JOUR CHAQUE JANVIER (loi de finances)
 - CNSS salarié 9,68 % (9,18 % + 0,50 % perte d'emploi) ; frais professionnels 10 %, plafond 2 000 DT/an ;
@@ -44,13 +50,14 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   net 5 771,500 ; non-résident 10 000 HT → 1 785 + TVA retenue 1 900, net 8 215. Depuis le 1er janvier 2026, certificats sur TEJ seulement.
 
 ## Avant chaque publication
-1. Les quatre tests (tout doit être vert) :
+1. Les cinq tests (tout doit être vert) :
    `node tools/test_site.mjs` (≈ 215 vérifications : calculs de référence, pages FR/AR, liens de l'accueil et du pied, photos, sécurité…),
    `node tools/test_nouveaux.mjs` (≈ 140 : crédit, auto-entrepreneur, retenue ; accepte un dossier en argument pour tester une copie),
    `PYTHONIOENCODING=utf-8 python tools/test_robot.py` (31 scénarios du robot),
-   `node tools/test_sw.mjs` (service worker : réseau d'abord, exclusions, meta iPhone ; accepte un dossier en argument).
+   `node tools/test_sw.mjs` (service worker : réseau d'abord, exclusions, meta iPhone ; accepte un dossier en argument),
+   `node tools/test_avis.mjs` (Votre avis : section, pied de page de toutes les pages, CSP, envoi simulé ; accepte un dossier en argument).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
-2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261005p`) — les tests le vérifient.
+2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261005r`) — les tests le vérifient.
 3. Capture mobile 340/390 px en français ET en arabe si l'affichage change : Chrome sans écran sur une page HTML locale
    contenant deux `<iframe>` (340 et 390 px) vers les fichiers `file:///…?lang=fr|ar` (la fenêtre de Chrome sans écran ne descend
    pas sous ~500 px ; l'anti-iframe de page.js laisse passer `file:`).
@@ -72,7 +79,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   à revoir **à la main** en janvier avec la loi de finances (l'alerte CSS de janvier 2027 le rappellera).
 - **Ne jamais citer de concurrent** sur le site ni dans ce dépôt public (règle d'Ahmed). La liste servant au test est dans
   `tools/.concurrents` (local, ignoré par git ; vérification sautée sur GitHub).
-- `tests.yml` à chaque push : YAML des robots valide + `test_site.mjs` + `test_nouveaux.mjs` + `test_sw.mjs` + `test_robot.py`.
+- `tests.yml` à chaque push : YAML des robots valide + `test_site.mjs` + `test_nouveaux.mjs` + `test_sw.mjs` + `test_avis.mjs` + `test_robot.py`.
   Dans `.github/workflows/*.yml` : jamais de « : » dans un `run:` d'une ligne (utiliser `run: |`).
 - L'année n'est écrite qu'à des endroits remplaçables automatiquement ; l'image d'aperçu n'a pas d'année.
 

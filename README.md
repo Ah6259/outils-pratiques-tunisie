@@ -10,8 +10,11 @@ Calculateurs gratuits pour la Tunisie, en français et en arabe : https://ah6259
 - `assets/calcul.js` : règles de paie (objet `REGLES`) — **à mettre à jour à chaque loi de finances (janvier)** ;
   `assets/calcul-credit.js` (TMM), `calcul-auto.js`, `calcul-retenue.js` : règles des 3 autres calculateurs.
 - Documents prêts à remplir : futur site « Documents Tunisie » ; le lien s'active en remplissant `URL_DOCUMENTS` dans `assets/page.js`.
+- **Votre avis** (accueil `#avis`, lien « Votre avis » dans le pied de page de toutes les pages) : note facultative (😀🙂😐🙁),
+  message (obligatoire, ≤ 1000 caractères), e-mail facultatif ; envoyé **seulement au clic** à Formspree (formulaire `mwlpakqj`,
+  commun à tous les sites d'Ahmed) avec les champs cachés `site` = « Outils pratiques Tunisie » et `page`. Code : `assets/avis.js`.
 - Tests avant chaque publication (tout doit être vert) : `node tools/test_site.mjs`, `node tools/test_nouveaux.mjs`,
-  `python tools/test_robot.py` (voir CLAUDE.md et GUIDE.md).
+  `node tools/test_sw.mjs`, `node tools/test_avis.mjs`, `python tools/test_robot.py` (voir CLAUDE.md et GUIDE.md).
 - Changer le `?v=` des fichiers `assets/` dans les pages à chaque modification (cache des téléphones).
 
 Tous droits réservés (voir LICENSE).
@@ -24,7 +27,7 @@ Tous droits réservés (voir LICENSE).
 | Passage à la nouvelle année (titres, textes, ©) | à partir du 15 janvier si les règles sont identiques | — |
 | Battement de cœur (commit mensuel) | chaque mois | évite la mise en pause des robots par GitHub (60 jours) |
 | `surveillance.yml` : TMM de la Banque centrale (page Crédit) | le 1er de chaque mois | TMM changé, ou mois à rafraîchir → **alerte** « Crédit : le TMM … a changé » ; page de la BCT illisible → alerte « lecture du TMM impossible » ; le TMM du site n'est jamais modifié automatiquement |
-| `tests.yml` : fichiers des robots (YAML) + les 4 tests | à chaque modification | email de GitHub en cas d'échec |
+| `tests.yml` : fichiers des robots (YAML) + les 5 tests | à chaque modification | email de GitHub en cas d'échec |
 
 **Installation sur le téléphone** : `sw.js` (service worker) = **réseau d'abord** pour les pages et les données
 (le cache ne sert que hors connexion) ; CSS/JS/images versionnés (?v=) = cache puis mise à jour. Si un téléphone garde une
