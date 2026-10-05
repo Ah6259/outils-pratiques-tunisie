@@ -35,6 +35,7 @@ function calculer(){
   p.href = lienWhatsApp(
     T(`Salaire brut ${dt(r.brut)} = net ${dt(r.net)} par mois en Tunisie (2026). Calculez le vôtre :`,
       `أجر خام ${dt(r.brut)} = صافي ${dt(r.net)} شهريًا في تونس (2026). احسب أجرك:`));
+  lienPro(m > 0);
 }
 ["montant","chef","enfants"].forEach(id => document.getElementById(id).addEventListener("input", calculer));
 document.getElementById("chef").addEventListener("change", calculer);

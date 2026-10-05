@@ -46,6 +46,7 @@
     p.href = lienWhatsApp(T(
       `Retenue à la source (${op.fr}, ${String(r.taux).replace(".", ",")} %) : ${dt(r.certificat)} sur ${dt(r.ttc)}, net payé ${dt(r.net)}. Calculez la vôtre :`,
       `الخصم من المورد (${op.ar}، ${iso(String(r.taux).replace(".", ",") + " %")}): ${dt(r.certificat)} من ${dt(r.ttc)}، الصافي ${dt(r.net)}. احسب الخصم:`));
+    lienPro(r.ttc > 0);
   }
 
   $("montant").addEventListener("input", calculer);

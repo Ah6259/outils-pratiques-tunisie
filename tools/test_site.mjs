@@ -238,5 +238,42 @@ check(`aucun secret ni e-mail privé dans le dépôt${fuite.length ? " : " + fui
 for (const p of ["index.html","salaire-net/index.html","impot-revenu/index.html","a-propos/index.html","credit/index.html","auto-entrepreneur/index.html","retenue-source/index.html"])
   check(`${p} : traduction automatique désactivée (notranslate)`, lire(p).includes('content="notranslate"') && /<html[^>]*translate="no"/.test(lire(p)));
 
+// ---- Lien discret vers l'annuaire gratuit des comptables, sous chaque résultat (05/10/2026) ----------
+// caché dans la page (hidden : rien avant le calcul, rien sans JavaScript), affiché par le calcul, clic compté dans GoatCounter
+const COMPTABLES = "https://ah6259.github.io/comptables-tunisie/";
+for (const [calc, champ, mot] of [["salaire-net", "montant", "fiches de paie"], ["impot-revenu", "revenu", "conseiller fiscal"],
+    ["credit", "prix", "expert-comptable"], ["auto-entrepreneur", null, "s'inscrire et déclarer"], ["retenue-source", "montant", "expert-comptable"]]) {
+  const p = `${calc}/index.html`;
+  const brut = new JSDOM(lire(p)).window.document.getElementById("lien-pro");
+  check(`${p} : cadre vers l'annuaire des comptables présent dans la zone résultat, caché avant le calcul`,
+        !!brut && !!brut.closest(".resultat") && brut.hidden === true);
+  for (const lang of ["fr", "ar"]) {
+    w = await page(p, lang); d = w.document;
+    const b = d.getElementById("lien-pro"), a = b?.querySelector("a");
+    check(`${p} (${lang}) : cadre affiché après le calcul, lien vers l'annuaire (nouvel onglet, noopener)`, !!a && !b.hidden
+          && a.href === COMPTABLES && a.target === "_blank" && a.rel.includes("noopener") && a.dataset.compteur === `lien-comptables/${calc}`);
+    const fr = a?.querySelector('[data-l="fr"]')?.textContent || "", ar = a?.querySelector('[data-l="ar"]')?.textContent || "";
+    check(`${p} (${lang}) : texte français et arabe, sobre (jamais « meilleur »)`, fr.includes(mot) && fr.includes("près de chez vous")
+          && /[؀-ۿ]/.test(ar) && ar.includes("قريب منك") && !/meilleur|أفضل/i.test(fr + ar));
+  }
+  if (champ) {
+    d.getElementById(champ).value = "0"; d.getElementById(champ).dispatchEvent(new w.Event("input"));
+    check(`${p} : sans résultat (montant 0), le cadre est caché`, d.getElementById("lien-pro").hidden === true);
+    d.getElementById(champ).value = champ === "revenu" ? "20000" : "50000"; d.getElementById(champ).dispatchEvent(new w.Event("input"));
+    check(`${p} : nouveau résultat, le cadre revient`, d.getElementById("lien-pro").hidden === false);
+  }
+  const comptes = [];
+  w.goatcounter = { count: o => comptes.push(o) };
+  w.addEventListener("click", e => e.preventDefault());   // pas de vraie navigation dans le test
+  d.querySelector("#lien-pro a span").dispatchEvent(new w.MouseEvent("click", { bubbles: true, cancelable: true }));
+  check(`${p} : clic compté dans GoatCounter (événement lien-comptables/${calc})`, comptes.length === 1
+        && comptes[0].path === `lien-comptables/${calc}` && comptes[0].event === true);
+  delete w.goatcounter;
+  let plante = false;
+  try { d.querySelector("#lien-pro a").dispatchEvent(new w.MouseEvent("click", { bubbles: true, cancelable: true })); } catch (e) { plante = true; }
+  check(`${p} : sans GoatCounter (bloqué), le clic ne plante pas`, !plante);
+}
+check("lien vers l'annuaire : aucun nouveau domaine dans la CSP", !TOUTES.some(p => /Content-Security-Policy[^>]*comptables-tunisie/.test(lire(p))));
+
 console.log(erreurs ? `\n${erreurs} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(erreurs ? 1 : 0);

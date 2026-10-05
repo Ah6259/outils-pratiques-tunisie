@@ -86,6 +86,7 @@
     p.href = lienWhatsApp(T(
       `Crédit de ${dt(r.capital)} sur ${duree(r.mois)} à ${pct(r.taux)} : ${dt(r.mensualiteTotale)} par mois. Calculez le vôtre :`,
       `قرض بـ ${dt(r.capital)} على ${duree(r.mois)} بنسبة ${pct(r.taux)}: ${dt(r.mensualiteTotale)} شهريًا. احسب قرضك:`));
+    lienPro(r.mensualiteTotale > 0);
   }
 
   ["prix", "apport", "duree", "taux", "tmm", "marge", "assurance"].forEach(id => $(id).addEventListener("input", calculer));

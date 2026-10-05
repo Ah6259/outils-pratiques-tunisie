@@ -51,13 +51,13 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 
 ## Avant chaque publication
 1. Les cinq tests (tout doit être vert) :
-   `node tools/test_site.mjs` (≈ 215 vérifications : calculs de référence, pages FR/AR, liens de l'accueil et du pied, photos, sécurité…),
+   `node tools/test_site.mjs` (≈ 275 vérifications : calculs de référence, pages FR/AR, liens de l'accueil et du pied, photos, sécurité…),
    `node tools/test_nouveaux.mjs` (≈ 140 : crédit, auto-entrepreneur, retenue ; accepte un dossier en argument pour tester une copie),
    `PYTHONIOENCODING=utf-8 python tools/test_robot.py` (31 scénarios du robot),
    `node tools/test_sw.mjs` (service worker : réseau d'abord, exclusions, meta iPhone ; accepte un dossier en argument),
    `node tools/test_avis.mjs` (Votre avis : section, pied de page de toutes les pages, CSP, envoi simulé ; accepte un dossier en argument).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
-2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261005r`) — les tests le vérifient.
+2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261005s`) — les tests le vérifient.
 3. Capture mobile 340/390 px en français ET en arabe si l'affichage change : Chrome sans écran sur une page HTML locale
    contenant deux `<iframe>` (340 et 390 px) vers les fichiers `file:///…?lang=fr|ar` (la fenêtre de Chrome sans écran ne descend
    pas sous ~500 px ; l'anti-iframe de page.js laisse passer `file:`).
@@ -123,4 +123,5 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - **Aperçus WhatsApp** : tous les sites sont réglés pareil (1200 × 630, JPEG léger). WhatsApp sur PC fait de petites vignettes : envoyer les liens depuis le téléphone (ou transférer un message préparé sur le téléphone).
 - **Règle d'Ahmed : tout tourne sur internet (GitHub), sans son PC ni son intervention, « même s'il meurt ».**
 - Titres : « calcul gratuit » ajouté là où il manquait (retenue à la source).
-- Plus tard (validé par Ahmed) : cadre discret APRÈS chaque résultat vers l'annuaire des comptables (« Chiffres et conseil »), seulement quand cet annuaire existera. Aucun lien vers le mariage (garder le sérieux du site).
+- **Lien vers l'annuaire des comptables** (fait le 05/10/2026, validé par Ahmed) : dans chaque `.resultat`, `<p class="lien-pro" id="lien-pro" hidden>` vers https://ah6259.github.io/comptables-tunisie/ (nouvel onglet), texte FR + AR adapté au calculateur (jamais « meilleur »).
+  Caché dans la page ; `lienPro(vrai/faux)` (page.js) l'affiche à la fin de chaque `calculer()` seulement s'il y a un résultat. Clic → GoatCounter événement `lien-comptables/<calculateur>` (attribut `data-compteur`). Aucun changement de CSP. Testé dans `test_site.mjs`. Aucun lien vers le mariage (garder le sérieux du site).

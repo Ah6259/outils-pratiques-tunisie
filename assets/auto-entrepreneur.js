@@ -86,6 +86,7 @@
     p.href = lienWhatsApp(T(
       `Auto-entrepreneur en Tunisie : 1re année gratuite, puis ${dt(c.totalSansExoneration)} par an (impôt + CNSS). Vérifiez si vous êtes éligible :`,
       `المبادر الذاتي في تونس: السنة الأولى مجانية، ثم ${dt(c.totalSansExoneration)} سنويًا (ضريبة + ضمان اجتماعي). تحقق إن كنت معنيًا:`));
+    lienPro(true);
   }
 
   $("ca").addEventListener("input", calculer);

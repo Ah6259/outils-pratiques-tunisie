@@ -124,3 +124,16 @@ if ("serviceWorker" in navigator && location.protocol === "https:") {
     try { navigator.serviceWorker.register("/outils-pratiques-tunisie/sw.js", { scope: "/outils-pratiques-tunisie/" }).catch(() => {}); } catch (e) { /* rien : le site marche sans */ }
   });
 }
+
+/* Lien discret vers l'annuaire gratuit des comptables, sous chaque résultat (décision d'Ahmed, 05/10/2026).
+   Le cadre (#lien-pro) est caché dans la page (attribut hidden) ; chaque calculateur appelle lienPro(true)
+   seulement quand un résultat est calculé. Clic compté (anonyme) dans GoatCounter : événement « lien-comptables/<calculateur> ». */
+function lienPro(visible) {
+  const b = document.getElementById("lien-pro");
+  if (b) b.hidden = !visible;
+}
+document.addEventListener("click", e => {
+  const a = e.target.closest && e.target.closest("a[data-compteur]");
+  if (!a) return;
+  try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: a.dataset.compteur, title: "Clic vers l'annuaire des comptables", event: true }); } catch (x) { /* rien : le lien marche sans */ }
+});

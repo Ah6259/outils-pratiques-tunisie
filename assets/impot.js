@@ -15,6 +15,7 @@ function calculer(){
   p.href = lienWhatsApp(
     T(`Impôt sur le revenu en Tunisie pour ${dt(rev)} par an : ${dt(r.total)}. Calculez le vôtre :`,
       `الضريبة على الدخل في تونس لدخل ${dt(rev)} سنويًا: ${dt(r.total)}. احسب ضريبتك:`));
+  lienPro(rev > 0);
 }
 document.getElementById("revenu").addEventListener("input", calculer);
 document.addEventListener("langue", calculer);
