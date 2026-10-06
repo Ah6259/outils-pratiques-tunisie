@@ -296,6 +296,7 @@ for (const p of TOUTES) {
 check("accueil : « 1 calcul gratuit par jour, sans inscription » dans l'intro (FR + AR), sans badge", /1 calcul gratuit par jour, sans inscription/.test(lire("index.html")) && /حساب مجاني كل يوم، دون تسجيل/.test(lire("index.html")) && !/badge-c|class="confiance"/.test(lire("index.html")));
 await passJournee();
 await boutonComptables();
+await boutonPartager();
 
 // ---- Pass Journée (partie payante, 06/10/2026, accord écrit d'Ahmed) -----------------------------------------
 // exemple gratuit, 1 calcul personnel gratuit par jour (tous calculateurs), 2e bloqué, lendemain, code valide / expiré / faux,
@@ -542,6 +543,27 @@ async function boutonComptables() {
   check(`menu de l'en-tête : les 5 calculateurs mènent à des pages existantes ${menuKo.join(", ")}`, menuKo.length === 0);
   check("encarts sous les résultats inchangés (lien-comptables/<calculateur>)", ["salaire-net", "impot-revenu", "credit", "auto-entrepreneur", "retenue-source"]
     .every(c2 => lire(`${c2}/index.html`).includes(`data-compteur="lien-comptables/${c2}"`)));
+}
+
+// ---- Bouton « Partager » (demande d'Ahmed, 06/10/2026 : plus de partages entre visiteurs) ----
+async function boutonPartager() {
+  const ko = [];
+  for (const p of TOUTES) for (const lang of ["fr", "ar"]) {
+    const wx = await page(p, lang), b = wx.document.querySelector("#entete button.partager");
+    if (!b || b.getAttribute("aria-label") !== (lang === "fr" ? "Partager cette page" : "شارك هذه الصفحة") || !b.querySelector("svg")) ko.push(p + " " + lang);
+  }
+  check(`en-tête : bouton « Partager » (« Partager cette page » / « شارك هذه الصفحة ») sur toutes les pages ${ko.join(", ")}`, ko.length === 0);
+  for (const p of [TOUTES[0], TOUTES[TOUTES.length - 1]]) {
+    const wx = await page(p, "ar"), ouverts = [], comptes = [];
+    wx.open = (...a) => { ouverts.push(a); return null; };
+    wx.goatcounter = { count: o => comptes.push(o) };
+    wx.document.querySelector("#entete button.partager").click();
+    await new Promise(ok => setTimeout(ok, 0));
+    const adresse = "https://ah6259.github.io/outils-pratiques-tunisie/" + p.replace(/index\.html$/, "");
+    check(`${p} : sans navigator.share, « Partager » ouvre wa.me avec l'adresse de la page (sans ?lang ni #) et compte le clic`, !wx.navigator.share && ouverts.length === 1
+      && ouverts[0][0].startsWith("https://wa.me/?text=") && decodeURIComponent(ouverts[0][0].slice(20)).endsWith(" " + adresse) && ouverts[0][1] === "_blank"
+      && comptes.length === 1 && comptes[0].path.startsWith("partage/") && comptes[0].event === true);
+  }
 }
 
 console.log(erreurs ? `\n${erreurs} PROBLÈME(S)` : "\nTOUT PASSE");

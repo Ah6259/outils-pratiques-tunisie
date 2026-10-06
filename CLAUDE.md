@@ -57,7 +57,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
    `node tools/test_sw.mjs` (service worker : réseau d'abord, exclusions, meta iPhone ; accepte un dossier en argument),
    `node tools/test_avis.mjs` (Votre avis : section, pied de page de toutes les pages, CSP, envoi simulé ; accepte un dossier en argument).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
-2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261006b`) — les tests le vérifient.
+2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261006c`) — les tests le vérifient.
 3. Capture mobile 340/390 px en français ET en arabe si l'affichage change : Chrome sans écran sur une page HTML locale
    contenant deux `<iframe>` (340 et 390 px) vers les fichiers `file:///…?lang=fr|ar` (la fenêtre de Chrome sans écran ne descend
    pas sous ~500 px ; l'anti-iframe de page.js laisse passer `file:`).
@@ -162,3 +162,4 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   https://ah6259.github.io/comptables-tunisie/ (nouvel onglet), puis les 5 calculateurs. Sur l'accueil : carte `#carte-comptables`
   (`.outil-annuaire`) avec les cartes des calculateurs. Clic compté « lien-site/comptables » (`data-compteur`). Les encarts sous les
   résultats (`lien-comptables/<calculateur>`) sont inchangés. Test : `boutonComptables()` dans test_site.mjs.
+- **Bouton « Partager »** (06/10/2026, demande d'Ahmed) : icône ronde `.partager` dans `.entete-boutons` de toutes les pages (page.js, FR+AR) ; menu de partage du téléphone (`navigator.share`), sinon WhatsApp (`wa.me`) avec l'adresse sans `#` ni `?lang` ; clic compté `partage/<page>` dans GoatCounter. Test : `boutonPartager()` dans test_site.mjs.
