@@ -163,3 +163,6 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   (`.outil-annuaire`) avec les cartes des calculateurs. Clic compté « lien-site/comptables » (`data-compteur`). Les encarts sous les
   résultats (`lien-comptables/<calculateur>`) sont inchangés. Test : `boutonComptables()` dans test_site.mjs.
 - **Bouton « Partager »** (06/10/2026, demande d'Ahmed) : icône ronde `.partager` dans `.entete-boutons` de toutes les pages (page.js, FR+AR) ; menu de partage du téléphone (`navigator.share`), sinon WhatsApp (`wa.me`) avec l'adresse sans `#` ni `?lang` ; clic compté `partage/<page>` dans GoatCounter. Test : `boutonPartager()` dans test_site.mjs.
+
+- **Vidéo de présentation** (06/10/2026) : `assets/video/presentation.mp4` + `couverture.jpg`, 1080 × 1920, sans musique. Le bouton « Partager » envoie la vidéo + le lien quand le téléphone le permet, sinon le lien seul (`window.partagerVideo`, bloc « vidéo de présentation » en fin de `assets/page.js`) ; lien « Vidéo de présentation » en bas de l'accueil et de À propos ; test `node tools/test_video.mjs`.
+  Pour la refaire (vraies captures du site, chiffres lus en ligne) : `python fabriquer.py outils` puis `python brancher_partage.py outils` dans le dossier PRIVÉ du PC `videos (outil)/`.
