@@ -81,7 +81,8 @@ check("16 janvier : ANNEE = 2027", m.lire_constantes()[1] == 2027)
 s = (d / "salaire-net" / "index.html").read_text(encoding="utf-8")
 check("titre de la page salaire en 2027", "Salaire brut ⇄ net en Tunisie (2027)" in s)
 check("« loi de finances 2025 » non modifiée", "loi de finances pour 2025" in s)
-check("numéros de version ?v= non modifiés", "?v=20261005" in s)
+VERSION = __import__("re").search(r"\?v=\w+", (ICI / "salaire-net" / "index.html").read_text(encoding="utf-8")).group(0)  # version actuelle du site
+check("numéros de version ?v= non modifiés", VERSION in s)
 check("aucun « 2026 » isolé restant dans les pages",
       all(__import__("re").search(r"(?<![\d/\-])2026(?![\d/\-])", (d / f).read_text(encoding="utf-8")) is None
           for f in ["index.html", "salaire-net/index.html", "impot-revenu/index.html", "a-propos/index.html"]))

@@ -31,7 +31,7 @@ Guide réutilisable pour créer un autre site du même genre. Une ligne par éta
 14. **Bandeau vert** en haut de chaque page avec fil d'Ariane et pastille « Règles à jour au … ».
 15. **Cartes** arrondies avec ombre douce, champs avec unité « DT », sélecteur Brut/Net en onglets.
 16. **Résultat** : grand montant, **barre de répartition** (net / CNSS / impôt / CSS) avec pourcentages.
-17. **Badges de confiance** (icônes SVG, pas d'emoji), section **Sources officielles**, page **À propos et méthode**.
+17. ~~Badges de confiance~~ (supprimés le 06/10/2026 : ils ressemblaient à des boutons sans rien faire), section **Sources officielles**, page **À propos et méthode**.
 
 ## 05/10/2026 — Vraies photos et protection contre la copie
 - **Photos réelles** (demande d'Ahmed) : recherche sur Wikimedia Commons (API publique), licence lue sur la page de chaque photo

@@ -275,5 +275,24 @@ for (const [calc, champ, mot] of [["salaire-net", "montant", "fiches de paie"], 
 }
 check("lien vers l'annuaire : aucun nouveau domaine dans la CSP", !TOUTES.some(p => /Content-Security-Policy[^>]*comptables-tunisie/.test(lire(p))));
 
+// ---- Affichage : éléments cachés et faux boutons (06/10/2026) ----
+check("style : [hidden]{display:none!important} (l'encart des comptables et tout élément caché par le JS restent cachés malgré un display:flex/grid)",
+      /\[hidden\]\{display:none!important\}/.test(lire("assets/style.css").replace(/\s+/g, "")));
+// Tuiles « icône + petit texte » qui ont l'air de boutons mais ne mènent nulle part (supprimées le 06/10/2026, demande d'Ahmed)
+// (une étiquette en gras dans un encadré qui donne une vraie information, ex. « Coût : 50 DT », n'est pas une tuile)
+const tuilesSansLien = doc => [...doc.body.querySelectorAll("*")].filter(el => {
+  if (/^(a|button|label|summary|svg|h[1-6]|b|strong|em|small|i|option|select|input|textarea|form|header|footer|nav|main|figure|img|section|article)$/i.test(el.tagName)) return false;
+  if (el.closest("a,button,label,summary,header,footer,nav,form,svg,[hidden],template")) return false;
+  const f = el.firstElementChild;
+  if (!f || f.tagName.toLowerCase() !== "svg" || el.querySelector("a,button,input,select,textarea")) return false;
+  const t = el.textContent.replace(/\s+/g, " ").trim();
+  return t.length > 0 && t.length < 90;
+}).map(el => el.textContent.replace(/\s+/g, " ").trim().slice(0, 40));
+for (const p of TOUTES) {
+  const morts = tuilesSansLien(new JSDOM(lire(p)).window.document);
+  check(`${p} : aucune carte avec une icône sans lien (pas de faux bouton)${morts.length ? " → " + morts.join(" | ") : ""}`, !morts.length);
+}
+check("accueil : « Gratuit, sans inscription » dans l'intro (FR + AR), sans badge", /Gratuit, sans inscription/.test(lire("index.html")) && /مجاني، دون تسجيل/.test(lire("index.html")) && !/badge-c|class="confiance"/.test(lire("index.html")));
+
 console.log(erreurs ? `\n${erreurs} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(erreurs ? 1 : 0);

@@ -57,11 +57,12 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
    `node tools/test_sw.mjs` (service worker : réseau d'abord, exclusions, meta iPhone ; accepte un dossier en argument),
    `node tools/test_avis.mjs` (Votre avis : section, pied de page de toutes les pages, CSP, envoi simulé ; accepte un dossier en argument).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
-2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261005s`) — les tests le vérifient.
+2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261006a`) — les tests le vérifient.
 3. Capture mobile 340/390 px en français ET en arabe si l'affichage change : Chrome sans écran sur une page HTML locale
    contenant deux `<iframe>` (340 et 390 px) vers les fichiers `file:///…?lang=fr|ar` (la fenêtre de Chrome sans écran ne descend
    pas sous ~500 px ; l'anti-iframe de page.js laisse passer `file:`).
 4. Montants au milieu d'un texte arabe : passer par `dt()` / `iso()` (isolation U+2066…U+2069) ; formules : `<span dir="ltr" style="white-space:nowrap">`.
+   Affichage (06/10/2026) : `[hidden]{display:none!important}` dans style.css (sinon l'encart des comptables, caché avant le calcul, pouvait rester visible) et **pas de faux boutons** : les badges « Identique aux fiches de paie / Aucune donnée envoyée / Gratuit » des 7 pages sont supprimés (cartes avec icône sans lien ; l'info est dans l'intro et le pied) ; test_site.mjs vérifie les deux.
 5. Sabotage volontaire d'une copie de temps en temps pour vérifier que les tests sonnent.
 
 ## Robots (autonomie)

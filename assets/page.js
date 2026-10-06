@@ -98,7 +98,7 @@ const ICONE_WHATSAPP = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12
    si on les copie quand même, la source est ajoutée. Restent copiables : montants calculés (.resultat),
    champs de formulaire et liens. Ce qu'on voit peut toujours être capturé : la vraie protection = licence + ©. */
 const ZONE_COPIABLE = ".resultat, input, select, textarea, a";
-const ZONE_PROTEGEE = ".hero, main .carte, .confiance";
+const ZONE_PROTEGEE = ".hero, main .carte";
 document.addEventListener("contextmenu", e => { if (e.target.closest("img, .illus")) e.preventDefault(); });
 document.addEventListener("dragstart", e => { if (e.target.closest("img")) e.preventDefault(); });
 document.addEventListener("copy", e => {
