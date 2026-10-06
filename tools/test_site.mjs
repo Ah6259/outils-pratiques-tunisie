@@ -121,7 +121,7 @@ check("toutes les pages : lien vers le manifeste, icône iPhone et theme-color",
   return s.includes(`<link rel="manifest" href="${r}manifest.webmanifest">`) && s.includes(`<link rel="apple-touch-icon" href="${r}assets/icons/apple-touch-icon.png">`) && s.includes('<meta name="theme-color"'); }));
 check("image d'aperçu JPEG < 250 Ko (sinon WhatsApp n'affiche qu'une petite vignette)", existsSync(join(root, "assets/og-image-v6.jpg")) && statSync(join(root, "assets/og-image-v6.jpg")).size < 250000 && TOUTES.every(p => lire(p).includes('<meta property="og:image:type" content="image/jpeg">')));
 const locs = [...lire("sitemap.xml").matchAll(/<loc>https:\/\/ah6259\.github\.io\/outils-pratiques-tunisie\/([^<]*)<\/loc>/g)].map(m => m[1]);
-check("plan du site : 8 pages (accueil, 5 calculateurs, à propos, Pass Journée)", (lire("sitemap.xml").match(/<loc>/g) || []).length === 8 && locs.length === 8 && locs.includes("pass/"));
+check("plan du site : au moins 9 pages (accueil, 5 calculateurs, à propos, Pass Journée, page vidéo)", (lire("sitemap.xml").match(/<loc>/g) || []).length === locs.length && locs.length >= 9 && locs.includes("pass/") && locs.includes("video/"));
 check("plan du site : chaque adresse mène à une page existante", locs.every(l => existsSync(join(root, l, "index.html"))));
 check("toutes les pages : même version ?v= partout (cache des téléphones)", new Set(TOUTES.flatMap(p => lire(p).match(/\?v=\w+/g) || [])).size === 1);
 
@@ -559,9 +559,11 @@ async function boutonPartager() {
     wx.goatcounter = { count: o => comptes.push(o) };
     wx.document.querySelector("#entete button.partager").click();
     await new Promise(ok => setTimeout(ok, 0));
-    const adresse = "https://ah6259.github.io/outils-pratiques-tunisie/" + p.replace(/index\.html$/, "");
-    check(`${p} : sans navigator.share, « Partager » ouvre wa.me avec l'adresse de la page (sans ?lang ni #) et compte le clic`, !wx.navigator.share && ouverts.length === 1
-      && ouverts[0][0].startsWith("https://wa.me/?text=") && decodeURIComponent(ouverts[0][0].slice(20)).endsWith(" " + adresse) && ouverts[0][1] === "_blank"
+    // partage par lien (demande d'Ahmed) : la page vidéo du site + l'adresse du site, dans la langue de la page
+    const adresse = "https://ah6259.github.io/outils-pratiques-tunisie/video/?lang=ar";
+    check(`${p} : sans navigator.share, « Partager » ouvre wa.me avec la page vidéo + l'adresse du site et compte le clic`, !wx.navigator.share && ouverts.length === 1
+      && ouverts[0][0].startsWith("https://wa.me/?text=") && decodeURIComponent(ouverts[0][0].slice(20)).endsWith(" " + adresse)
+      && decodeURIComponent(ouverts[0][0]).includes("https://ah6259.github.io/outils-pratiques-tunisie/?lang=ar") && ouverts[0][1] === "_blank"
       && comptes.length === 1 && comptes[0].path.startsWith("partage/") && comptes[0].event === true);
   }
 }

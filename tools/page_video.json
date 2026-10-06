@@ -1,0 +1,35 @@
+{
+ "site": "https://ah6259.github.io/outils-pratiques-tunisie/",
+ "logo": "assets/logo.svg",
+ "defaut": "fr",
+ "modele": "a-propos/index.html",
+ "nom": {
+  "fr": "Outils pratiques Tunisie",
+  "ar": "أدوات عملية تونس"
+ },
+ "partager": {
+  "fr": "Partager la vidéo",
+  "ar": "شارك الفيديو"
+ },
+ "pages": [
+  {
+   "chemin": "video/",
+   "video": "presentation",
+   "couverture": "couverture.jpg",
+   "apercu": "apercu-video.jpg",
+   "site": "",
+   "titre": {
+    "fr": "Vidéo de présentation",
+    "ar": "الفيديو التقديمي"
+   },
+   "description": {
+    "fr": "Vidéo de présentation : salaire net, impôt, crédit, retenue à la source… les calculs du quotidien en Tunisie, clairs et à jour.",
+    "ar": "فيديو تقديمي: الأجر الصافي، الضريبة، القرض، الخصم من المورد… حسابات الحياة اليومية في تونس."
+   },
+   "bouton": {
+    "fr": "Ouvrir le site",
+    "ar": "افتح الموقع"
+   }
+  }
+ ]
+}
