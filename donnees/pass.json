@@ -1,0 +1,7 @@
+{
+ "_lisez_moi": "Pass Journee : SEULEMENT l empreinte PBKDF2-SHA-256 salee de chaque code et son heure de fin (UTC, 24 h apres l activation). Aucune donnee personnelle. Fichier ecrit par le robot du depot prive outils-pass.",
+ "maj": "2026-10-06T00:00:00Z",
+ "sel": "7e5bdb198ed1ee507c0fb471093f6ec2",
+ "tours": 100000,
+ "codes": []
+}

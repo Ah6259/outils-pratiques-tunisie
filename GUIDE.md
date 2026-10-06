@@ -26,7 +26,7 @@ Guide réutilisable pour créer un autre site du même genre. Une ligne par éta
 - GoatCounter : créer un compteur pour ce site (statistiques sans cookies).
 
 ## 05/10/2026 — Présentation professionnelle (demande d'Ahmed : « ça ne donne pas confiance »)
-13. **En-tête commun** (logo SVG + nom + « Calculs gratuits · règles 2026 ») et **pied de page complet** (navigation,
+13. **En-tête commun** (logo SVG + nom + « 1 calcul gratuit par jour · règles 2026 » depuis le 06/10) et **pied de page complet** (navigation,
     date de vérification des règles, mention non officielle, ©), injectés par `assets/page.js` sur toutes les pages.
 14. **Bandeau vert** en haut de chaque page avec fil d'Ariane et pastille « Règles à jour au … ».
 15. **Cartes** arrondies avec ombre douce, champs avec unité « DT », sélecteur Brut/Net en onglets.
@@ -66,3 +66,14 @@ Guide réutilisable pour créer un autre site du même genre. Une ligne par éta
 
 ## 05/10/2026 (soir) — icône et « gratuit »
 - Icône des 4 opérations (famille commune des sites) ; « gratuit » dans tous les titres Google.
+
+## 06/10/2026 — Partie payante « Pass Journée » (copie du Pass Examen du Code de la route)
+- Règle d'Ahmed : 1 utilisation gratuite par jour, puis 7 DT pour tout pendant la journée. Pour des calculateurs : l'exemple reste
+  gratuit, 1 calcul personnel gratuit par jour (10 minutes pour corriger ses chiffres), ensuite le résultat est masqué.
+- Une « porte » (`porteCalcul`) au début de chaque calcul ; écran clair avec le prix, « Revenez demain » et « J'ai déjà un code ».
+- Pages `pass/` (prix, paiement D17/IZI/Wafacash, preuve WhatsApp, formulaire Formspree) et `pass/conditions/` (INPDP, pas de renouvellement).
+- Dépôt PRIVÉ `outils-pass` : programme Python + bouton GitHub (workflow_dispatch) pour activer un client depuis le téléphone ;
+  seule l'empreinte salée du code et l'heure de fin arrivent sur le site public (clé de déploiement limitée à ce dépôt).
+- « Gratuit » corrigé partout (« 1 calcul gratuit par jour »), nouvelle image d'aperçu v6 ; tests jsdom (exemple, 1er calcul,
+  2e bloqué, lendemain, code valide / expiré / faux) ; captures Edge 340/390 px en français et en arabe.
+- Bouton « Trouver un comptable » (bordure dorée, logo de l'annuaire) dans le menu de l'en-tête et sur l'accueil.

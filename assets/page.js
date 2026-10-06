@@ -1,9 +1,20 @@
-/* Langue (français / arabe), en-tête et pied de page communs, petites fonctions */
+/* Langue (français / arabe), en-tête (bouton doré « Pass Journée » sur les calculateurs, voir pass.js) et pied de page communs, petites fonctions */
 const MAJ = "05/10/2026";   // date de la dernière vérification des règles (mise à jour par le robot surveillance.yml)
 const ANNEE = 2026;          // année des règles affichée sur le site (changée par le robot en janvier)
 // Site « Documents Tunisie » : laisser vide tant qu'il n'est pas en ligne (la carte de l'accueil reste « bientôt »).
 // Quand il sera publié : const URL_DOCUMENTS = "https://ah6259.github.io/documents-tunisie/";
 const URL_DOCUMENTS = "https://ah6259.github.io/documents-tunisie/";
+// Menu de l'en-tête (toutes les pages) : les 5 calculateurs + notre annuaire des comptables (demande d'Ahmed, 06/10/2026 :
+// « améliorer les liens entre site et moteur »). Lien externe = bouton à bordure dorée avec le logo de l'annuaire
+// (copie locale assets/logo-comptables.svg : la CSP n'autorise que les images du site). Clic compté : « lien-site/comptables ».
+const MENU_SITE = [
+  ["https://ah6259.github.io/comptables-tunisie/", "Trouver un comptable", "ابحث عن محاسب", "assets/logo-comptables.svg"],  // en premier : visible sur les petits écrans
+  ["salaire-net/", "Salaire net", "الأجر الصافي"],
+  ["impot-revenu/", "Impôt", "الضريبة"],
+  ["credit/", "Crédit", "القرض"],
+  ["auto-entrepreneur/", "Auto-entrepreneur", "المبادر الذاتي"],
+  ["retenue-source/", "Retenue à la source", "الخصم من المورد"]
+];
 
 (function () {
   const html = document.documentElement;
@@ -16,16 +27,25 @@ const URL_DOCUMENTS = "https://ah6259.github.io/documents-tunisie/";
   window.T = (fr, ar) => html.lang === "ar" ? ar : fr;
 
   function cadre() {
+    // bouton doré « Pass Journée » : SEULEMENT sur les calculateurs et les pages du Pass (<body data-pass>),
+    // jamais sur l'accueil (décision d'Ahmed, 06/10/2026 : le visiteur partirait). Voir assets/pass.js.
+    const passIci = !!document.body && document.body.hasAttribute("data-pass");
     const e = document.getElementById("entete");
     if (e) e.innerHTML = `
       <div class="wrap">
         <a class="logo" href="${racine || "./"}">
           <img class="logo-mark" src="${racine}assets/logo.svg" alt="" width="34" height="34">
           <span class="logo-nom">${T("Outils pratiques Tunisie", "أدوات عملية تونس")}
-            <small>${T("Calculs gratuits · règles 2026", "حسابات مجانية · قواعد 2026")}</small></span>
+            <small>${T("1 calcul gratuit par jour · règles 2026", "حساب مجاني كل يوم · قواعد 2026")}</small></span>
         </a>
-        <button class="langue" type="button">${T("العربية", "Français")}</button>
-      </div>`;
+        <div class="entete-boutons">
+          ${passIci ? `<a class="entete-pass${typeof passActif === "function" && passActif() ? " actif" : ""}" href="${racine}pass/"><span class="long">${T("Pass Journée", "باقة اليوم")}</span><span class="court">${T("Pass", "الباقة")}</span></a>` : ""}
+          <button class="langue" type="button">${T("العربية", "Français")}</button>
+        </div>
+      </div>
+      <nav class="menu" aria-label="${T("Calculateurs", "الحاسبات")}"><div class="wrap">${MENU_SITE.map(([h, fr, ar, ico]) => /^https:/.test(h)
+        ? `<a class="menu-annuaire" href="${h}" target="_blank" rel="noopener" data-compteur="lien-site/comptables">${ico ? `<img src="${racine}${ico}" alt="" width="20" height="20">` : ""}${T(fr, ar)}</a>`
+        : `<a href="${racine}${h}"${location.pathname.endsWith("/" + h) ? ' aria-current="page"' : ""}>${T(fr, ar)}</a>`).join("")}</div></nav>`;
     const p = document.getElementById("pied");
     if (p) p.innerHTML = `
       <div class="wrap">
@@ -37,6 +57,7 @@ const URL_DOCUMENTS = "https://ah6259.github.io/documents-tunisie/";
           <a href="${racine}auto-entrepreneur/">${T("Auto-entrepreneur", "المبادر الذاتي")}</a>
           <a href="${racine}retenue-source/">${T("Retenue à la source", "الخصم من المورد")}</a>
           <a href="${racine}a-propos/">${T("À propos et méthode", "من نحن والمنهجية")}</a>
+          ${racine ? `<a href="${racine}pass/">${T("Pass Journée", "باقة اليوم")}</a>` : ""}
           <a href="${racine}#avis">${T("Votre avis", "رأيك")}</a>
         </nav>
         <p>${T(`Règles vérifiées le ${MAJ} : loi de finances 2025 (barème de l'impôt), taux de la CNSS 2026.`,
@@ -135,5 +156,5 @@ function lienPro(visible) {
 document.addEventListener("click", e => {
   const a = e.target.closest && e.target.closest("a[data-compteur]");
   if (!a) return;
-  try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: a.dataset.compteur, title: "Clic vers l'annuaire des comptables", event: true }); } catch (x) { /* rien : le lien marche sans */ }
+  try { if (window.goatcounter && window.goatcounter.count) window.goatcounter.count({ path: a.dataset.compteur, title: a.dataset.compteur.startsWith("lien-site/") ? "Bouton Trouver un comptable" : "Clic vers l'annuaire des comptables", event: true }); } catch (x) { /* rien : le lien marche sans */ }
 });

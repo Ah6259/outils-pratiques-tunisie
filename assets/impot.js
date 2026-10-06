@@ -1,5 +1,6 @@
 /* Script de la page impot-revenu (sorti de la page pour la politique de sécurité CSP) */
 function calculer(){
+  if (window.porteCalcul && !porteCalcul("impot-revenu")) return;   // Pass Journée : exemple + 1 calcul gratuit par jour (assets/pass.js)
   const rev = Math.max(0, parseFloat(document.getElementById("revenu").value) || 0);
   const r = irppAnnuel(rev), css = cssAnnuelle(rev);
   document.getElementById("grand").textContent = dt(r.total);

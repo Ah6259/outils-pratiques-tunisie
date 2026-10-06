@@ -1,7 +1,7 @@
 // Test automatique d'Outils pratiques Tunisie — à lancer après chaque modification :
 //   node tools/test_site.mjs
 // jsdom s'installe une fois par PC :  npm install --no-save --no-package-lock jsdom
-import { JSDOM } from "jsdom";
+import { JSDOM, VirtualConsole } from "jsdom";
 import { readFileSync, existsSync, readdirSync, statSync } from "fs";
 import { execSync } from "child_process";
 import { fileURLToPath } from "url";
@@ -95,12 +95,13 @@ check("impôt : revenu 0 -> 0,000", texte(d.getElementById("grand")).includes("0
 
 // ---- 3. Règles communes : référencement, aperçu, licence, cache ----------------
 const TOUTES = ["index.html", "salaire-net/index.html", "impot-revenu/index.html", "a-propos/index.html",
-                "credit/index.html", "auto-entrepreneur/index.html", "retenue-source/index.html"];
-const AVEC_PHOTO = TOUTES.filter(p => p !== "a-propos/index.html");
+                "credit/index.html", "auto-entrepreneur/index.html", "retenue-source/index.html",
+                "pass/index.html", "pass/conditions/index.html"];
+const AVEC_PHOTO = TOUTES.filter(p => p !== "a-propos/index.html" && !p.startsWith("pass/"));
 for (const p of TOUTES) {
   const s = lire(p);
   check(`${p} : titre, description, canonical`, /<title>.+<\/title>/.test(s) && s.includes('name="description"') && s.includes('rel="canonical"'));
-  check(`${p} : image d'aperçu et icône`, s.includes("og-image-v5.jpg") && s.includes("logo.svg"));
+  check(`${p} : image d'aperçu et icône`, s.includes("og-image-v6.jpg") && s.includes("logo.svg"));
   check(`${p} : même version ?v= pour tous les fichiers`, new Set(s.match(/\?v=\d+\w/g)).size === 1);
   const w2 = await page(p);
   const pied = w2.document.getElementById("pied")?.textContent || "";
@@ -109,18 +110,18 @@ for (const p of TOUTES) {
   check(`${p} : date « à jour au » remplie`, [...w2.document.querySelectorAll("[data-maj]")].every(x => /\d{2}\/\d{2}\/\d{4}/.test(x.textContent)));
 }
 check("FAQ Google sur les 2 calculateurs", ["salaire-net/index.html", "impot-revenu/index.html"].every(p => lire(p).includes("FAQPage")));
-check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v5.jpg")));
+check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v6.jpg")));
 // manifeste : id UNIQUE = chemin du site (sinon Chrome croit le site « déjà installé » : tous les sites partagent ah6259.github.io)
 let man = {}; try { man = JSON.parse(lire("manifest.webmanifest")); } catch (e) {}
 check("manifeste présent, id unique = chemin du site, start_url/scope ./, icônes 192, 512 et maskable existantes",
   man.id === "/outils-pratiques-tunisie/" && man.start_url === "./" && man.scope === "./" && man.display === "standalone" && !!man.name && !!man.short_name
   && ["192x192", "512x512"].every(t => man.icons?.some(i => i.sizes === t)) && man.icons?.some(i => i.purpose === "maskable")
   && man.icons.every(i => existsSync(join(root, i.src))) && existsSync(join(root, "assets/icons/apple-touch-icon.png")));
-check("toutes les pages : lien vers le manifeste, icône iPhone et theme-color", TOUTES.every(p => { const s = lire(p), r = p.includes("/") ? "../" : "";
+check("toutes les pages : lien vers le manifeste, icône iPhone et theme-color", TOUTES.every(p => { const s = lire(p), r = "../".repeat(p.split("/").length - 1);
   return s.includes(`<link rel="manifest" href="${r}manifest.webmanifest">`) && s.includes(`<link rel="apple-touch-icon" href="${r}assets/icons/apple-touch-icon.png">`) && s.includes('<meta name="theme-color"'); }));
-check("image d'aperçu JPEG < 250 Ko (sinon WhatsApp n'affiche qu'une petite vignette)", existsSync(join(root, "assets/og-image-v5.jpg")) && statSync(join(root, "assets/og-image-v5.jpg")).size < 250000 && TOUTES.every(p => lire(p).includes('<meta property="og:image:type" content="image/jpeg">')));
+check("image d'aperçu JPEG < 250 Ko (sinon WhatsApp n'affiche qu'une petite vignette)", existsSync(join(root, "assets/og-image-v6.jpg")) && statSync(join(root, "assets/og-image-v6.jpg")).size < 250000 && TOUTES.every(p => lire(p).includes('<meta property="og:image:type" content="image/jpeg">')));
 const locs = [...lire("sitemap.xml").matchAll(/<loc>https:\/\/ah6259\.github\.io\/outils-pratiques-tunisie\/([^<]*)<\/loc>/g)].map(m => m[1]);
-check("plan du site : 7 pages (accueil, 3 + 3 calculateurs, à propos)", (lire("sitemap.xml").match(/<loc>/g) || []).length === 7 && locs.length === 7);
+check("plan du site : 8 pages (accueil, 5 calculateurs, à propos, Pass Journée)", (lire("sitemap.xml").match(/<loc>/g) || []).length === 8 && locs.length === 8 && locs.includes("pass/"));
 check("plan du site : chaque adresse mène à une page existante", locs.every(l => existsSync(join(root, l, "index.html"))));
 check("toutes les pages : même version ?v= partout (cache des téléphones)", new Set(TOUTES.flatMap(p => lire(p).match(/\?v=\w+/g) || [])).size === 1);
 
@@ -215,7 +216,7 @@ for (const p of TOUTES) {
         && /connect-src[^;]*https:\/\/prix-eaux-tunisie\.goatcounter\.com/.test(s) && /img-src[^;]*https:\/\/prix-eaux-tunisie\.goatcounter\.com/.test(s));
   check(`${p} : aucun script dans la page (sinon bloqué par la CSP)`, (s.match(/<script(?![^>]*\bsrc=)(?![^>]*ld\+json)[^>]*>/g) || []).length === 0);
   check(`${p} : referrer strict-origin-when-cross-origin`, s.includes('<meta name="referrer" content="strict-origin-when-cross-origin">'));
-  check(`${p} : script anti-copie chargé (page.js)`, /<script src="(\.\.\/)?assets\/page\.js\?v=/.test(s));
+  check(`${p} : script anti-copie chargé (page.js)`, /<script src="(\.\.\/)*assets\/page\.js\?v=/.test(s));
   check(`${p} : liens externes en rel="noopener"`, [...s.matchAll(/<a [^>]*href="https?:\/\/[^"]+"[^>]*>/g)].every(m => /rel="[^"]*noopener/.test(m[0])));
 }
 check("anti-copie : clic droit et glisser bloqués sur les images", pageJs.includes('"contextmenu"') && pageJs.includes('"dragstart"') && /img\{[^}]*-webkit-touch-callout:none/.test(css));
@@ -292,7 +293,256 @@ for (const p of TOUTES) {
   const morts = tuilesSansLien(new JSDOM(lire(p)).window.document);
   check(`${p} : aucune carte avec une icône sans lien (pas de faux bouton)${morts.length ? " → " + morts.join(" | ") : ""}`, !morts.length);
 }
-check("accueil : « Gratuit, sans inscription » dans l'intro (FR + AR), sans badge", /Gratuit, sans inscription/.test(lire("index.html")) && /مجاني، دون تسجيل/.test(lire("index.html")) && !/badge-c|class="confiance"/.test(lire("index.html")));
+check("accueil : « 1 calcul gratuit par jour, sans inscription » dans l'intro (FR + AR), sans badge", /1 calcul gratuit par jour, sans inscription/.test(lire("index.html")) && /حساب مجاني كل يوم، دون تسجيل/.test(lire("index.html")) && !/badge-c|class="confiance"/.test(lire("index.html")));
+await passJournee();
+await boutonComptables();
+
+// ---- Pass Journée (partie payante, 06/10/2026, accord écrit d'Ahmed) -----------------------------------------
+// exemple gratuit, 1 calcul personnel gratuit par jour (tous calculateurs), 2e bloqué, lendemain, code valide / expiré / faux,
+// page pass/ (prix, paiement, formulaire), conditions, bouton doré seulement sur les calculateurs et les pages du Pass.
+async function passJournee() {
+  const { webcrypto, pbkdf2Sync } = await import("crypto");
+  const pause = ms => new Promise(r => setTimeout(r, ms));
+  const t = el => el ? el.textContent.replace(/[⁦-⁩  ]/g, " ").replace(/\s+/g, " ").trim() : "";
+  const CALCS = { "salaire-net": "montant", "impot-revenu": "revenu", "credit": "prix", "auto-entrepreneur": "ca", "retenue-source": "montant" };
+  const JOUR = (d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"));
+  const AUJ = JOUR(new Date()), HIER = JOUR(new Date(Date.now() - 86400000 * 1.5));
+  const futur = new Date(Date.now() + 20 * 3600000).toISOString(), passe = new Date(Date.now() - 3600000).toISOString();
+  // fenêtre comme un navigateur ; avant = réglages du stockage avant le chargement (calcul gratuit déjà utilisé, code gardé…)
+  async function ouvrir(chemin, { lang = "fr", avant = null } = {}) {
+    const dossier = dirname(join(root, chemin));
+    const html = lire(chemin).replace(/<script([^>]*) src="(?!https?:)([^"?]+)(\?[^"]*)?"([^>]*)><\/script>/g,
+      (_, a, src) => `<script>${readFileSync(join(dossier, src), "utf8")}</script>`);
+    const fautes = [], vc = new VirtualConsole();
+    vc.on("jsdomError", e => { if (!/Not implemented/.test(e.message)) fautes.push(e.message); });
+    const dom = new JSDOM(html, { url: `https://ah6259.github.io/outils-pratiques-tunisie/${chemin.replace("index.html", "")}?lang=${lang}`,
+      runScripts: "dangerously", pretendToBeVisual: true, virtualConsole: vc, beforeParse(w) { if (avant) avant(w); } });
+    await new Promise(ok => dom.window.addEventListener("load", ok));
+    dom.window.fautes = fautes;
+    return dom.window;
+  }
+  const saisir = (w, id, v) => { const e = w.document.getElementById(id); e.value = v; e.dispatchEvent(new w.Event("input")); e.dispatchEvent(new w.Event("change")); };
+  const bloque = w => w.document.body.hasAttribute("data-verrou") && !!w.document.getElementById("pass-bloque") && !w.document.getElementById("pass-bloque").hidden;
+  const gratuitUtilise = (calc, debut = Date.now() - 3600000, jour = AUJ) => w => w.localStorage.setItem("opt-calcul-gratuit-v1", JSON.stringify({ jour, calc, debut }));
+
+  // -- dépôt public : aucune donnée personnelle
+  let pj = {}; try { pj = JSON.parse(lire("donnees/pass.json")); } catch (e) {}
+  check("donnees/pass.json : seulement sel, tours, date et liste {empreinte, heure de fin} (aucun nom, aucun téléphone)",
+    Object.keys(pj).every(k => ["_lisez_moi", "maj", "sel", "tours", "codes"].includes(k)) && typeof pj.sel === "string" && pj.sel.length >= 16 &&
+    pj.tours >= 100000 && Array.isArray(pj.codes) && pj.codes.every(c => Object.keys(c).join() === "h,fin" && /^[0-9a-f]{64}$/.test(c.h) && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(c.fin)) &&
+    !/\b[2-9]\d{7}\b|nom|telephone|téléphone/i.test(JSON.stringify(pj.codes)));
+  check("dépôt public : aucun fichier de clients (clients.json) ni dossier « pass (prive) »",
+    !["clients.json", "donnees/clients.json", "pass (prive)"].some(f => existsSync(join(root, f))));
+
+  // -- 1. l'exemple à l'ouverture : toujours visible et gratuit, même si le calcul gratuit du jour est déjà utilisé
+  for (const [calc, champ] of Object.entries(CALCS)) {
+    let w = await ouvrir(`${calc}/index.html`, { avant: gratuitUtilise("autre") }), d = w.document;
+    check(`${calc} : aucune erreur JavaScript`, w.fautes.length === 0);
+    check(`${calc} : EXEMPLE affiché à l'ouverture, gratuit même après le calcul gratuit du jour (note « Exemple », bouton Pass près du résultat)`,
+      !bloque(w) && /\d/.test(t(d.getElementById("grand"))) && t(d.getElementById("pass-note")).includes("Exemple") &&
+      d.querySelector("#pass-note a.btn-pass-petit")?.getAttribute("href") === "../pass/" && !!d.querySelector(".resultat #pass-note"));
+    // 2e calcul personnel du même jour (le gratuit a servi sur un autre calculateur) : bloqué
+    const comptes = []; w.goatcounter = { count: o => comptes.push(o) };
+    saisir(w, champ, "12345");
+    const b = d.getElementById("pass-bloque");
+    check(`${calc} : 2e calcul personnel du jour -> résultat masqué, « Vous avez utilisé votre calcul gratuit du jour »`, bloque(w) &&
+      t(b).includes("Vous avez utilisé votre calcul gratuit du jour") && !!b.closest(".resultat"));
+    check(`${calc} : écran bloqué -> Pass Journée 7 DT (24 heures) vers pass/, « Revenez demain », « J'ai déjà un code »`,
+      !!b && b.querySelector("a.btn-pass-grand")?.getAttribute("href") === "../pass/" && /7 DT/.test(t(b)) && t(b).includes("24 heures") &&
+      t(b).includes("revenez demain : un nouveau calcul gratuit vous attend") && b.querySelector('a[href="../pass/#code-acces"]') && t(b).includes("J'ai déjà un code"));
+    check(`${calc} : écran bloqué compté anonymement (GoatCounter « pass-bloque/${calc} », une fois)`, comptes.length === 1 && comptes[0].path === `pass-bloque/${calc}` && comptes[0].event === true);
+    saisir(w, champ, "23456");
+    check(`${calc} : toujours bloqué, compté une seule fois par page`, bloque(w) && comptes.length === 1);
+    d.getElementById("revoir-exemple")?.dispatchEvent(new w.MouseEvent("click", { bubbles: true }));
+    check(`${calc} : « Revoir l'exemple » -> chiffres d'origine, résultat de l'exemple de nouveau visible`, !bloque(w) && t(d.getElementById("pass-note")).includes("Exemple"));
+  }
+  const css = lire("assets/style.css").replace(/\s+/g, "");
+  check("style : résultat masqué quand c'est bloqué (body[data-verrou] .resultat > :not(.pass-bloque), [data-resultat])",
+    css.includes("body[data-verrou].resultat>:not(.pass-bloque){display:none!important}") && css.includes("body[data-verrou][data-resultat]{display:none!important}"));
+  check("détail de l'impôt (salaire), tableau d'amortissement (crédit), verdict (auto-entrepreneur) masqués eux aussi (data-resultat)",
+    /<section class="carte" data-resultat>\s*<details>\s*<summary><span data-l="fr">Détail du calcul/.test(lire("salaire-net/index.html")) &&
+    /<section class="carte" data-resultat>\s*<details>\s*<summary><span data-l="fr">Tableau d'amortissement/.test(lire("credit/index.html")) &&
+    lire("auto-entrepreneur/index.html").includes('id="verdict" data-resultat'));
+
+  // -- 2. 1er calcul personnel du jour : autorisé (résultat + encart des comptables), corrections pendant 10 minutes
+  let w = await ouvrir("salaire-net/index.html"), d = w.document;
+  saisir(w, "montant", "2500");
+  check("1er calcul personnel du jour : autorisé, résultat affiché (2 500 -> 1 849,310) avec l'encart vers les comptables",
+    !bloque(w) && t(d.getElementById("grand")).includes("1 849,310") && !d.getElementById("lien-pro").hidden);
+  const g = JSON.parse(w.localStorage.getItem("opt-calcul-gratuit-v1") || "{}");
+  check("calcul gratuit noté sur l'appareil : jour, calculateur, heure", g.jour === AUJ && g.calc === "salaire-net" && g.debut > 0);
+  check("calcul gratuit : note « vous pouvez corriger vos chiffres pendant 10 minutes »", t(d.getElementById("pass-note")).includes("corriger vos chiffres pendant 10 minutes"));
+  saisir(w, "montant", "800");
+  check("calcul gratuit : correction des chiffres dans les 10 minutes -> toujours autorisé (800 -> 684,262)", !bloque(w) && t(d.getElementById("grand")).includes("684,262"));
+  w = await ouvrir("salaire-net/index.html", { avant: gratuitUtilise("salaire-net", Date.now() - 11 * 60000) }); d = w.document;
+  saisir(w, "montant", "3000");
+  check("même calculateur après 10 minutes : nouveau calcul -> bloqué", bloque(w));
+  w = await ouvrir("credit/index.html", { avant: gratuitUtilise("salaire-net", Date.now() - 60000) }); d = w.document;
+  saisir(w, "prix", "50000");
+  check("autre calculateur le même jour (tous calculateurs confondus) -> bloqué", bloque(w));
+  // -- 3. le lendemain : de nouveau autorisé
+  w = await ouvrir("impot-revenu/index.html", { avant: gratuitUtilise("salaire-net", Date.now() - 86400000 * 1.5, HIER) }); d = w.document;
+  saisir(w, "revenu", "25000");
+  check("le lendemain : nouveau calcul gratuit autorisé (25 000 -> 4 750,000)", !bloque(w) && t(d.getElementById("grand")).includes("4 750,000") &&
+    JSON.parse(w.localStorage.getItem("opt-calcul-gratuit-v1")).jour === AUJ);
+  // stockage impossible (navigation privée stricte…) : on laisse calculer
+  w = await ouvrir("impot-revenu/index.html"); d = w.document;
+  Object.defineProperty(w, "localStorage", { get() { throw new Error("bloqué"); }, configurable: true });
+  saisir(w, "revenu", "30000");
+  check("stockage du navigateur impossible : le calcul marche quand même", !bloque(w) && t(d.getElementById("grand")).includes("6 250,000"));
+
+  // -- 4. avec un code valide : tout est permis ; code expiré : bloqué
+  const avecPass = fin => w => { gratuitUtilise("autre")(w); w.localStorage.setItem("opt-pass-v1", JSON.stringify({ code: "ABCD2345", fin, verifie: Date.now() })); };
+  for (const calc of Object.keys(CALCS)) {
+    w = await ouvrir(`${calc}/index.html`, { avant: avecPass(futur) }); d = w.document;
+    saisir(w, CALCS[calc], "45678"); saisir(w, CALCS[calc], "56789");
+    check(`${calc} : Pass Journée actif -> calculs autorisés après le gratuit du jour, note « Pass Journée actif jusqu'au … », en-tête coché`,
+      !bloque(w) && t(d.getElementById("pass-note")).includes("Pass Journée actif") && !!d.querySelector("#entete .entete-pass.actif"));
+  }
+  w = await ouvrir("credit/index.html", { avant: avecPass(passe) }); d = w.document;
+  w.fetch = () => Promise.reject(new TypeError("Failed to fetch"));
+  saisir(w, "prix", "70000");
+  check("code expiré gardé sur l'appareil -> calcul bloqué", bloque(w) && !d.querySelector("#entete .entete-pass.actif"));
+
+  // -- 5. vérification d'un code dans le navigateur (empreinte PBKDF2-SHA-256 salée, comme le robot du dépôt privé)
+  const SEL = "sel-de-test", TOURS = 1000;
+  const h = c => pbkdf2Sync(c, SEL, TOURS, 32, "sha256").toString("hex");
+  const LISTE = { maj: "2026-10-06T10:00:00Z", sel: SEL, tours: TOURS, codes: [{ h: h("ABCD2345"), fin: futur }, { h: h("EFGH6789"), fin: passe }] };
+  const reseau = (wx, liste, panne) => { Object.defineProperty(wx, "crypto", { value: webcrypto, configurable: true });
+    wx.n = 0; wx.fetch = () => { wx.n++; return panne ? Promise.reject(new TypeError("Failed to fetch")) : Promise.resolve({ ok: true, status: 200, json: async () => JSON.parse(JSON.stringify(liste)) }); }; };
+  w = await ouvrir("pass/index.html"); d = w.document; reseau(w, LISTE);
+  check("empreinte JS = empreinte Python du robot (même vecteur de test, 100 000 tours)",
+    await w.eval('empreinteCode("ABCD2345", "sel-de-test", 100000)') === "517bf9a9ea3ad38b3adcbeef5808d4efe420fbf10a2b7bd9179640f4d1c7c2dd");
+  check("code valide (minuscules, tiret) : accepté avec son heure de fin", (r => r.etat === "ok" && r.fin === futur)(await w.eval('verifierCode("abcd-2345")')));
+  check("code expiré : refusé « expire »", (await w.eval('verifierCode("EFGH6789")')).etat === "expire");
+  check("code faux : refusé « inconnu »", (await w.eval('verifierCode("ZZZZ2222")')).etat === "inconnu");
+  check("code mal formé (O, 0, I, 1 ou longueur) : refusé « forme »", (await w.eval('verifierCode("ABCD0O1I")')).etat === "forme" && (await w.eval('verifierCode("ABC")')).etat === "forme");
+  const cf = d.getElementById("code-form");
+  cf.querySelector("input[name=code]").value = "ZZZZ2222";
+  cf.dispatchEvent(new w.Event("submit", { bubbles: true, cancelable: true })); await pause(200);
+  check("page pass/ : code faux -> « Code non reconnu », rien gardé", d.getElementById("code-status").className === "err" && /non reconnu/.test(t(d.getElementById("code-status"))) && !w.localStorage.getItem("opt-pass-v1"));
+  cf.querySelector("input[name=code]").value = "EFGH 6789";
+  cf.dispatchEvent(new w.Event("submit", { bubbles: true, cancelable: true })); await pause(200);
+  check("page pass/ : code expiré -> « Ce code a expiré », rien gardé", /a expiré/.test(t(d.getElementById("code-status"))) && !w.localStorage.getItem("opt-pass-v1"));
+  cf.querySelector("input[name=code]").value = "abcd 2345";
+  cf.dispatchEvent(new w.Event("submit", { bubbles: true, cancelable: true })); await pause(200);
+  check("page pass/ : code valide -> accepté, gardé sur l'appareil, « actif jusqu'au … à …h… », carte d'état et en-tête cochés",
+    d.getElementById("code-status").className === "ok" && /jusqu'au \d{2}\/\d{2}\/\d{4} à \d{2}h\d{2}/.test(t(d.getElementById("code-status"))) &&
+    JSON.parse(w.localStorage.getItem("opt-pass-v1")).fin === futur && w.eval("passActif()") && !d.getElementById("pass-etat").hidden && !!d.querySelector(".entete-pass.actif"));
+  reseau(w, LISTE, true);
+  check("pas de connexion : « reseau », le Pass gardé n'est pas effacé", (await w.eval('verifierCode("ABCD2345")')).etat === "reseau" && w.eval("passActif()"));
+  w.localStorage.setItem("opt-pass-v1", JSON.stringify({ code: "ABCD2345", fin: futur, verifie: 0 }));
+  reseau(w, { ...LISTE, codes: [] }); await w.eval("reverifierPass()");
+  check("revérification : code arrêté (absent de pass.json) -> effacé, retour au calcul gratuit", !w.localStorage.getItem("opt-pass-v1") && !w.eval("passActif()"));
+  w.localStorage.setItem("opt-pass-v1", JSON.stringify({ code: "ABCD2345", fin: passe, verifie: 0 }));
+  reseau(w, LISTE); await w.eval("reverifierPass()");
+  check("revérification : code prolongé -> nouvelle heure de fin", JSON.parse(w.localStorage.getItem("opt-pass-v1") || "{}").fin === futur);
+  w.localStorage.setItem("opt-pass-v1", JSON.stringify({ code: "ABCD2345", fin: futur, verifie: Date.now() }));
+  reseau(w, LISTE); await w.eval("reverifierPass()");
+  check("revérification : au plus une fois par heure (aucun appel réseau juste après)", w.n === 0);
+  w.localStorage.setItem("opt-pass-v1", JSON.stringify({ code: "EFGH6789", fin: passe, verifie: 0 }));
+  await w.eval("reverifierPass()");
+  check("revérification : code expiré -> nettoyé de l'appareil", !w.localStorage.getItem("opt-pass-v1"));
+  w = await ouvrir("salaire-net/index.html");
+  { let n = 0; w.fetch = () => { n++; return Promise.reject(new Error("x")); }; await w.eval("reverifierPass()");
+    check("aucun appel réseau au chargement d'un calculateur sans code gardé", n === 0); }
+
+  // -- 6. page pass/ : prix et avantages directs, paiement, formulaire, conditions
+  w = await ouvrir("pass/index.html"); d = w.document;
+  const offre = t(d.getElementById("offre"));
+  check("pass/ : aucune erreur JavaScript", w.fautes.length === 0);
+  check("pass/ : prix 7 DT pour 24 heures visible tout de suite", t(d.getElementById("tarifs")).includes("7 DT") && t(d.getElementById("tarifs")).includes("24 heures"));
+  check("pass/ : avantages (tous les calculs 24 heures, 5 calculateurs, 24 h à partir de l'activation, pas de renouvellement automatique)",
+    ["Tous les calculs pendant 24 heures", "24 heures à partir de l'activation de votre code", "Pas de renouvellement automatique", "retenue à la source"].every(m => offre.includes(m)));
+  check("pass/ : aucun prix « TTC » ni nom de société", !/TTC|SUARL|S\.?A\.?R\.?L/i.test(lire("pass/index.html") + lire("pass/conditions/index.html")));
+  const pay = d.getElementById("paiement");
+  check("pass/ : bouton « Paiement » (<details>) avec D17, IZI, Wafacash au 24 321 390, 7 DT, motif nom + téléphone", !!pay && pay.tagName === "DETAILS" && t(pay.querySelector("summary")).startsWith("Paiement") &&
+    ["D17", "IZI", "Wafacash", "24 321 390", "7 DT", "votre nom et votre téléphone"].every(m => t(pay).includes(m)));
+  const wa = d.getElementById("pass-preuve");
+  check("pass/ : bouton vert « Envoyer la preuve de paiement par WhatsApp » vers wa.me/21624321390, texte prérempli", !!wa && wa.classList.contains("btn-wa") &&
+    wa.href.startsWith("https://wa.me/21624321390?text=") && decodeURIComponent(wa.href).includes("Pass Journée") && t(wa).includes("Envoyer la preuve de paiement par WhatsApp"));
+  const form = d.getElementById("pass-form");
+  check("pass/ : formulaire Formspree mwlpakqj (nom, téléphone, case conditions, piège)", form.getAttribute("action") === "https://formspree.io/f/mwlpakqj" &&
+    !!form.querySelector("[name=nom]") && !!form.querySelector("[name=telephone]") && !!form.querySelector("input[name=conditions][type=checkbox]") &&
+    !!form.querySelector("input[name=_gotcha]") && !!form.querySelector('a[href="conditions/"]'));
+  const appels = []; w.fetch = (u, o) => { appels.push({ u, o }); return Promise.resolve({ ok: true, status: 200 }); };
+  form.querySelector("[name=nom]").value = "Test Client"; form.querySelector("[name=telephone]").value = "12";
+  form.querySelector("[name=conditions]").checked = true;
+  form.dispatchEvent(new w.Event("submit", { bubbles: true, cancelable: true })); await pause(20);
+  check("pass/ : téléphone faux refusé, rien envoyé", appels.length === 0 && d.getElementById("pass-status").className === "err");
+  form.querySelector("[name=telephone]").value = "+216 98 765 432"; form.querySelector("[name=conditions]").checked = false;
+  form.dispatchEvent(new w.Event("submit", { bubbles: true, cancelable: true })); await pause(20);
+  check("pass/ : conditions non cochées refusées, rien envoyé", appels.length === 0 && /conditions/.test(t(d.getElementById("pass-status"))));
+  form.querySelector("[name=conditions]").checked = true;
+  form.dispatchEvent(new w.Event("submit", { bubbles: true, cancelable: true })); await pause(30);
+  const envoi = appels[0] ? Object.fromEntries(appels[0].o.body.entries()) : {};
+  check("pass/ : envoi Formspree (nom, téléphone 8 chiffres, formule 7 DT, ligne « pour_activer : action paye »)", appels.length === 1 && appels[0].u === "https://formspree.io/f/mwlpakqj" &&
+    envoi.nom === "Test Client" && envoi.telephone === "98765432" && /7 DT/.test(envoi.formule) && String(envoi.pour_activer).includes("action: paye") && envoi.site === "Outils pratiques Tunisie");
+  check("pass/ : après l'envoi, paiement + « Vous recevrez votre code par WhatsApp » + preuve WhatsApp avec nom et téléphone", form.hidden && !d.getElementById("apres-pass").hidden &&
+    t(d.getElementById("apres-pass")).includes("Vous recevrez votre code par WhatsApp") && decodeURIComponent(d.getElementById("pass-preuve-apres").href).includes("Test Client — 98765432"));
+  w = await ouvrir("pass/conditions/index.html"); d = w.document;
+  const tc = t(d.querySelector(".conditions"));
+  check("conditions : vendeur « l'éditeur du site », 7 DT, 24 heures à partir de l'activation, 1 calcul gratuit par jour, pas de renouvellement, aucune période payée remboursée, INPDP",
+    ["l'éditeur du site", "7 DT pour un Pass Journée de 24 heures", "24 heures à partir de l'activation du code", "1 calcul personnel gratuit par jour", "Aucun renouvellement automatique",
+     "Aucune période payée n'est remboursée", "INPDP"].every(m => tc.includes(m)) && !/déclaration n°|numéro de déclaration/i.test(tc));
+  w = await ouvrir("pass/index.html", { lang: "ar" }); d = w.document;
+  check("pass/ en arabe : titre, prix et formulaire en arabe", /[؀-ۿ]/.test(t(d.querySelector("h1"))) && /[؀-ۿ]/.test(t(d.getElementById("tarifs"))) && /[؀-ۿ]/.test(t(d.querySelector("#inscription h2"))));
+  w = await ouvrir("credit/index.html", { lang: "ar", avant: gratuitUtilise("autre") }); d = w.document;
+  saisir(w, "prix", "50000");
+  check("écran bloqué en arabe", bloque(w) && t(d.getElementById("pass-bloque")).includes("استعملت حسابك المجاني لهذا اليوم") && /[؀-ۿ]/.test(t(d.querySelector("#pass-bloque .btn-pass-grand"))));
+
+  // -- 7. bouton doré « Pass Journée » : calculateurs et pages du Pass SEULEMENT (jamais sur l'accueil, décision d'Ahmed)
+  const mauvais = [];
+  for (const p of TOUTES) { const wx = await ouvrir(p); const a = wx.document.querySelector("#entete a.entete-pass");
+    const doit = /^(salaire-net|impot-revenu|credit|auto-entrepreneur|retenue-source|pass)\//.test(p);
+    if (doit !== !!a || (a && !new URL(a.getAttribute("href"), wx.location.href).href.endsWith("/outils-pratiques-tunisie/pass/"))) mauvais.push(p); }
+  check(`bouton doré « Pass Journée » dans l'en-tête des calculateurs et des pages du Pass seulement ${mauvais}`, mauvais.length === 0);
+  w = await ouvrir("index.html", { avant: avecPass(futur) }); d = w.document;
+  check("accueil : AUCUN bouton ni lien vers le Pass (ni en-tête, ni page, ni pied)", !d.querySelector(".entete-pass, .btn-pass-grand, .btn-pass-petit, #pass-note") &&
+    ![...d.querySelectorAll("a[href]")].some(a => /pass\//.test(a.getAttribute("href"))) && !/pass\.js/.test(lire("index.html")));
+  check("les 5 calculateurs et les 2 pages du Pass chargent assets/pass.js juste après page.js (même version)",
+    [...Object.keys(CALCS).map(c => `${c}/index.html`), "pass/index.html", "pass/conditions/index.html"].every(p => /<script src="(\.\.\/)+assets\/page\.js\?v=(\w+)"><\/script>\r?\n<script src="(\.\.\/)+assets\/pass\.js\?v=\2"><\/script>/.test(lire(p))));
+
+  // -- 8. « gratuit » toujours vrai : plus de « calculs gratuits » sans limite dans les titres, descriptions, aperçus, manifeste
+  const textesPublics = [...TOUTES.map(lire), lire("manifest.webmanifest"), lire("assets/page.js")].join("\n");
+  check("plus aucun « Calculs gratuits », « Calculez gratuitement », « Calculateurs gratuits », « Gratuit, en français »",
+    !/Calculs gratuits|Calculez gratuitement|Calculateurs gratuits|calcul gratuit honoraires|Gratuit, en français|حسابات مجانية|أدوات حساب مجانية/i.test(textesPublics));
+  check("« 1 calcul gratuit par jour » annoncé (en-tête, accueil, manifeste)", lire("assets/page.js").includes("1 calcul gratuit par jour") &&
+    lire("index.html").includes("1 calcul gratuit par jour") && lire("manifest.webmanifest").includes("1 calcul gratuit par jour"));
+  check("image d'aperçu : modèle sans pastille « Gratuit » seule (« 1 calcul gratuit par jour »)", lire("tools/og-image.html").includes('<span class="pill">1 calcul gratuit par jour</span>') &&
+    !lire("tools/og-image.html").includes('<span class="pill">Gratuit</span>'));
+}
+
+// ---- Bouton « Trouver un comptable » vers notre annuaire (demande d'Ahmed, 06/10/2026 : liens entre site et moteur) ----
+async function boutonComptables() {
+  const ANNU = "https://ah6259.github.io/comptables-tunisie/";
+  const ko = [];
+  for (const p of TOUTES) for (const lang of ["fr", "ar"]) {
+    const wx = await page(p, lang), a = wx.document.querySelector("#entete nav.menu a.menu-annuaire");
+    const img = a?.querySelector("img");
+    if (!a || a.href !== ANNU || a.target !== "_blank" || !a.rel.includes("noopener") || a.dataset.compteur !== "lien-site/comptables" || !img ||
+        !img.getAttribute("src").endsWith("assets/logo-comptables.svg") || !a.textContent.includes(lang === "fr" ? "Trouver un comptable" : "ابحث عن محاسب")) ko.push(p + " " + lang);
+  }
+  check(`menu de l'en-tête : bouton « Trouver un comptable » / « ابحث عن محاسب » avec le logo de l'annuaire, sur toutes les pages ${ko.join(", ")}`, ko.length === 0);
+  check("logo de l'annuaire copié dans le site (CSP : images du site seulement) et bordure dorée #F2B33D",
+    existsSync(join(root, "assets/logo-comptables.svg")) && lire("assets/logo-comptables.svg").includes("<svg") &&
+    /\.menu a\.menu-annuaire\{[^}]*border:2px solid #F2B33D/.test(lire("assets/style.css")) && /\.outil-annuaire\{border:2px solid #F2B33D\}/.test(lire("assets/style.css")));
+  const w2 = await page("index.html"), c = w2.document.getElementById("carte-comptables");
+  check("accueil : carte « Trouver un comptable » avec les cartes des calculateurs (logo, nouvel onglet, clic compté)",
+    !!c && !!c.closest(".outils") && c.href === ANNU && c.target === "_blank" && c.dataset.compteur === "lien-site/comptables" &&
+    c.querySelector("img").getAttribute("src") === "assets/logo-comptables.svg" && c.textContent.includes("Trouver un comptable"));
+  const comptes = []; w2.goatcounter = { count: o => comptes.push(o) };
+  w2.addEventListener("click", e => e.preventDefault());
+  w2.document.querySelector("#entete a.menu-annuaire").dispatchEvent(new w2.MouseEvent("click", { bubbles: true, cancelable: true }));
+  c.dispatchEvent(new w2.MouseEvent("click", { bubbles: true, cancelable: true }));
+  check("clic sur « Trouver un comptable » compté anonymement (« lien-site/comptables »)", comptes.length === 2 && comptes.every(o => o.path === "lien-site/comptables" && o.event === true));
+  const menuKo = [];
+  for (const p of TOUTES) { const wx = await page(p);
+    for (const a of wx.document.querySelectorAll("#entete nav.menu a:not(.menu-annuaire)")) { const f = cible(p, a.getAttribute("href")); if (!f || !existsSync(f)) menuKo.push(p + " → " + a.getAttribute("href")); } }
+  check(`menu de l'en-tête : les 5 calculateurs mènent à des pages existantes ${menuKo.join(", ")}`, menuKo.length === 0);
+  check("encarts sous les résultats inchangés (lien-comptables/<calculateur>)", ["salaire-net", "impot-revenu", "credit", "auto-entrepreneur", "retenue-source"]
+    .every(c2 => lire(`${c2}/index.html`).includes(`data-compteur="lien-comptables/${c2}"`)));
+}
 
 console.log(erreurs ? `\n${erreurs} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(erreurs ? 1 : 0);

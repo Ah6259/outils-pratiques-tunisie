@@ -34,6 +34,7 @@
       `Le TMM change chaque mois : vérifiez la dernière valeur publiée sur <a href="${REGLES_CREDIT.tmm.source}" target="_blank" rel="noopener">bct.gov.tn</a> et corrigez-la ci-dessus.`,
       `يتغير TMM كل شهر: تحقق من آخر قيمة منشورة على <a href="${REGLES_CREDIT.tmm.source}" target="_blank" rel="noopener">bct.gov.tn</a> وصحّحها أعلاه.`);
 
+    if (window.porteCalcul && !porteCalcul("credit")) return;   // Pass Journée : exemple + 1 calcul gratuit par jour (assets/pass.js)
     const r = calculCredit({
       prix: Math.max(0, nombre("prix")), apport: Math.max(0, nombre("apport")),
       duree: Math.max(0, nombre("duree")), unite: choixValeur("unite"), mode,

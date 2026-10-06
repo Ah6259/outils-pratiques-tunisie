@@ -34,6 +34,9 @@
   }
 
   function calculer() {
+    const regime = choixValeur("regime");
+    $("bloc-tranche").classList.toggle("cache", regime === "artisan");
+    if (window.porteCalcul && !porteCalcul("auto-entrepreneur")) return;   // Pass Journée : exemple + 1 calcul gratuit par jour (assets/pass.js)
     // 1. éligibilité
     const e = eligibiliteAE({
       tunisien: choixValeur("tunisien") === "oui", seul: choixValeur("seul") === "oui",
@@ -59,8 +62,6 @@
         : `<ul>${items}</ul>`) + "</div>";
 
     // 2. contribution
-    const regime = choixValeur("regime");
-    $("bloc-tranche").classList.toggle("cache", regime === "artisan");
     const c = contributionAE({ annee: +choixValeur("annee"), zone: choixValeur("zone"), regime, tranche: +$("tranche").value || 1 });
     $("grand").textContent = dt(c.total);
     $("resume").innerHTML = c.exoneree

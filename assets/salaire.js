@@ -2,6 +2,7 @@
 function famille(){ return { chef: document.getElementById("chef").checked, enfants: +document.getElementById("enfants").value }; }
 function lignes(rows){ return rows.map(([a,b,cl]) => `<tr${cl?` class="${cl}"`:""}><td>${a}</td><td${cl==="m"?' class="moins"':""}>${b}</td></tr>`).join(""); }
 function calculer(){
+  if (window.porteCalcul && !porteCalcul("salaire-net")) return;   // Pass Journée : exemple + 1 calcul gratuit par jour (assets/pass.js)
   const m = Math.max(0, parseFloat(document.getElementById("montant").value) || 0);
   const sens = choixValeur("sens");
   const r = sens === "net" ? netVersBrut(m, famille()) : brutVersNet(m, famille());

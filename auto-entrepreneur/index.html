@@ -18,16 +18,16 @@
 <meta name="apple-mobile-web-app-title" content="Outils TN">
 <meta name="theme-color" content="#0B7A53">
 <meta property="og:title" content="Auto-entrepreneur en Tunisie : éligibilité et contribution unique">
-<meta property="og:description" content="Plafond de 75 000 DT, impôt forfaitaire, CNSS, 1re année gratuite. Gratuit, en français et en arabe.">
-<meta property="og:image" content="https://ah6259.github.io/outils-pratiques-tunisie/assets/og-image-v5.jpg">
+<meta property="og:description" content="Plafond de 75 000 DT, impôt forfaitaire, CNSS, 1re année gratuite. 1 calcul gratuit par jour, en français et en arabe.">
+<meta property="og:image" content="https://ah6259.github.io/outils-pratiques-tunisie/assets/og-image-v6.jpg">
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261006a">
-<link rel="stylesheet" href="../assets/nouveaux.css?v=20261006a">
+<link rel="stylesheet" href="../assets/style.css?v=20261006b">
+<link rel="stylesheet" href="../assets/nouveaux.css?v=20261006b">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"Qui peut devenir auto-entrepreneur en Tunisie ?","acceptedAnswer":{"@type":"Answer","text":"Selon la Direction générale des impôts : toute personne physique de nationalité tunisienne qui exerce seule une activité dans l'industrie, l'artisanat, les métiers, le commerce ou les services (sauf les professions non commerciales), avec un chiffre d'affaires annuel de 75 000 DT au maximum, sans avoir déposé de déclaration d'existence avant l'inscription."}},
@@ -35,11 +35,12 @@
 {"@type":"Question","name":"Combien de temps dure le régime de l'auto-entrepreneur ?","acceptedAnswer":{"@type":"Answer","text":"4 ans, renouvelables une seule fois pour 3 ans si les conditions sont toujours remplies. La première année va de la date d'inscription au 31 décembre de la même année."}}
 ]}
 </script>
-<script src="../assets/calcul.js?v=20261006a"></script>
-<script src="../assets/page.js?v=20261006a"></script>
-<script src="../assets/calcul-auto.js?v=20261006a"></script>
+<script src="../assets/calcul.js?v=20261006b"></script>
+<script src="../assets/page.js?v=20261006b"></script>
+<script src="../assets/pass.js?v=20261006b"></script>
+<script src="../assets/calcul-auto.js?v=20261006b"></script>
 </head>
-<body>
+<body data-pass>
 <header class="entete" id="entete"></header>
 
 <section class="hero">
@@ -72,7 +73,7 @@
       <label for="ca"><span data-l="fr">Chiffre d'affaires prévu par an</span><span data-l="ar">رقم المعاملات المتوقع سنويًا</span></label>
       <div class="saisie"><input id="ca" type="number" inputmode="decimal" min="0" step="1000" value="30000"><span class="unite">DT</span></div>
     </div>
-    <div class="verdict" id="verdict"></div>
+    <div class="verdict" id="verdict" data-resultat></div>
   </section>
 
   <section class="carte">
@@ -159,7 +160,7 @@
 </main>
 <footer id="pied"></footer>
 
-<script src="../assets/auto-entrepreneur.js?v=20261006a"></script>
+<script src="../assets/auto-entrepreneur.js?v=20261006b"></script>
 <script data-goatcounter="https://prix-eaux-tunisie.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

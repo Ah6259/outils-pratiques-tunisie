@@ -2,7 +2,7 @@
   "id": "/outils-pratiques-tunisie/",
   "name": "Outils pratiques Tunisie",
   "short_name": "Outils TN",
-  "description": "Calculateurs gratuits pour la Tunisie : salaire net, impôt sur le revenu, crédit, auto-entrepreneur, retenue à la source.",
+  "description": "Calculateurs pour la Tunisie (1 calcul gratuit par jour) : salaire net, impôt sur le revenu, crédit, auto-entrepreneur, retenue à la source.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

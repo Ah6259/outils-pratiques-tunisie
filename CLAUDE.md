@@ -12,7 +12,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 
 ## Le site
 - En ligne : https://ah6259.github.io/outils-pratiques-tunisie/ — dépôt `Ah6259/outils-pratiques-tunisie` (GitHub Pages, branche main).
-- Créé le 04/10/2026. Calculateurs gratuits, **français + arabe** (bouton, ou `?lang=ar` dans l'adresse).
+- Créé le 04/10/2026. Calculateurs (exemple + **1 calcul gratuit par jour**, puis **Pass Journée 7 DT / 24 h**), **français + arabe** (bouton, ou `?lang=ar` dans l'adresse).
 - Pages : accueil, `salaire-net/` (brut ⇄ net, chef de famille, enfants), `impot-revenu/` (IRPP tranche par tranche),
   `credit/` (mensualité, TMM + marge, assurance, tableau d'amortissement), `auto-entrepreneur/` (éligibilité + contribution unique),
   `retenue-source/` (HT ⇄ TTC ⇄ net, taux officiels, rappel TEJ ; **ne fabrique aucun certificat**), `a-propos/` (méthode, données, limites, sources, photos).
@@ -51,13 +51,13 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 
 ## Avant chaque publication
 1. Les cinq tests (tout doit être vert) :
-   `node tools/test_site.mjs` (≈ 275 vérifications : calculs de référence, pages FR/AR, liens de l'accueil et du pied, photos, sécurité…),
+   `node tools/test_site.mjs` (≈ 410 vérifications, dont le Pass Journée et le bouton « Trouver un comptable » : calculs de référence, pages FR/AR, liens de l'accueil et du pied, photos, sécurité…),
    `node tools/test_nouveaux.mjs` (≈ 140 : crédit, auto-entrepreneur, retenue ; accepte un dossier en argument pour tester une copie),
    `PYTHONIOENCODING=utf-8 python tools/test_robot.py` (31 scénarios du robot),
    `node tools/test_sw.mjs` (service worker : réseau d'abord, exclusions, meta iPhone ; accepte un dossier en argument),
    `node tools/test_avis.mjs` (Votre avis : section, pied de page de toutes les pages, CSP, envoi simulé ; accepte un dossier en argument).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
-2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261006a`) — les tests le vérifient.
+2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261006b`) — les tests le vérifient.
 3. Capture mobile 340/390 px en français ET en arabe si l'affichage change : Chrome sans écran sur une page HTML locale
    contenant deux `<iframe>` (340 et 390 px) vers les fichiers `file:///…?lang=fr|ar` (la fenêtre de Chrome sans écran ne descend
    pas sous ~500 px ; l'anti-iframe de page.js laisse passer `file:`).
@@ -85,7 +85,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - L'année n'est écrite qu'à des endroits remplaçables automatiquement ; l'image d'aperçu n'a pas d'année.
 
 ## Visibilité
-- sitemap.xml (7 pages) + robots.txt ; FAQ Google (JSON-LD) sur les 5 calculateurs ; image d'aperçu `assets/og-image-v5.jpg` (avec la photo des pièces et l'icône du site ; modèle `tools/og-image.html`, capture 1200×630 puis JPEG qualité 88 ; JPEG < 250 Ko, sinon WhatsApp n'affiche qu'une petite vignette ; balise `og:image:type`)
+- sitemap.xml (7 pages) + robots.txt ; FAQ Google (JSON-LD) sur les 5 calculateurs ; image d'aperçu `assets/og-image-v6.jpg` (06/10 : pastille « 1 calcul gratuit par jour » au lieu de « Gratuit ») (avec la photo des pièces et l'icône du site ; modèle `tools/og-image.html`, capture 1200×630 puis JPEG qualité 88 ; JPEG < 250 Ko, sinon WhatsApp n'affiche qu'une petite vignette ; balise `og:image:type`)
   (si on la change : **nouveau nom de fichier**, WhatsApp/Facebook gardent l'ancienne). L'ancien `og-image-v3.png` peut être supprimé.
 - **Statistiques GoatCounter** (sans cookies, 05/10/2026) sur toutes les pages : compteur partagé
   `https://prix-eaux-tunisie.goatcounter.com` (pages séparées par chemin `/outils-pratiques-tunisie/…`) ;
@@ -120,9 +120,45 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 
 ## Mise à jour du 05/10/2026 (soir)
 - **Icône (famille commune des 5 sites)** : un seul symbole en aplats 2-3 tons, accent doré `#F2B33D`, sans texte ni brillance (règle d'Ahmed : jamais d'effet « image IA » ni de clip-art). Ce site : **les 4 opérations (+ − × =), la touche = en doré**. Source = `assets/logo.svg` ; PNG 192/512 = dessin arrondi, maskable 512 et iPhone 180 = même dessin sur carré plein, symbole à 78 %. Générateur (hors dépôt) : `_claude code project/icones des sites - generateur.py`. Changer l'icône → renouveler `CACHE_VERSION` de `sw.js`.
-- **« Gratuit » mis en avant** (titres Google, descriptions, aperçus de partage, manifeste), seulement là où c'est vrai. La future partie payante n'est jamais annoncée à l'avance (décision d'Ahmed).
+- **« Gratuit » mis en avant** seulement là où c'est vrai. Depuis le 06/10/2026 (Pass Journée) : « 1 calcul gratuit par jour » dans l'en-tête, les titres, descriptions, aperçus, manifeste ; plus aucun « Calculs gratuits » sans limite (test).
 - **Aperçus WhatsApp** : tous les sites sont réglés pareil (1200 × 630, JPEG léger). WhatsApp sur PC fait de petites vignettes : envoyer les liens depuis le téléphone (ou transférer un message préparé sur le téléphone).
 - **Règle d'Ahmed : tout tourne sur internet (GitHub), sans son PC ni son intervention, « même s'il meurt ».**
 - Titres : « calcul gratuit » ajouté là où il manquait (retenue à la source).
 - **Lien vers l'annuaire des comptables** (fait le 05/10/2026, validé par Ahmed) : dans chaque `.resultat`, `<p class="lien-pro" id="lien-pro" hidden>` vers https://ah6259.github.io/comptables-tunisie/ (nouvel onglet), texte FR + AR adapté au calculateur (jamais « meilleur »).
   Caché dans la page ; `lienPro(vrai/faux)` (page.js) l'affiche à la fin de chaque `calculer()` seulement s'il y a un résultat. Clic → GoatCounter événement `lien-comptables/<calculateur>` (attribut `data-compteur`). Aucun changement de CSP. Testé dans `test_site.mjs`. Aucun lien vers le mariage (garder le sérieux du site).
+
+## Pass Journée (partie payante, 06/10/2026, accord écrit d'Ahmed — même règle que Documents)
+- **Gratuit pour toujours** : l'EXEMPLE affiché à l'ouverture de chaque calculateur + **1 calcul personnel par jour et par appareil**
+  (tous calculateurs confondus). « Calcul personnel » = le visiteur change un chiffre ou un choix (comparé à l'état de la page au
+  chargement). Pendant **10 minutes** sur le même calculateur, il peut corriger ses chiffres (taper « 2500 » = 4 frappes).
+  `localStorage` `opt-calcul-gratuit-v1` = `{jour, calc, debut}` (try/catch : stockage impossible = permis). Le lendemain : nouveau calcul gratuit.
+- **2e calcul personnel du jour** : `body[data-verrou]` masque le résultat (`.resultat` sauf `#pass-bloque`, et les zones `[data-resultat]` :
+  détail de l'impôt, tableau d'amortissement, verdict auto-entrepreneur) ; écran « Vous avez utilisé votre calcul gratuit du jour »
+  → gros bouton doré **Pass Journée 7 DT (tous les calculs pendant 24 heures)**, « Revenez demain… », « J'ai déjà un code »,
+  « Revoir l'exemple (gratuit) ». GoatCounter : événement `pass-bloque/<calculateur>` (une fois par page).
+- Chaque `calculer()` commence par `if (window.porteCalcul && !porteCalcul("<calculateur>")) return;` (après les blocs du formulaire).
+  Ligne `#pass-note` sous le résultat (exemple / calcul gratuit / Pass actif) avec petit bouton doré vers `pass/`.
+- **Pass Journée = 7 DT, 24 heures à partir de l'activation** (appui d'Ahmed sur « paye »), heure de fin écrite dans le message.
+  Nouveau paiement pendant un Pass : +24 h après la fin en cours. Pas de renouvellement automatique, aucune période payée remboursée,
+  vendeur « l'éditeur du site » (JAMAIS le nom de la société), prix non TTC, INPDP (accord, sans numéro).
+- Pages : `pass/` (prix, avantages, « Paiement » <details> D17/IZI/Wafacash 24 321 390, motif nom + téléphone, bouton vert WhatsApp,
+  « J'ai un code » `#code-acces`, formulaire Formspree `mwlpakqj` avec `pour_activer`), `pass/conditions/`. Sitemap : `pass/` (8 pages).
+- **Bouton doré « Pass Journée »** dans l'en-tête SEULEMENT sur `<body data-pass>` (5 calculateurs + 2 pages du Pass) ;
+  **jamais sur l'accueil** (décision d'Ahmed : le visiteur partirait) — ni bouton ni lien vers pass/ sur l'accueil (test).
+  Lien « Pass Journée » dans le pied de page des autres pages.
+- Code : `assets/pass.js` (chargé juste après page.js par les 7 pages). Code d'accès = 8 caractères sans O/0/I/1.
+  `donnees/pass.json` (public) = `sel`, `tours` (100 000), `codes: [{h, fin}]` : h = PBKDF2-SHA-256(code, sel) ; fin = heure de fin
+  en temps universel (`2026-10-07T13:32:00Z`). AUCUNE donnée personnelle (test). Code gardé dans `opt-pass-v1` ; revérifié au plus
+  1 fois par heure (arrêté/expiré = effacé ; pas de réseau = gardé jusqu'à la fin). Rien n'est demandé au réseau sans code gardé.
+- **Activation** : dépôt PRIVÉ `Ah6259/outils-pass` (dossier local `../pass (prive)/`), bouton « pass » dans l'application GitHub
+  (paye / arret / liste) + nettoyage chaque nuit. Il écrit ici `donnees/pass.json` avec la clé de déploiement « robot-pass »
+  (secret `CLE_SITE` du dépôt privé ; secours : `JETON_SITE`). Voir son README.
+- **Limites honnêtes** : calcul gratuit compté dans le navigateur (vider le navigateur = nouveau calcul gratuit) ; un code peut être
+  partagé pendant ses 24 h ; GitHub Pages met jusqu'à 10 min à publier un code.
+
+## Bouton « Trouver un comptable » (06/10/2026, demande d'Ahmed : « améliorer les liens entre site et moteur »)
+- Menu de l'en-tête (`MENU_SITE` dans page.js, toutes les pages) : **en premier** le bouton `a.menu-annuaire` (bordure dorée #F2B33D,
+  logo de l'annuaire copié en `assets/logo-comptables.svg` car la CSP n'autorise que les images du site) vers
+  https://ah6259.github.io/comptables-tunisie/ (nouvel onglet), puis les 5 calculateurs. Sur l'accueil : carte `#carte-comptables`
+  (`.outil-annuaire`) avec les cartes des calculateurs. Clic compté « lien-site/comptables » (`data-compteur`). Les encarts sous les
+  résultats (`lien-comptables/<calculateur>`) sont inchangés. Test : `boutonComptables()` dans test_site.mjs.

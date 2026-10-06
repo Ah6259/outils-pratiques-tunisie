@@ -16,6 +16,7 @@
   function calculer() {
     const op = operationRS($("operation").value);
     $("bloc-tva").classList.toggle("cache", !op.tva);
+    if (window.porteCalcul && !porteCalcul("retenue-source")) return;   // Pass Journée : exemple + 1 calcul gratuit par jour (assets/pass.js)
     const r = calculRetenue({
       montant: Math.max(0, parseFloat($("montant").value) || 0), sens: choixValeur("sens"), operation: op.id,
       tva: +$("tva").value, rsTva: +$("rstva").value

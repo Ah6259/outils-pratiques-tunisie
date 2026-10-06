@@ -1,6 +1,7 @@
 # Outils pratiques Tunisie
 
-Calculateurs gratuits pour la Tunisie, en français et en arabe : https://ah6259.github.io/outils-pratiques-tunisie/
+Calculateurs pour la Tunisie, en français et en arabe : https://ah6259.github.io/outils-pratiques-tunisie/
+(exemple toujours gratuit + 1 calcul gratuit par jour ; **Pass Journée** 7 DT = tous les calculs pendant 24 heures)
 
 - `salaire-net/` : salaire brut ⇄ net (CNSS 9,68 %, IRPP barème LF 2025 à 8 tranches, CSS 0,5 %).
 - `impot-revenu/` : impôt sur le revenu annuel, tranche par tranche.
@@ -9,7 +10,10 @@ Calculateurs gratuits pour la Tunisie, en français et en arabe : https://ah6259
 - `retenue-source/` : retenue à la source (taux officiels de la plateforme TEJ), montant hors TVA ⇄ TVA comprise ⇄ net payé.
 - `assets/calcul.js` : règles de paie (objet `REGLES`) — **à mettre à jour à chaque loi de finances (janvier)** ;
   `assets/calcul-credit.js` (TMM), `calcul-auto.js`, `calcul-retenue.js` : règles des 3 autres calculateurs.
-- Documents prêts à remplir : futur site « Documents Tunisie » ; le lien s'active en remplissant `URL_DOCUMENTS` dans `assets/page.js`.
+- Documents prêts à remplir : site « Documents Tunisie » (`URL_DOCUMENTS` dans `assets/page.js`).
+- `pass/` et `pass/conditions/` : **Pass Journée** (code : `assets/pass.js`, codes publiés en empreintes dans `donnees/pass.json`).
+  Activation par Ahmed depuis l'application GitHub : dépôt PRIVÉ `Ah6259/outils-pass`, bouton « pass » (voir son README).
+- Menu de l'en-tête : bouton doré « Trouver un comptable » vers notre annuaire Comptables Tunisie (+ carte sur l'accueil).
 - **Votre avis** (accueil `#avis`, lien « Votre avis » dans le pied de page de toutes les pages) : note facultative (😀🙂😐🙁),
   message (obligatoire, ≤ 1000 caractères), e-mail facultatif ; envoyé **seulement au clic** à Formspree (formulaire `mwlpakqj`,
   commun à tous les sites d'Ahmed) avec les champs cachés `site` = « Outils pratiques Tunisie » et `page`. Code : `assets/avis.js`.
@@ -28,6 +32,7 @@ Tous droits réservés (voir LICENSE).
 | Battement de cœur (commit mensuel) | chaque mois | évite la mise en pause des robots par GitHub (60 jours) |
 | `surveillance.yml` : TMM de la Banque centrale (page Crédit) | le 1er de chaque mois | TMM changé, ou mois à rafraîchir → **alerte** « Crédit : le TMM … a changé » ; page de la BCT illisible → alerte « lecture du TMM impossible » ; le TMM du site n'est jamais modifié automatiquement |
 | `tests.yml` : fichiers des robots (YAML) + les 5 tests | à chaque modification | email de GitHub en cas d'échec |
+| `pass` (dépôt privé `outils-pass`) : codes du Pass Journée | au bouton d'Ahmed + nettoyage chaque nuit | résumé « Le site n'a PAS été mis à jour » si la clé manque (voir son README) |
 
 **Installation sur le téléphone** : `sw.js` (service worker) = **réseau d'abord** pour les pages et les données
 (le cache ne sert que hors connexion) ; CSS/JS/images versionnés (?v=) = cache puis mise à jour. Si un téléphone garde une
@@ -42,3 +47,4 @@ le robot ne change pas leurs dates exprès (dates officielles fixes).
 
 ## Nouveautés
 - 05/10/2026 : nouvelle icône (les 4 opérations) et « calcul gratuit » dans les titres Google.
+- 06/10/2026 : **Pass Journée** (1 calcul gratuit par jour, puis 7 DT pour 24 heures) ; bouton « Trouver un comptable » ; image d'aperçu v6.
