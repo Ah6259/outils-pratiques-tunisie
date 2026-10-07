@@ -17,7 +17,7 @@ const MENU_SITE = [
 ];
 
 // La mémoire du navigateur est PARTAGÉE par tous les sites d'ah6259.github.io : n'accepter que « fr » ou « ar »
-// (le site des conférences gardait « en » → textes tous cachés, 06/10/2026)
+// (le site des conférences gardait « en » → textes tous cachés)
 (function () {
   const html = document.documentElement;
   const racine = html.dataset.racine || "";
