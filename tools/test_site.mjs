@@ -457,8 +457,8 @@ async function passJournee() {
     ["Tous les calculs pendant 24 heures", "24 heures à partir de l'activation de votre code", "Pas de renouvellement automatique", "retenue à la source"].every(m => offre.includes(m)));
   check("pass/ : aucun prix « TTC » ni nom de société", !/TTC|SUARL|S\.?A\.?R\.?L/i.test(lire("pass/index.html") + lire("pass/conditions/index.html")));
   const pay = d.getElementById("paiement");
-  check("pass/ : bouton « Paiement » (<details>) avec D17, IZI, Wafacash au 24 321 390, 7 DT, motif nom + téléphone", !!pay && pay.tagName === "DETAILS" && t(pay.querySelector("summary")).startsWith("Paiement") &&
-    ["D17", "IZI", "Wafacash", "24 321 390", "7 DT", "votre nom et votre téléphone"].every(m => t(pay).includes(m)));
+  check("pass/ : bouton « Paiement » (<details>) avec D17 et IZI (liens vers les applications officielles) au 24 321 390, mode d'emploi, plus de Wafacash, 7 DT, motif nom + téléphone", !!pay && pay.tagName === "DETAILS" && t(pay.querySelector("summary")).startsWith("Paiement") &&
+    ["D17", "IZI", "Transfert rapide", "24 321 390", "7 DT", "votre nom et votre téléphone"].every(m => t(pay).includes(m)) && !/Wafacash/i.test(pay.outerHTML) && ["tn.mobipost", "tn.izi.consumer", "id1475640303", "id1603653941"].every(u => pay.querySelector(`a.appli[href*="${u}"]`)));
   const wa = d.getElementById("pass-preuve");
   check("pass/ : bouton vert « Envoyer la preuve de paiement par WhatsApp » vers wa.me/21624321390, texte prérempli", !!wa && wa.classList.contains("btn-wa") &&
     wa.href.startsWith("https://wa.me/21624321390?text=") && decodeURIComponent(wa.href).includes("Pass Journée") && t(wa).includes("Envoyer la preuve de paiement par WhatsApp"));
