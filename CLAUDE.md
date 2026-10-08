@@ -141,7 +141,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - **Pass Journée = 7 DT, 24 heures à partir de l'activation** (appui d'Ahmed sur « paye »), heure de fin écrite dans le message.
   Nouveau paiement pendant un Pass : +24 h après la fin en cours. Pas de renouvellement automatique, aucune période payée remboursée,
   vendeur « l'éditeur du site » (JAMAIS le nom de la société), prix non TTC, INPDP (accord, sans numéro).
-- Pages : `pass/` (prix, avantages, « Paiement » <details> D17/IZI/Wafacash 24 321 390, motif nom + téléphone, bouton vert WhatsApp,
+- Pages : `pass/` (prix, avantages, « Paiement » <details> D17/IZI 24 321 390, motif nom + téléphone, bouton vert WhatsApp,
   « J'ai un code » `#code-acces`, formulaire Formspree `mwlpakqj` avec `pour_activer`), `pass/conditions/`. Sitemap : `pass/` (8 pages).
 - **Bouton doré « Pass Journée »** dans l'en-tête SEULEMENT sur `<body data-pass>` (5 calculateurs + 2 pages du Pass) ;
   **jamais sur l'accueil** (décision d'Ahmed : le visiteur partirait) — ni bouton ni lien vers pass/ sur l'accueil (test).

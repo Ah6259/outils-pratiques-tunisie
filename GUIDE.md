@@ -71,7 +71,7 @@ Guide réutilisable pour créer un autre site du même genre. Une ligne par éta
 - Règle d'Ahmed : 1 utilisation gratuite par jour, puis 7 DT pour tout pendant la journée. Pour des calculateurs : l'exemple reste
   gratuit, 1 calcul personnel gratuit par jour (10 minutes pour corriger ses chiffres), ensuite le résultat est masqué.
 - Une « porte » (`porteCalcul`) au début de chaque calcul ; écran clair avec le prix, « Revenez demain » et « J'ai déjà un code ».
-- Pages `pass/` (prix, paiement D17/IZI/Wafacash, preuve WhatsApp, formulaire Formspree) et `pass/conditions/` (INPDP, pas de renouvellement).
+- Pages `pass/` (prix, paiement D17/IZI, preuve WhatsApp, formulaire Formspree) et `pass/conditions/` (INPDP, pas de renouvellement).
 - Dépôt PRIVÉ `outils-pass` : programme Python + bouton GitHub (workflow_dispatch) pour activer un client depuis le téléphone ;
   seule l'empreinte salée du code et l'heure de fin arrivent sur le site public (clé de déploiement limitée à ce dépôt).
 - « Gratuit » corrigé partout (« 1 calcul gratuit par jour »), nouvelle image d'aperçu v6 ; tests jsdom (exemple, 1er calcul,
