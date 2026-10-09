@@ -54,6 +54,7 @@ jobs:
           else
             git commit -m "Regles verifiees le $(date +%d/%m/%Y) : identiques"
           fi
+          git pull -q --rebase --autostash
           git push
       - name: Fermer les alertes résolues
         if: steps.verif.outputs.code == '0'
