@@ -1,5 +1,5 @@
 /* Langue (français / arabe), en-tête (bouton doré « Pass Journée » sur les calculateurs, voir pass.js) et pied de page communs, petites fonctions */
-const MAJ = "05/10/2026";   // date de la dernière vérification des règles (mise à jour par le robot surveillance.yml)
+const MAJ = "09/10/2026";   // date de la dernière vérification des règles (mise à jour par le robot surveillance.yml)
 const ANNEE = 2026;          // année des règles affichée sur le site (changée par le robot en janvier)
 // Site « Documents Tunisie » : laisser vide tant qu'il n'est pas en ligne (la carte de l'accueil reste « bientôt »).
 // Quand il sera publié : const URL_DOCUMENTS = "https://ah6259.github.io/documents-tunisie/";
