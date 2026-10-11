@@ -54,7 +54,7 @@ async function page(chemin, lang = "fr", modifier = js => js) {
   const dossier = dirname(join(root, chemin));
   const html = lire(chemin).replace(/<script([^>]*) src="(?!https?:)([^"?]+)(\?[^"]*)?"([^>]*)><\/script>/g,
     (_, a, src) => `<script>${modifier(readFileSync(join(dossier, src), "utf8"), src)}</script>`);
-  const dom = new JSDOM(html, { url: `https://ah6259.github.io/outils-pratiques-tunisie/${chemin.replace("index.html", "")}?lang=${lang}`,
+  const dom = new JSDOM(html, { url: `https://outils.clicvia.com/${chemin.replace("index.html", "")}?lang=${lang}`,
                                runScripts: "dangerously", pretendToBeVisual: true });
   await new Promise(ok => dom.window.addEventListener("load", ok));
   return dom.window;
@@ -114,21 +114,21 @@ check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v6.jpg
 // manifeste : id UNIQUE = chemin du site (sinon Chrome croit le site « déjà installé » : tous les sites partagent ah6259.github.io)
 let man = {}; try { man = JSON.parse(lire("manifest.webmanifest")); } catch (e) {}
 check("manifeste présent, id unique = chemin du site, start_url/scope ./, icônes 192, 512 et maskable existantes",
-  man.id === "/outils-pratiques-tunisie/" && man.start_url === "./" && man.scope === "./" && man.display === "standalone" && !!man.name && !!man.short_name
+  man.id === "/" && man.start_url === "./" && man.scope === "./" && man.display === "standalone" && !!man.name && !!man.short_name
   && ["192x192", "512x512"].every(t => man.icons?.some(i => i.sizes === t)) && man.icons?.some(i => i.purpose === "maskable")
   && man.icons.every(i => existsSync(join(root, i.src))) && existsSync(join(root, "assets/icons/apple-touch-icon.png")));
 check("toutes les pages : lien vers le manifeste, icône iPhone et theme-color", TOUTES.every(p => { const s = lire(p), r = "../".repeat(p.split("/").length - 1);
   return s.includes(`<link rel="manifest" href="${r}manifest.webmanifest">`) && s.includes(`<link rel="apple-touch-icon" href="${r}assets/icons/apple-touch-icon.png">`) && s.includes('<meta name="theme-color"'); }));
 check("image d'aperçu JPEG < 250 Ko (sinon WhatsApp n'affiche qu'une petite vignette)", existsSync(join(root, "assets/og-image-v6.jpg")) && statSync(join(root, "assets/og-image-v6.jpg")).size < 250000 && TOUTES.every(p => lire(p).includes('<meta property="og:image:type" content="image/jpeg">')));
-const locs = [...lire("sitemap.xml").matchAll(/<loc>https:\/\/ah6259\.github\.io\/outils-pratiques-tunisie\/([^<]*)<\/loc>/g)].map(m => m[1]);
+const locs = [...lire("sitemap.xml").matchAll(/<loc>https:\/\/outils\.clicvia\.com\/([^<]*)<\/loc>/g)].map(m => m[1]);
 check("plan du site : au moins 9 pages (accueil, 5 calculateurs, à propos, Pass Journée, page vidéo)", (lire("sitemap.xml").match(/<loc>/g) || []).length === locs.length && locs.length >= 9 && locs.includes("pass/") && locs.includes("video/"));
 check("plan du site : chaque adresse mène à une page existante", locs.every(l => existsSync(join(root, l, "index.html"))));
 check("toutes les pages : même version ?v= partout (cache des téléphones)", new Set(TOUTES.flatMap(p => lire(p).match(/\?v=\w+/g) || [])).size === 1);
 
 // chaque lien de l'accueil (cartes) et du pied de page (sur chaque page) mène à une page existante
-const cible = (p, href) => { const u = new URL(href, `https://ah6259.github.io/outils-pratiques-tunisie/${p.replace("index.html", "")}`);
-  if (u.host !== "ah6259.github.io") return null;
-  const chemin = decodeURIComponent(u.pathname.replace("/outils-pratiques-tunisie/", ""));
+const cible = (p, href) => { const u = new URL(href, `https://outils.clicvia.com/${p.replace("index.html", "")}`);
+  if (u.host !== "outils.clicvia.com") return null;
+  const chemin = decodeURIComponent(u.pathname.replace(/^\//, ""));
   return join(root, chemin.endsWith("/") || chemin === "" ? join(chemin, "index.html") : chemin); };
 w = await page("index.html"); d = w.document;
 const cartes = [...d.querySelectorAll("main .outils a[href]")];
@@ -316,7 +316,7 @@ async function passJournee() {
       (_, a, src) => `<script>${readFileSync(join(dossier, src), "utf8")}</script>`);
     const fautes = [], vc = new VirtualConsole();
     vc.on("jsdomError", e => { if (!/Not implemented/.test(e.message)) fautes.push(e.message); });
-    const dom = new JSDOM(html, { url: `https://ah6259.github.io/outils-pratiques-tunisie/${chemin.replace("index.html", "")}?lang=${lang}`,
+    const dom = new JSDOM(html, { url: `https://outils.clicvia.com/${chemin.replace("index.html", "")}?lang=${lang}`,
       runScripts: "dangerously", pretendToBeVisual: true, virtualConsole: vc, beforeParse(w) { if (avant) avant(w); } });
     await new Promise(ok => dom.window.addEventListener("load", ok));
     dom.window.fautes = fautes;
@@ -498,7 +498,7 @@ async function passJournee() {
   const mauvais = [];
   for (const p of TOUTES) { const wx = await ouvrir(p); const a = wx.document.querySelector("#entete a.entete-pass");
     const doit = /^(salaire-net|impot-revenu|credit|auto-entrepreneur|retenue-source|pass)\//.test(p);
-    if (doit !== !!a || (a && !new URL(a.getAttribute("href"), wx.location.href).href.endsWith("/outils-pratiques-tunisie/pass/"))) mauvais.push(p); }
+    if (doit !== !!a || (a && !new URL(a.getAttribute("href"), wx.location.href).href.endsWith("/pass/"))) mauvais.push(p); }
   check(`bouton doré « Pass Journée » dans l'en-tête des calculateurs et des pages du Pass seulement ${mauvais}`, mauvais.length === 0);
   w = await ouvrir("index.html", { avant: avecPass(futur) }); d = w.document;
   check("accueil : AUCUN bouton ni lien vers le Pass (ni en-tête, ni page, ni pied)", !d.querySelector(".entete-pass, .btn-pass-grand, .btn-pass-petit, #pass-note") &&
@@ -562,10 +562,10 @@ async function boutonPartager() {
     wx.document.querySelector("#entete button.partager").click();
     await new Promise(ok => setTimeout(ok, 0));
     // partage par lien (demande d'Ahmed) : la page vidéo du site + l'adresse du site, dans la langue de la page
-    const adresse = "https://ah6259.github.io/outils-pratiques-tunisie/video/?lang=ar";
+    const adresse = "https://outils.clicvia.com/video/?lang=ar";
     check(`${p} : sans navigator.share, « Partager » ouvre wa.me avec la page vidéo + l'adresse du site et compte le clic`, !wx.navigator.share && ouverts.length === 1
       && ouverts[0][0].startsWith("https://wa.me/?text=") && decodeURIComponent(ouverts[0][0].slice(20)).endsWith(" " + adresse)
-      && decodeURIComponent(ouverts[0][0]).includes("https://ah6259.github.io/outils-pratiques-tunisie/?lang=ar") && ouverts[0][1] === "_blank"
+      && decodeURIComponent(ouverts[0][0]).includes("https://outils.clicvia.com/?lang=ar") && ouverts[0][1] === "_blank"
       && comptes.length === 1 && comptes[0].path.startsWith("partage/") && comptes[0].event === true);
   }
 }

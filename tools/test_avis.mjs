@@ -10,7 +10,7 @@ import { dirname, join } from "path";
 
 // ---- Réglages propres à ce site ------------------------------------------------
 const SITE = "Outils pratiques Tunisie";                                         // valeur du champ caché « site »
-const BASE = "https://ah6259.github.io/outils-pratiques-tunisie/";            // adresse de l'accueil en ligne
+const BASE = "https://outils.clicvia.com/";            // adresse de l'accueil en ligne
 const IGNORER = ["node_modules", ".git", "tools", "captures", "preuves conditions d'utilisation"];
 // --------------------------------------------------------------------------------
 const FORMSPREE = "https://formspree.io/f/mwlpakqj";

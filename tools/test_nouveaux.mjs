@@ -119,7 +119,7 @@ async function page(chemin, lang = "fr") {
   const dossier = dirname(join(root, chemin));
   const html = lire(chemin).replace(/<script([^>]*) src="(?!https?:)([^"?]+)(\?[^"]*)?"([^>]*)><\/script>/g,
     (_, a, src) => `<script>${readFileSync(join(dossier, src), "utf8")}</script>`);
-  const dom = new JSDOM(html, { url: `https://ah6259.github.io/outils-pratiques-tunisie/${chemin.replace("index.html", "")}?lang=${lang}`,
+  const dom = new JSDOM(html, { url: `https://outils.clicvia.com/${chemin.replace("index.html", "")}?lang=${lang}`,
                                runScripts: "dangerously", pretendToBeVisual: true });
   await new Promise(ok => dom.window.addEventListener("load", ok));
   return dom.window;
@@ -197,7 +197,7 @@ for (const p of PAGES) {
 
 // ================= 5. Règles communes : référencement, sources, sécurité =================
 const vRef = lire("salaire-net/index.html").match(/style\.css\?v=(\w+)/)[1];
-const DOMAINES_OK = ["ah6259.github.io", "gc.zgo.at", "fonts.googleapis.com", "fonts.gstatic.com", "schema.org", "wa.me",
+const DOMAINES_OK = ["outils.clicvia.com", "ah6259.github.io", "gc.zgo.at", "fonts.googleapis.com", "fonts.gstatic.com", "schema.org", "wa.me",
   "www.bct.gov.tn", "jibaya.tn", "www.cnss.tn", "www.autoentrepreneur.tn", "tej.finances.gov.tn",
   "commons.wikimedia.org", "creativecommons.org"];   // + crédits des photos (Wikimedia Commons, licences)
 // Noms des concurrents : JAMAIS dans ce dépôt public (règle d'Ahmed). Liste locale dans tools/.concurrents (ignoré par git),
@@ -223,7 +223,7 @@ for (const p of PAGES) {
   if (CONCURRENTS) check(`${p} : aucun concurrent cité`, sansConcurrent(s));
   check(`${p} : section « Sources officielles » en FR et AR`, s.includes("Sources officielles") && s.includes("المصادر الرسمية"));
   check(`${p} : avertissement « pas un service officiel » / indicatif`, /indicatif/.test(s) && /تقريبية/.test(s));
-  check(`${p} : liens externes ouverts dans une nouvelle fenêtre`, [...s.matchAll(/<a [^>]*href="https?:\/\/(?!ah6259)[^"]+"[^>]*>/g)].every(m => m[0].includes('target="_blank"') && m[0].includes("noopener")));
+  check(`${p} : liens externes ouverts dans une nouvelle fenêtre`, [...s.matchAll(/<a [^>]*href="https?:\/\/(?!ah6259|outils\.clicvia)[^"]+"[^>]*>/g)].every(m => m[0].includes('target="_blank"') && m[0].includes("noopener")));
   w = await page(p); d = w.document;
   const pied = d.getElementById("pied")?.textContent || "";
   check(`${p} : en-tête, pied de page © et date « à jour au »`, !!d.querySelector("#entete .logo-mark") && pied.includes("©")

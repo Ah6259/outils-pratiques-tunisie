@@ -1,6 +1,6 @@
 # Outils pratiques Tunisie
 
-Calculateurs pour la Tunisie, en français et en arabe : https://ah6259.github.io/outils-pratiques-tunisie/
+Calculateurs pour la Tunisie, en français et en arabe : https://outils.clicvia.com/
 (exemple toujours gratuit + 1 calcul gratuit par jour ; **Pass Journée** 7 DT = tous les calculs pendant 24 heures)
 
 - `salaire-net/` : salaire brut ⇄ net (CNSS 9,68 %, IRPP barème LF 2025 à 8 tranches, CSS 0,5 %).

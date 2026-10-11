@@ -38,4 +38,4 @@ Disallow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://ah6259.github.io/outils-pratiques-tunisie/sitemap.xml
+Sitemap: https://outils.clicvia.com/sitemap.xml
