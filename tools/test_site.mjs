@@ -84,7 +84,7 @@ d = w.document;
 check("salaire en arabe : lang=ar et dir=rtl", d.documentElement.lang === "ar" && d.documentElement.dir === "rtl");
 check("salaire en arabe : titre du résultat en arabe", /[؀-ۿ]/.test(d.getElementById("titre-res").textContent));
 check("salaire en arabe : montants isolés (ordre lisible)", d.getElementById("grand").textContent.startsWith("⁦"));
-check("salaire en arabe : bouton « Français »", d.querySelector(".langue").textContent === "Français");
+check("salaire en arabe : bouton court « Fr » (titre « Français »)", d.querySelector(".langue").textContent === "Fr" && d.querySelector(".langue").title === "Français");
 
 w = await page("impot-revenu/index.html");
 d = w.document;
