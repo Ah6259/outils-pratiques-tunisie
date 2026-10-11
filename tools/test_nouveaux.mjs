@@ -189,7 +189,7 @@ check("page retenue : montant négatif sans NaN", propre(w));
 // --- arabe
 for (const p of PAGES) {
   w = await page(p, "ar"); d = w.document;
-  check(`${p} en arabe : lang=ar, dir=rtl, bouton « Français »`, d.documentElement.lang === "ar" && d.documentElement.dir === "rtl" && d.querySelector(".langue").textContent === "Français");
+  check(`${p} en arabe : lang=ar, dir=rtl, bouton court « Fr » (title Français)`, d.documentElement.lang === "ar" && d.documentElement.dir === "rtl" && d.querySelector(".langue").textContent === "Fr" && d.querySelector(".langue").title === "Français");
   check(`${p} en arabe : montant isolé (ordre lisible)`, d.getElementById("grand").textContent.startsWith("⁦"));
   check(`${p} en arabe : textes calculés en arabe, pas de NaN`, /[؀-ۿ]/.test(d.getElementById("tableau").textContent) && propre(w));
   check(`${p} en arabe : chaque texte FR a sa traduction AR`, d.querySelectorAll('[data-l="fr"]').length === d.querySelectorAll('[data-l="ar"]').length);

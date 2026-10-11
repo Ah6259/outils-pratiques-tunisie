@@ -168,3 +168,4 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   Pour la refaire : `python fabriquer.py outils` puis `python brancher_partage.py outils` dans le dossier PRIVÉ du PC `videos (outil)/`.
 
 - **Adresse depuis le 11/10/2026 : https://outils.clicvia.com/** (domaine clicvia.com d'Ahmed, ligne DNS `CNAME outils → ah6259.github.io` nuage gris, fichier `CNAME`). L'ancienne adresse ah6259.github.io/outils-pratiques-tunisie/ redirige seule. Site à la racine « / » : `BASE_SITE` de assets/page.js (sw.js, vidéo) ; GoatCounter garde le préfixe `/outils-pratiques-tunisie`. Si l'outil vidéo réécrit le bloc VIDEO_SITE, remettre `"base": BASE_SITE` et l'ORIGINE outils.clicvia.com.
+- **11/10/2026 — aperçu WhatsApp** : `og:url` (adresse canonique) ajouté sur chaque page (sans lui, WhatsApp peut montrer une petite vignette ; règle commune § 14).
