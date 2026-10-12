@@ -149,11 +149,11 @@ check("pied de page : liens vers les 5 calculateurs et À propos", ["salaire-net
   .every(h => [...w.document.querySelectorAll("#pied nav a")].some(a => a.getAttribute("href") === h)));
 // URL_DOCUMENTS (assets/page.js) : remplie depuis la mise en ligne de Documents Tunisie (05/10/2026)
 check("URL_DOCUMENTS : constante unique dans page.js, adresse du site Documents Tunisie", (pageJsSrc => (pageJsSrc.match(/^const URL_DOCUMENTS = /gm) || []).length === 1
-  && /^const URL_DOCUMENTS = "https:\/\/ah6259\.github\.io\/documents-tunisie\/";/m.test(pageJsSrc))(lire("assets/page.js")));
+  && /^const URL_DOCUMENTS = "https:\/\/documents\.clicvia\.com\/";/m.test(pageJsSrc))(lire("assets/page.js")));
 const wDoc = w;
 const carteDoc = wDoc.document.getElementById("carte-documents");
 check("URL_DOCUMENTS remplie : la carte devient un lien (nouvel onglet), sans badge « bientôt »", carteDoc.tagName === "A"
-  && carteDoc.href === "https://ah6259.github.io/documents-tunisie/" && carteDoc.target === "_blank" && carteDoc.rel.includes("noopener")
+  && carteDoc.href === "https://documents.clicvia.com/" && carteDoc.target === "_blank" && carteDoc.rel.includes("noopener")
   && !carteDoc.querySelector(".badge") && !carteDoc.classList.contains("bientot"));
 check("robots.txt indique le plan du site", lire("robots.txt").includes("sitemap.xml"));
 check("LICENSE tous droits réservés", lire("LICENSE").includes("Tous droits réservés"));
@@ -241,7 +241,7 @@ for (const p of ["index.html","salaire-net/index.html","impot-revenu/index.html"
 
 // ---- Lien discret vers l'annuaire gratuit des comptables, sous chaque résultat (05/10/2026) ----------
 // caché dans la page (hidden : rien avant le calcul, rien sans JavaScript), affiché par le calcul, clic compté dans GoatCounter
-const COMPTABLES = "https://ah6259.github.io/comptables-tunisie/";
+const COMPTABLES = "https://comptables.clicvia.com/";
 for (const [calc, champ, mot] of [["salaire-net", "montant", "fiches de paie"], ["impot-revenu", "revenu", "conseiller fiscal"],
     ["credit", "prix", "expert-comptable"], ["auto-entrepreneur", null, "s'inscrire et déclarer"], ["retenue-source", "montant", "expert-comptable"]]) {
   const p = `${calc}/index.html`;
@@ -518,7 +518,7 @@ async function passJournee() {
 
 // ---- Bouton « Trouver un comptable » vers notre annuaire (demande d'Ahmed, 06/10/2026 : liens entre site et moteur) ----
 async function boutonComptables() {
-  const ANNU = "https://ah6259.github.io/comptables-tunisie/";
+  const ANNU = "https://comptables.clicvia.com/";
   const ko = [];
   for (const p of TOUTES) for (const lang of ["fr", "ar"]) {
     const wx = await page(p, lang), a = wx.document.querySelector("#entete nav.menu a.menu-annuaire");

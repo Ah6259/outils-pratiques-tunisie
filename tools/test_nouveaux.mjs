@@ -197,7 +197,7 @@ for (const p of PAGES) {
 
 // ================= 5. Règles communes : référencement, sources, sécurité =================
 const vRef = lire("salaire-net/index.html").match(/style\.css\?v=(\w+)/)[1];
-const DOMAINES_OK = ["outils.clicvia.com", "ah6259.github.io", "gc.zgo.at", "fonts.googleapis.com", "fonts.gstatic.com", "schema.org", "wa.me",
+const DOMAINES_OK = ["outils.clicvia.com", "clicvia.com", "comptables.clicvia.com", "documents.clicvia.com", "ah6259.github.io", "gc.zgo.at", "fonts.googleapis.com", "fonts.gstatic.com", "schema.org", "wa.me",
   "www.bct.gov.tn", "jibaya.tn", "www.cnss.tn", "www.autoentrepreneur.tn", "tej.finances.gov.tn",
   "commons.wikimedia.org", "creativecommons.org"];   // + crédits des photos (Wikimedia Commons, licences)
 // Noms des concurrents : JAMAIS dans ce dépôt public (règle d'Ahmed). Liste locale dans tools/.concurrents (ignoré par git),

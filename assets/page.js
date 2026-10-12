@@ -1,14 +1,14 @@
 /* Langue (français / arabe), en-tête (bouton doré « Pass Journée » sur les calculateurs, voir pass.js) et pied de page communs, petites fonctions */
-const MAJ = "09/10/2026";   // date de la dernière vérification des règles (mise à jour par le robot surveillance.yml)
+const MAJ = "12/10/2026";   // date de la dernière vérification des règles (mise à jour par le robot surveillance.yml)
 const ANNEE = 2026;          // année des règles affichée sur le site (changée par le robot en janvier)
 // Site « Documents Tunisie » : laisser vide tant qu'il n'est pas en ligne (la carte de l'accueil reste « bientôt »).
-// Quand il sera publié : const URL_DOCUMENTS = "https://ah6259.github.io/documents-tunisie/";
-const URL_DOCUMENTS = "https://ah6259.github.io/documents-tunisie/";
+// Quand il sera publié : const URL_DOCUMENTS = "https://documents.clicvia.com/";
+const URL_DOCUMENTS = "https://documents.clicvia.com/";
 // Menu de l'en-tête (toutes les pages) : les 5 calculateurs + notre annuaire des comptables (demande d'Ahmed, 06/10/2026 :
 // « améliorer les liens entre site et moteur »). Lien externe = bouton à bordure dorée avec le logo de l'annuaire
 // (copie locale assets/logo-comptables.svg : la CSP n'autorise que les images du site). Clic compté : « lien-site/comptables ».
 const MENU_SITE = [
-  ["https://ah6259.github.io/comptables-tunisie/", "Trouver un comptable", "ابحث عن محاسب", "assets/logo-comptables.svg"],  // en premier : visible sur les petits écrans
+  ["https://comptables.clicvia.com/", "Trouver un comptable", "ابحث عن محاسب", "assets/logo-comptables.svg"],  // en premier : visible sur les petits écrans
   ["salaire-net/", "Salaire net", "الأجر الصافي"],
   ["impot-revenu/", "Impôt", "الضريبة"],
   ["credit/", "Crédit", "القرض"],
@@ -62,6 +62,7 @@ const MENU_SITE = [
           <a href="${racine}a-propos/">${T("À propos et méthode", "من نحن والمنهجية")}</a>
           ${racine ? `<a href="${racine}pass/">${T("Pass Journée", "باقة اليوم")}</a>` : ""}
           <a href="${racine}#avis">${T("Votre avis", "رأيك")}</a>
+        <a href="https://clicvia.com/" rel="noopener" target="_blank">${T("Tous nos services", "كل خدماتنا")}</a>
         </nav>
         <p>${T(`Règles vérifiées le ${MAJ} : loi de finances 2025 (barème de l'impôt), taux de la CNSS 2026.`,
                `قواعد تم التثبت منها في ${MAJ}: قانون المالية 2025 (جدول الضريبة)، نسب الضمان الاجتماعي 2026.`)}</p>
