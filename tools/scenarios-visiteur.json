@@ -1,0 +1,1080 @@
+[
+ {
+  "page": "salaire-net/",
+  "nom": "salaire : brut 400 DT -> net",
+  "etapes": [
+   {
+    "sel": "#montant",
+    "valeur": "400"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "salaire-brut-vers-net",
+  "ordre": 0,
+  "croissant": true
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire : brut 800 DT -> net",
+  "etapes": [
+   {
+    "sel": "#montant",
+    "valeur": "800"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "salaire-brut-vers-net",
+  "ordre": 1,
+  "croissant": true
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire : brut 1500 DT -> net",
+  "etapes": [
+   {
+    "sel": "#montant",
+    "valeur": "1500"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "salaire-brut-vers-net",
+  "ordre": 2,
+  "croissant": true
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire : brut 2500 DT -> net",
+  "etapes": [
+   {
+    "sel": "#montant",
+    "valeur": "2500"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "salaire-brut-vers-net",
+  "ordre": 3,
+  "croissant": true
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire : brut 5000 DT -> net",
+  "etapes": [
+   {
+    "sel": "#montant",
+    "valeur": "5000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "salaire-brut-vers-net",
+  "ordre": 4,
+  "croissant": true
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire : brut 12000 DT -> net",
+  "etapes": [
+   {
+    "sel": "#montant",
+    "valeur": "12000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "salaire-brut-vers-net",
+  "ordre": 5,
+  "croissant": true
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire : net voulu 700 DT -> brut",
+  "etapes": [
+   {
+    "sel": ".choix[data-nom=\"sens\"] button[data-v=\"net\"]",
+    "clic": true
+   },
+   {
+    "sel": "#montant",
+    "valeur": "700"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "salaire-net-vers-brut",
+  "ordre": 0,
+  "croissant": true
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire : net voulu 1200 DT -> brut",
+  "etapes": [
+   {
+    "sel": ".choix[data-nom=\"sens\"] button[data-v=\"net\"]",
+    "clic": true
+   },
+   {
+    "sel": "#montant",
+    "valeur": "1200"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "salaire-net-vers-brut",
+  "ordre": 1,
+  "croissant": true
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire : net voulu 2000 DT -> brut",
+  "etapes": [
+   {
+    "sel": ".choix[data-nom=\"sens\"] button[data-v=\"net\"]",
+    "clic": true
+   },
+   {
+    "sel": "#montant",
+    "valeur": "2000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "salaire-net-vers-brut",
+  "ordre": 2,
+  "croissant": true
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire : net voulu 4000 DT -> brut",
+  "etapes": [
+   {
+    "sel": ".choix[data-nom=\"sens\"] button[data-v=\"net\"]",
+    "clic": true
+   },
+   {
+    "sel": "#montant",
+    "valeur": "4000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "salaire-net-vers-brut",
+  "ordre": 3,
+  "croissant": true
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire 2500 : célibataire",
+  "etapes": [
+   {
+    "sel": "#montant",
+    "valeur": "2500"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "salaire-famille",
+  "ordre": 1,
+  "croissant": true
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire 2500 : chef de famille",
+  "etapes": [
+   {
+    "sel": "#montant",
+    "valeur": "2500"
+   },
+   {
+    "sel": "#chef",
+    "valeur": "1"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "salaire-famille",
+  "ordre": 2,
+  "croissant": true
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire 2500 : chef de famille + 3 enfants",
+  "etapes": [
+   {
+    "sel": "#montant",
+    "valeur": "2500"
+   },
+   {
+    "sel": "#chef",
+    "valeur": "1"
+   },
+   {
+    "sel": "#enfants",
+    "valeur": "3"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "salaire-famille",
+  "ordre": 3,
+  "croissant": true
+ },
+ {
+  "page": "impot-revenu/",
+  "nom": "2e calcul d'un autre calculateur : écran Pass Journée 7 DT",
+  "etapes": [
+   {
+    "sel": "#revenu",
+    "valeur": "31000"
+   }
+  ],
+  "lire": "#pass-bloque"
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire-net/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "salaire-net/?lang=ar",
+  "nom": "salaire-net/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "impot-revenu/",
+  "nom": "impot-revenu/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "impot-revenu/?lang=ar",
+  "nom": "impot-revenu/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "credit/",
+  "nom": "credit/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "credit/?lang=ar",
+  "nom": "credit/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "impot-revenu/",
+  "nom": "impôt : revenu 3000 DT/an",
+  "etapes": [
+   {
+    "sel": "#revenu",
+    "valeur": "3000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "impot",
+  "ordre": 0,
+  "croissant": true
+ },
+ {
+  "page": "impot-revenu/",
+  "nom": "impôt : revenu 5000 DT/an",
+  "etapes": [
+   {
+    "sel": "#revenu",
+    "valeur": "5000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "impot",
+  "ordre": 1,
+  "croissant": true
+ },
+ {
+  "page": "impot-revenu/",
+  "nom": "impôt : revenu 8000 DT/an",
+  "etapes": [
+   {
+    "sel": "#revenu",
+    "valeur": "8000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "impot",
+  "ordre": 2,
+  "croissant": true
+ },
+ {
+  "page": "impot-revenu/",
+  "nom": "impôt : revenu 15000 DT/an",
+  "etapes": [
+   {
+    "sel": "#revenu",
+    "valeur": "15000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "impot",
+  "ordre": 3,
+  "croissant": true
+ },
+ {
+  "page": "impot-revenu/",
+  "nom": "impôt : revenu 30000 DT/an",
+  "etapes": [
+   {
+    "sel": "#revenu",
+    "valeur": "30000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "impot",
+  "ordre": 4,
+  "croissant": true
+ },
+ {
+  "page": "impot-revenu/",
+  "nom": "impôt : revenu 60000 DT/an",
+  "etapes": [
+   {
+    "sel": "#revenu",
+    "valeur": "60000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "impot",
+  "ordre": 5,
+  "croissant": true
+ },
+ {
+  "page": "impot-revenu/",
+  "nom": "impôt : revenu 120000 DT/an",
+  "etapes": [
+   {
+    "sel": "#revenu",
+    "valeur": "120000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "impot",
+  "ordre": 6,
+  "croissant": true
+ },
+ {
+  "page": "credit/",
+  "nom": "2e calcul d'un autre calculateur : écran Pass Journée 7 DT",
+  "etapes": [
+   {
+    "sel": "#prix",
+    "valeur": "200000"
+   }
+  ],
+  "lire": "#pass-bloque"
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire-net/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "salaire-net/?lang=ar",
+  "nom": "salaire-net/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "impot-revenu/",
+  "nom": "impot-revenu/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "impot-revenu/?lang=ar",
+  "nom": "impot-revenu/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "credit/",
+  "nom": "credit/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "credit/?lang=ar",
+  "nom": "credit/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "auto-entrepreneur/",
+  "nom": "auto-entrepreneur/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "auto-entrepreneur/?lang=ar",
+  "nom": "auto-entrepreneur/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "retenue-source/",
+  "nom": "retenue-source/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "retenue-source/?lang=ar",
+  "nom": "retenue-source/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire-net/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "salaire-net/?lang=ar",
+  "nom": "salaire-net/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "credit/",
+  "nom": "crédit : prix 60000 DT (apport 30 000)",
+  "etapes": [
+   {
+    "sel": "#prix",
+    "valeur": "60000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "credit-montant",
+  "ordre": 0,
+  "croissant": true
+ },
+ {
+  "page": "credit/",
+  "nom": "crédit : prix 150000 DT (apport 30 000)",
+  "etapes": [
+   {
+    "sel": "#prix",
+    "valeur": "150000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "credit-montant",
+  "ordre": 1,
+  "croissant": true
+ },
+ {
+  "page": "credit/",
+  "nom": "crédit : prix 300000 DT (apport 30 000)",
+  "etapes": [
+   {
+    "sel": "#prix",
+    "valeur": "300000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "credit-montant",
+  "ordre": 2,
+  "croissant": true
+ },
+ {
+  "page": "credit/",
+  "nom": "crédit : taux 6 pour cent",
+  "etapes": [
+   {
+    "sel": "#taux",
+    "valeur": "6"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "credit-taux",
+  "ordre": 0,
+  "croissant": true
+ },
+ {
+  "page": "credit/",
+  "nom": "crédit : taux 10 pour cent",
+  "etapes": [
+   {
+    "sel": "#taux",
+    "valeur": "10"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "credit-taux",
+  "ordre": 1,
+  "croissant": true
+ },
+ {
+  "page": "credit/",
+  "nom": "crédit : taux 14 pour cent",
+  "etapes": [
+   {
+    "sel": "#taux",
+    "valeur": "14"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "credit-taux",
+  "ordre": 2,
+  "croissant": true
+ },
+ {
+  "page": "credit/",
+  "nom": "crédit : durée 25 ans (plus court = mensualité plus haute)",
+  "etapes": [
+   {
+    "sel": "#duree",
+    "valeur": "25"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "credit-duree",
+  "ordre": 0,
+  "croissant": true
+ },
+ {
+  "page": "credit/",
+  "nom": "crédit : durée 15 ans (plus court = mensualité plus haute)",
+  "etapes": [
+   {
+    "sel": "#duree",
+    "valeur": "15"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "credit-duree",
+  "ordre": 1,
+  "croissant": true
+ },
+ {
+  "page": "credit/",
+  "nom": "crédit : durée 7 ans (plus court = mensualité plus haute)",
+  "etapes": [
+   {
+    "sel": "#duree",
+    "valeur": "7"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "credit-duree",
+  "ordre": 2,
+  "croissant": true
+ },
+ {
+  "page": "credit/",
+  "nom": "crédit : apport 100000 DT (plus petit = mensualité plus haute)",
+  "etapes": [
+   {
+    "sel": "#apport",
+    "valeur": "100000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "credit-apport",
+  "ordre": 0,
+  "croissant": true
+ },
+ {
+  "page": "credit/",
+  "nom": "crédit : apport 50000 DT (plus petit = mensualité plus haute)",
+  "etapes": [
+   {
+    "sel": "#apport",
+    "valeur": "50000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "credit-apport",
+  "ordre": 1,
+  "croissant": true
+ },
+ {
+  "page": "credit/",
+  "nom": "crédit : apport 0 DT (plus petit = mensualité plus haute)",
+  "etapes": [
+   {
+    "sel": "#apport",
+    "valeur": "0"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "credit-apport",
+  "ordre": 2,
+  "croissant": true
+ },
+ {
+  "page": "credit/",
+  "nom": "crédit : assurance 0 pour cent",
+  "etapes": [
+   {
+    "sel": "#assurance",
+    "valeur": "0"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "credit-assurance",
+  "ordre": 0,
+  "croissant": true
+ },
+ {
+  "page": "credit/",
+  "nom": "crédit : assurance 0.3 pour cent",
+  "etapes": [
+   {
+    "sel": "#assurance",
+    "valeur": "0.3"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "credit-assurance",
+  "ordre": 1,
+  "croissant": true
+ },
+ {
+  "page": "credit/",
+  "nom": "crédit : assurance 0.6 pour cent",
+  "etapes": [
+   {
+    "sel": "#assurance",
+    "valeur": "0.6"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "credit-assurance",
+  "ordre": 2,
+  "croissant": true
+ },
+ {
+  "page": "retenue-source/",
+  "nom": "2e calcul d'un autre calculateur : écran Pass Journée 7 DT",
+  "etapes": [
+   {
+    "sel": "#montant",
+    "valeur": "7000"
+   }
+  ],
+  "lire": "#pass-bloque"
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire-net/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "salaire-net/?lang=ar",
+  "nom": "salaire-net/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "impot-revenu/",
+  "nom": "impot-revenu/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "impot-revenu/?lang=ar",
+  "nom": "impot-revenu/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "retenue-source/",
+  "nom": "retenue : honoraires (opération de l'exemple) 500 DT HT",
+  "etapes": [
+   {
+    "sel": "#montant",
+    "valeur": "500"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "retenue-honoraires-ht",
+  "ordre": 0,
+  "croissant": true
+ },
+ {
+  "page": "retenue-source/",
+  "nom": "retenue : honoraires (opération de l'exemple) 5000 DT HT",
+  "etapes": [
+   {
+    "sel": "#montant",
+    "valeur": "5000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "retenue-honoraires-ht",
+  "ordre": 1,
+  "croissant": true
+ },
+ {
+  "page": "retenue-source/",
+  "nom": "retenue : honoraires (opération de l'exemple) 40000 DT HT",
+  "etapes": [
+   {
+    "sel": "#montant",
+    "valeur": "40000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "retenue-honoraires-ht",
+  "ordre": 2,
+  "croissant": true
+ },
+ {
+  "page": "retenue-source/",
+  "nom": "retenue : achats 1000 DT HT (TVA 19 pour cent)",
+  "etapes": [
+   {
+    "sel": "#operation",
+    "valeur": "achats"
+   },
+   {
+    "sel": "#tva",
+    "valeur": "19"
+   },
+   {
+    "sel": "#montant",
+    "valeur": "1000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "retenue-achats",
+  "ordre": 0,
+  "croissant": true
+ },
+ {
+  "page": "retenue-source/",
+  "nom": "retenue : achats 8000 DT HT (TVA 19 pour cent)",
+  "etapes": [
+   {
+    "sel": "#operation",
+    "valeur": "achats"
+   },
+   {
+    "sel": "#tva",
+    "valeur": "19"
+   },
+   {
+    "sel": "#montant",
+    "valeur": "8000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "retenue-achats",
+  "ordre": 1,
+  "croissant": true
+ },
+ {
+  "page": "retenue-source/",
+  "nom": "retenue : achats 50000 DT HT (TVA 19 pour cent)",
+  "etapes": [
+   {
+    "sel": "#operation",
+    "valeur": "achats"
+   },
+   {
+    "sel": "#tva",
+    "valeur": "19"
+   },
+   {
+    "sel": "#montant",
+    "valeur": "50000"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "retenue-achats",
+  "ordre": 2,
+  "croissant": true
+ },
+ {
+  "page": "retenue-source/",
+  "nom": "retenue : honoraires 1190 DT TTC",
+  "etapes": [
+   {
+    "sel": "#operation",
+    "valeur": "hon-reel"
+   },
+   {
+    "sel": ".choix[data-nom=\"sens\"] button[data-v=\"ttc\"]",
+    "clic": true
+   },
+   {
+    "sel": "#montant",
+    "valeur": "1190"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "retenue-ttc",
+  "ordre": 0,
+  "croissant": true
+ },
+ {
+  "page": "retenue-source/",
+  "nom": "retenue : honoraires 11900 DT TTC",
+  "etapes": [
+   {
+    "sel": "#operation",
+    "valeur": "hon-reel"
+   },
+   {
+    "sel": ".choix[data-nom=\"sens\"] button[data-v=\"ttc\"]",
+    "clic": true
+   },
+   {
+    "sel": "#montant",
+    "valeur": "11900"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "retenue-ttc",
+  "ordre": 1,
+  "croissant": true
+ },
+ {
+  "page": "auto-entrepreneur/",
+  "nom": "2e calcul d'un autre calculateur : écran Pass Journée 7 DT",
+  "etapes": [
+   {
+    "sel": "#ca",
+    "valeur": "40000"
+   }
+  ],
+  "lire": "#pass-bloque"
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire-net/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "salaire-net/?lang=ar",
+  "nom": "salaire-net/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "impot-revenu/",
+  "nom": "impot-revenu/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "impot-revenu/?lang=ar",
+  "nom": "impot-revenu/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "credit/",
+  "nom": "credit/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "credit/?lang=ar",
+  "nom": "credit/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "auto-entrepreneur/",
+  "nom": "auto-entrepreneur/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "auto-entrepreneur/?lang=ar",
+  "nom": "auto-entrepreneur/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "retenue-source/",
+  "nom": "retenue-source/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "retenue-source/?lang=ar",
+  "nom": "retenue-source/ : exemple affiché (ar)",
+  "lire": "#grand"
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "salaire-net/ : exemple affiché (fr)",
+  "lire": "#grand"
+ },
+ {
+  "page": "auto-entrepreneur/",
+  "nom": "auto-entrepreneur : tranche CNSS 1",
+  "etapes": [
+   {
+    "sel": ".choix[data-nom=\"annee\"] button[data-v=\"2\"]",
+    "clic": true
+   },
+   {
+    "sel": "#tranche",
+    "valeur": "1"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "auto-tranche",
+  "ordre": 1,
+  "croissant": true
+ },
+ {
+  "page": "auto-entrepreneur/",
+  "nom": "auto-entrepreneur : tranche CNSS 2",
+  "etapes": [
+   {
+    "sel": ".choix[data-nom=\"annee\"] button[data-v=\"2\"]",
+    "clic": true
+   },
+   {
+    "sel": "#tranche",
+    "valeur": "2"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "auto-tranche",
+  "ordre": 2,
+  "croissant": true
+ },
+ {
+  "page": "auto-entrepreneur/",
+  "nom": "auto-entrepreneur : tranche CNSS 3",
+  "etapes": [
+   {
+    "sel": ".choix[data-nom=\"annee\"] button[data-v=\"2\"]",
+    "clic": true
+   },
+   {
+    "sel": "#tranche",
+    "valeur": "3"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "auto-tranche",
+  "ordre": 3,
+  "croissant": true
+ },
+ {
+  "page": "auto-entrepreneur/",
+  "nom": "auto-entrepreneur : tranche CNSS 4",
+  "etapes": [
+   {
+    "sel": ".choix[data-nom=\"annee\"] button[data-v=\"2\"]",
+    "clic": true
+   },
+   {
+    "sel": "#tranche",
+    "valeur": "4"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "auto-tranche",
+  "ordre": 4,
+  "croissant": true
+ },
+ {
+  "page": "auto-entrepreneur/",
+  "nom": "auto-entrepreneur : tranche CNSS 5",
+  "etapes": [
+   {
+    "sel": ".choix[data-nom=\"annee\"] button[data-v=\"2\"]",
+    "clic": true
+   },
+   {
+    "sel": "#tranche",
+    "valeur": "5"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "auto-tranche",
+  "ordre": 5,
+  "croissant": true
+ },
+ {
+  "page": "auto-entrepreneur/",
+  "nom": "auto-entrepreneur : tranche CNSS 6",
+  "etapes": [
+   {
+    "sel": ".choix[data-nom=\"annee\"] button[data-v=\"2\"]",
+    "clic": true
+   },
+   {
+    "sel": "#tranche",
+    "valeur": "6"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "auto-tranche",
+  "ordre": 6,
+  "croissant": true
+ },
+ {
+  "page": "auto-entrepreneur/",
+  "nom": "auto-entrepreneur : 1re année (exonérée)",
+  "etapes": [
+   {
+    "sel": ".choix[data-nom=\"annee\"] button[data-v=\"1\"]",
+    "clic": true
+   },
+   {
+    "sel": "#tranche",
+    "valeur": "1"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "auto-annee",
+  "ordre": 1,
+  "croissant": true
+ },
+ {
+  "page": "auto-entrepreneur/",
+  "nom": "auto-entrepreneur : 2e année",
+  "etapes": [
+   {
+    "sel": ".choix[data-nom=\"annee\"] button[data-v=\"2\"]",
+    "clic": true
+   },
+   {
+    "sel": "#tranche",
+    "valeur": "1"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "auto-annee",
+  "ordre": 2,
+  "croissant": true
+ },
+ {
+  "page": "auto-entrepreneur/",
+  "nom": "auto-entrepreneur : hors zone communale (impôt 100 DT)",
+  "etapes": [
+   {
+    "sel": ".choix[data-nom=\"annee\"] button[data-v=\"2\"]",
+    "clic": true
+   },
+   {
+    "sel": ".choix[data-nom=\"zone\"] button[data-v=\"autre\"]",
+    "clic": true
+   },
+   {
+    "sel": "#tranche",
+    "valeur": "1"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "auto-zone",
+  "ordre": 1,
+  "croissant": true
+ },
+ {
+  "page": "auto-entrepreneur/",
+  "nom": "auto-entrepreneur : zone communale (impôt 200 DT)",
+  "etapes": [
+   {
+    "sel": ".choix[data-nom=\"annee\"] button[data-v=\"2\"]",
+    "clic": true
+   },
+   {
+    "sel": ".choix[data-nom=\"zone\"] button[data-v=\"communal\"]",
+    "clic": true
+   },
+   {
+    "sel": "#tranche",
+    "valeur": "1"
+   }
+  ],
+  "lire": "#grand",
+  "groupe": "auto-zone",
+  "ordre": 2,
+  "croissant": true
+ },
+ {
+  "page": "salaire-net/",
+  "nom": "2e calcul d'un autre calculateur : écran Pass Journée 7 DT",
+  "etapes": [
+   {
+    "sel": "#montant",
+    "valeur": "3100"
+   }
+  ],
+  "lire": "#pass-bloque"
+ }
+]

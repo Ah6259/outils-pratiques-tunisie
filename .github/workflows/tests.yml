@@ -32,3 +32,5 @@ jobs:
       - run: node tools/test_video.mjs
       - run: node tools/test_avis.mjs
       - run: python tools/test_robot.py
+      - name: Visiteur simule
+        run: python tools/visiteur_simule.py
