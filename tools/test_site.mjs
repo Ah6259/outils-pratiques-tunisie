@@ -448,6 +448,35 @@ async function passJournee() {
   { let n = 0; w.fetch = () => { n++; return Promise.reject(new Error("x")); }; await w.eval("reverifierPass()");
     check("aucun appel réseau au chargement d'un calculateur sans code gardé", n === 0); }
 
+  // -- 18/10/2026 (problème vu sur l'immobilier : code payé impossible à taper quand le téléphone gardait un autre code)
+  //    la case du code est TOUJOURS visible, EN HAUT de pass/, quel que soit l'état gardé ; le code tapé remplace l'ancien ;
+  //    aucun « essai gratuit » annoncé (ce site n'en a pas : 1 calcul gratuit par jour, puis Pass Journée)
+  {
+    const visible = (wx, el) => { for (let e = el; e; e = e.parentElement) if (e.hidden || wx.getComputedStyle(e).display === "none") return false; return !!el; };
+    const ETATS = {
+      "aucun code": null,
+      "un autre code non payé gardé": { code: "ZZZZ2222", fin: futur, verifie: 0 },
+      "un code payé gardé": { code: "ABCD2345", fin: futur, verifie: Date.now() },
+      "un code expiré gardé": { code: "EFGH6789", fin: passe, verifie: 0 }
+    };
+    const mal = [];
+    for (const [nom, val] of Object.entries(ETATS)) {
+      const wx = await ouvrir("pass/index.html", { avant: x => { if (val) x.localStorage.setItem("opt-pass-v1", JSON.stringify(val)); } }), dx = wx.document;
+      const bloc = dx.getElementById("code-acces"), champ = bloc && bloc.querySelector("input[name=code]"), bouton = bloc && bloc.querySelector("button[type=submit]");
+      if (!visible(wx, champ) || !visible(wx, bouton) || !(bloc.compareDocumentPosition(dx.getElementById("offre")) & 4)) mal.push(nom);
+    }
+    check(`Pass : case du code visible EN HAUT de pass/ (avant l'offre) dans tous les états ${mal}`, mal.length === 0);
+    const wx = await ouvrir("pass/index.html", { avant: x => x.localStorage.setItem("opt-pass-v1", JSON.stringify(ETATS["un autre code non payé gardé"])) }), dx = wx.document;
+    reseau(wx, LISTE);
+    const cf = dx.getElementById("code-form");
+    cf.querySelector("input[name=code]").value = "abcd-2345";
+    cf.dispatchEvent(new wx.Event("submit", { bubbles: true, cancelable: true })); await pause(300);
+    const garde = JSON.parse(wx.localStorage.getItem("opt-pass-v1") || "{}");
+    check("Pass : le code tapé REMPLACE l'ancien code gardé (nouveau code, nouvelle heure de fin, Pass actif)", garde.code === "ABCD2345" && garde.fin === futur && wx.eval("passActif()"));
+    const pagesPass = ["pass/index.html", "pass/conditions/index.html", "assets/pass.js"].map(lire).join(" ");
+    check("Pass : aucun « essai gratuit » annoncé (ce site n'en propose pas)", !/essai gratuit|période d'essai|تجربة مجانية/i.test(pagesPass));
+  }
+
   // -- 6. page pass/ : prix et avantages directs, paiement, formulaire, conditions
   w = await ouvrir("pass/index.html"); d = w.document;
   const offre = t(d.getElementById("offre"));
