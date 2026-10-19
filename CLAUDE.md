@@ -176,3 +176,5 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - **Google + Bing (12/10/2026)** : sitemap envoyé par Ahmed dans Google Search Console et dans Bing Webmaster Tools (site clicvia.com/), indexation de l'accueil demandée. Pour un nouveau site : mêmes gestes, voir `nouveau site - procedure.md` § 4 étape 5 (dépôt projets-ahmed).
 
 - **18/10/2026 (Pass : case du code, leçon de l'immobilier)** : sur `pass/`, la carte « J'ai un code » (`#code-acces`, champ `#code-saisie`, formulaire `#code-form`) est maintenant EN HAUT, juste sous `#pass-etat`, avant l'offre — visible quel que soit l'état du téléphone ; un code tapé remplace l'ancien (`opt-pass-v1`). Ce site n'a PAS d'essai gratuit (test). Message « code expiré » : « ci-dessous ». Version `?v=20261018a`. Tests « Pass : … » dans test_site.mjs.
+
+- **19/10/2026 — Visiteur simulé : contrôle des ESPACES (règle commune § 29)** : nouvelle copie commune installée, 0 anomalie, aucun défaut d'espace sur ce site.
