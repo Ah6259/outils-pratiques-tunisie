@@ -77,3 +77,9 @@ Guide réutilisable pour créer un autre site du même genre. Une ligne par éta
 - « Gratuit » corrigé partout (« 1 calcul gratuit par jour »), nouvelle image d'aperçu v6 ; tests jsdom (exemple, 1er calcul,
   2e bloqué, lendemain, code valide / expiré / faux) ; captures Edge 340/390 px en français et en arabe.
 - Bouton « Trouver un comptable » (bordure dorée, logo de l'annuaire) dans le menu de l'en-tête et sur l'accueil.
+
+## 20/10/2026 — Lien vers un outil officiel (TUNIMPOT)
+- Avant d'ajouter un lien vers une application ou un site officiel : vérifier qu'il existe vraiment et qui l'édite (ici : Google Play,
+  éditeur CIMF, ministère des Finances), que le lien répond, et ne pas mettre un lien mort (App Store : application retirée ; page du
+  ministère : sans https et injoignable). Lien dans la carte « Source officielle », FR + AR, nouvel onglet, clic compté, test.
+- Avant d'envoyer : rejouer les tests comme GitHub (`essai_comme_github.py` du dépôt projets-ahmed, règle commune § 33.5).

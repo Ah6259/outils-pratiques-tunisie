@@ -48,3 +48,4 @@ le robot ne change pas leurs dates exprès (dates officielles fixes).
 ## Nouveautés
 - 05/10/2026 : nouvelle icône (les 4 opérations) et « calcul gratuit » dans les titres Google.
 - 06/10/2026 : **Pass Journée** (1 calcul gratuit par jour, puis 7 DT pour 24 heures) ; bouton « Trouver un comptable » ; image d'aperçu v6.
+- 20/10/2026 : page « Impôt sur le revenu » : lien vers **TUNIMPOT**, le simulateur officiel gratuit du ministère des Finances (Google Play).
