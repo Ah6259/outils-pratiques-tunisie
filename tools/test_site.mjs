@@ -639,5 +639,12 @@ async function boutonPartager() {
   }
 }
 
+// 20/10/2026 (Ahmed) : lien vers le simulateur officiel TUNIMPOT du ministère des Finances (Android ; plus sur l'App Store)
+{ const d = new JSDOM(lire("impot-revenu/index.html")).window.document, b = d.getElementById("tunimpot"), a = b?.querySelector("a");
+  check("impot-revenu : lien vers l'application officielle TUNIMPOT (Google Play, tn.gov.finances.tunimpot), FR + AR, nouvel onglet, clic compté",
+    !!a && a.getAttribute("href") === "https://play.google.com/store/apps/details?id=tn.gov.finances.tunimpot" && a.getAttribute("rel") === "noopener"
+    && a.getAttribute("target") === "_blank" && a.dataset.compteur === "lien-tunimpot/impot-revenu"
+    && !!b.querySelector('[data-l="fr"]') && !!b.querySelector('[data-l="ar"]') && /ministère des Finances/.test(b.textContent)); }
+
 console.log(erreurs ? `\n${erreurs} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(erreurs ? 1 : 0);

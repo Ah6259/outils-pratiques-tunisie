@@ -184,3 +184,8 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   au plus 1 fois par jour (mémoire `opt-pass-rappel-v1`) : « Merci pour votre inscription ! Votre Pass Journée se termine le JJ/MM/AAAA à HHhMM »,
   bouton doré « Renouveler mon Pass » (`pass/#offre`), lien « Donner mon avis » (`#avis` de l'accueil), croix ; après la fin (≤ 30 jours) :
   « terminé — merci ! » une fois. FR + AR, 11 tests « rappel du Pass » dans test_site.mjs ; version 20261020a.
+- **20/10/2026 — lien TUNIMPOT (demande d'Ahmed)** : page `impot-revenu/`, carte « Source officielle » : paragraphe `#tunimpot`
+  (FR + AR) vers le simulateur officiel gratuit du ministère des Finances, l'application **TUNIMPOT** sur Google Play
+  (`tn.gov.finances.tunimpot`, éditeur CIMF, vérifié en ligne le 20/10/2026), clic compté `lien-tunimpot/impot-revenu` ; test dans test_site.mjs.
+  Pas de lien App Store (l'application n'y est plus : id1214945134 introuvable) ; pas de lien vers la page officielle
+  impots.finances.gov.tn/…/tunimpot (en http, injoignable depuis nos serveurs le 20/10) : à ajouter si elle répond un jour en https.
