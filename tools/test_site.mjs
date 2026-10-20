@@ -535,6 +535,46 @@ async function passJournee() {
   check("les 5 calculateurs et les 2 pages du Pass chargent assets/pass.js juste après page.js (même version)",
     [...Object.keys(CALCS).map(c => `${c}/index.html`), "pass/index.html", "pass/conditions/index.html"].every(p => /<script src="(\.\.\/)+assets\/page\.js\?v=(\w+)"><\/script>\r?\n<script src="(\.\.\/)+assets\/pass\.js\?v=\2"><\/script>/.test(lire(p))));
 
+  // -- 7 bis. rappel de fin du Pass (20/10/2026, demande d'Ahmed) : merci + heure de fin + Renouveler + Donner mon avis ; puis message après la fin
+  {
+    const T0 = new Date(2026, 9, 20, 9, 0).getTime();
+    const horloge = (stock = {}) => w => { const Vraie = w.Date;
+      w.Date = class extends Vraie { constructor(...a) { super(...(a.length ? a : [T0])); } static now() { return T0; } };
+      for (const [k, v] of Object.entries(stock)) w.localStorage.setItem(k, typeof v === "string" ? v : JSON.stringify(v)); };
+    const code = (finMs, extra = {}) => ({ "opt-pass-v1": { code: "ABCD2345", fin: new Date(finMs).toISOString(), verifie: T0 }, ...extra });
+    const voir = async (stock, chemin = "credit/index.html", lang = "fr") => { const wx = await ouvrir(chemin, { lang, avant: horloge(stock) }); await pause(40); return wx; };
+    const z = n => String(n).padStart(2, "0"), lisible = ms => { const x = new Date(ms); return z(x.getDate()) + "/" + z(x.getMonth() + 1) + "/" + x.getFullYear() + " à " + z(x.getHours()) + "h" + z(x.getMinutes()); };
+    let wx = await voir(code(T0 + 20 * 36e5));
+    check("rappel du Pass : rien quand il reste 20 heures sur 24", !wx.document.getElementById("rappel-pass") && wx.fautes.length === 0);
+    wx = await voir(code(T0 + 5 * 36e5));
+    let b = wx.document.getElementById("rappel-pass");
+    check("rappel du Pass : bandeau dans le dernier quart (5 heures restantes) : merci + « se termine le JJ/MM/AAAA à HHhMM »",
+      !!b && t(b).includes("Merci pour votre inscription") && t(b).includes("se termine le " + lisible(T0 + 5 * 36e5)) && wx.fautes.length === 0);
+    const ren = b && b.querySelector("a.rappel-renouveler"), av = b && b.querySelector("a.rappel-avis"), x = b && b.querySelector("button.rappel-fermer");
+    check("rappel du Pass : vrai bouton « Renouveler mon Pass » (../pass/#offre), lien « Donner mon avis » (formulaire Votre avis de l'accueil), croix",
+      !!ren && ren.getAttribute("href") === "../pass/#offre" && /id="offre"/.test(lire("pass/index.html")) && !!av && av.getAttribute("href") === "../#avis" && /id="avis"/.test(lire("index.html")) && !!x && x.type === "button");
+    x.click();
+    check("rappel du Pass : la croix ferme le bandeau", !wx.document.getElementById("rappel-pass"));
+    const memo = wx.localStorage.getItem("opt-pass-rappel-v1");
+    wx = await voir(code(T0 + 4 * 36e5, { "opt-pass-rappel-v1": memo }));
+    check("rappel du Pass : une fois par jour au plus", !wx.document.getElementById("rappel-pass"));
+    wx = await voir(code(T0 + 4 * 36e5, { "opt-pass-rappel-v1": { ...JSON.parse(memo), vu: "2026-10-19" } }));
+    check("rappel du Pass : de nouveau possible un autre jour", !!wx.document.getElementById("rappel-pass"));
+    wx = await voir(code(T0 + 3 * 36e5), "pass/index.html");
+    check("rappel du Pass : aussi sur la page pass/", !!wx.document.getElementById("rappel-pass"));
+    wx = await voir(code(T0 - 2 * 36e5));
+    b = wx.document.getElementById("rappel-pass");
+    check("rappel du Pass : après la fin, « Votre Pass Journée est terminé — merci ! » avec Renouveler et Donner mon avis",
+      !!b && t(b).includes("est terminé — merci") && !!b.querySelector("a.rappel-renouveler") && !!b.querySelector("a.rappel-avis"));
+    wx = await voir({ "opt-pass-rappel-v1": wx.localStorage.getItem("opt-pass-rappel-v1") });
+    check("rappel du Pass : message de fin montré une seule fois", !wx.document.getElementById("rappel-pass"));
+    wx = await voir(code(T0 + 2 * 36e5), "credit/index.html", "ar");
+    b = wx.document.getElementById("rappel-pass");
+    check("rappel du Pass : en arabe (شكرًا على اشتراكك، جدّد باقتي)", !!b && t(b).includes("شكرًا على اشتراكك") && t(b).includes("جدّد باقتي"));
+    wx = await voir({ "opt-pass-v1": "{abîmé", "opt-pass-rappel-v1": "{abîmé" });
+    check("rappel du Pass : stockage abîmé = pas de plantage, pas de bandeau", wx.fautes.length === 0 && !wx.document.getElementById("rappel-pass"));
+  }
+
   // -- 8. « gratuit » toujours vrai : plus de « calculs gratuits » sans limite dans les titres, descriptions, aperçus, manifeste
   const textesPublics = [...TOUTES.map(lire), lire("manifest.webmanifest"), lire("assets/page.js")].join("\n");
   check("plus aucun « Calculs gratuits », « Calculez gratuitement », « Calculateurs gratuits », « Gratuit, en français »",

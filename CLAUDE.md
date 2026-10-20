@@ -57,7 +57,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
    `node tools/test_sw.mjs` (service worker : réseau d'abord, exclusions, meta iPhone ; accepte un dossier en argument),
    `node tools/test_avis.mjs` (Votre avis : section, pied de page de toutes les pages, CSP, envoi simulé ; accepte un dossier en argument).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
-2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261018a`) — les tests le vérifient.
+2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261020a`) — les tests le vérifient.
 3. Capture mobile 340/390 px en français ET en arabe si l'affichage change : Chrome sans écran sur une page HTML locale
    contenant deux `<iframe>` (340 et 390 px) vers les fichiers `file:///…?lang=fr|ar` (la fenêtre de Chrome sans écran ne descend
    pas sous ~500 px ; l'anti-iframe de page.js laisse passer `file:`).
@@ -178,3 +178,9 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - **18/10/2026 (Pass : case du code, leçon de l'immobilier)** : sur `pass/`, la carte « J'ai un code » (`#code-acces`, champ `#code-saisie`, formulaire `#code-form`) est maintenant EN HAUT, juste sous `#pass-etat`, avant l'offre — visible quel que soit l'état du téléphone ; un code tapé remplace l'ancien (`opt-pass-v1`). Ce site n'a PAS d'essai gratuit (test). Message « code expiré » : « ci-dessous ». Version `?v=20261018a`. Tests « Pass : … » dans test_site.mjs.
 
 - **19/10/2026 — Visiteur simulé : contrôle des ESPACES (règle commune § 29)** : nouvelle copie commune installée, 0 anomalie, aucun défaut d'espace sur ce site.
+
+- **20/10/2026 — Rappel de fin du Pass Journée (demande d'Ahmed ; pas de Telegram ni d'e-mail, la page parle au client)** : `afficherRappel()` de
+  `assets/pass.js` met sous l'en-tête (calculateurs + pages Pass) un bandeau `#rappel-pass` dans les 6 dernières heures (dernier quart des 24 h),
+  au plus 1 fois par jour (mémoire `opt-pass-rappel-v1`) : « Merci pour votre inscription ! Votre Pass Journée se termine le JJ/MM/AAAA à HHhMM »,
+  bouton doré « Renouveler mon Pass » (`pass/#offre`), lien « Donner mon avis » (`#avis` de l'accueil), croix ; après la fin (≤ 30 jours) :
+  « terminé — merci ! » une fois. FR + AR, 11 tests « rappel du Pass » dans test_site.mjs ; version 20261020a.
