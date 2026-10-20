@@ -157,7 +157,7 @@ def lire_constantes():
 def ecrire_maj(date_fr):
     p = ROOT / "assets" / "page.js"
     js = p.read_text(encoding="utf-8")
-    p.write_text(re.sub(r'const MAJ = "[^"]+"', f'const MAJ = "{date_fr}"', js), encoding="utf-8")
+    p.write_text(re.sub(r'const MAJ = "[^"]+"', f'const MAJ = "{date_fr}"', js), encoding="utf-8", newline="\n")
 
 def changer_annee(ancienne, nouvelle):
     """Remplace l'année seule (pas les dates jj/mm/aaaa ni aaaa-mm-jj, pas « loi de finances 2025 »)."""
@@ -165,7 +165,7 @@ def changer_annee(ancienne, nouvelle):
     for f in FICHIERS_ANNEE:
         p = ROOT / f
         if p.exists():
-            p.write_text(motif.sub(str(nouvelle), p.read_text(encoding="utf-8")), encoding="utf-8")
+            p.write_text(motif.sub(str(nouvelle), p.read_text(encoding="utf-8")), encoding="utf-8", newline="\n")
 
 
 def main():
@@ -184,7 +184,7 @@ def main():
     ecarts = [f"{b} brut (chef={c}, enfants={e}) : nous {n} / référence {x}"
               for (b, c, e), n, x in zip(CAS, nous, eux) if abs(float(n) - float(x)) > TOLERANCE]
     if ecarts:
-        Path(ROOT / "ecarts.txt").write_text("\n".join(ecarts), encoding="utf-8")
+        Path(ROOT / "ecarts.txt").write_text("\n".join(ecarts), encoding="utf-8", newline="\n")
         print("RÈGLES CHANGÉES :\n" + "\n".join(ecarts))
         return 2
     ecrire_maj(aujourd_hui.strftime("%d/%m/%Y"))
@@ -195,7 +195,7 @@ def main():
         # le taux réduit de la CSS n'est voté que jusqu'à css_jusqua : ne pas passer à la nouvelle année sans
         # confirmation (prolongation ou retour à 1 %) -> alerte, même si la référence n'a pas encore changé
         (ROOT / "ecarts.txt").write_text(f"Le taux réduit de la CSS (0,5 %) n'était voté que jusqu'à {css_jusqua}. "
-                                         "Vérifier la loi de finances : prolongation ou retour à 1 %.", encoding="utf-8")
+                                         "Vérifier la loi de finances : prolongation ou retour à 1 %.", encoding="utf-8", newline="\n")
         print(f"ATTENTION : CSS réduite votée jusqu'à {css_jusqua} seulement -> vérification humaine")
         return 4
     if aujourd_hui.year > annee and (aujourd_hui.month > 1 or aujourd_hui.day >= 15):
@@ -205,7 +205,7 @@ def main():
     # TMM de la page Crédit : alerte seulement, le site n'est pas modifié (la date de paie ci-dessus est publiée quand même)
     code_tmm, message = verifier_tmm(aujourd_hui)
     if code_tmm:
-        (ROOT / "ecarts.txt").write_text(message, encoding="utf-8")
+        (ROOT / "ecarts.txt").write_text(message, encoding="utf-8", newline="\n")
         print(("TMM À METTRE À JOUR : " if code_tmm == 5 else "ÉCHEC TMM : ") + message)
     return code_tmm
 
