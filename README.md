@@ -10,6 +10,7 @@ Calculateurs pour la Tunisie, en français et en arabe : https://outils.clicvia.
 - `retenue-source/` : retenue à la source (taux officiels de la plateforme TEJ), montant hors TVA ⇄ TVA comprise ⇄ net payé.
 - `assets/calcul.js` : règles de paie (objet `REGLES`) — **à mettre à jour à chaque loi de finances (janvier)** ;
   `assets/calcul-credit.js` (TMM), `calcul-auto.js`, `calcul-retenue.js` : règles des 3 autres calculateurs.
+- `a-propos/` : page **« Comment fonctionne le site ? »** (chaque fonction, gratuit / Pass, vos données, méthode, sources) — mise à jour à chaque modification visible (règle commune § 44, test `FONCTIONS` de `tools/test_site.mjs`).
 - Documents prêts à remplir : site « Documents Tunisie » (`URL_DOCUMENTS` dans `assets/page.js`).
 - `pass/` et `pass/conditions/` : **Pass Journée** (code : `assets/pass.js`, codes publiés en empreintes dans `donnees/pass.json`).
   Activation par Ahmed depuis l'application GitHub : dépôt PRIVÉ `Ah6259/outils-pass`, bouton « pass » (voir son README).

@@ -171,6 +171,34 @@ check(`toutes les pages affichent l'année ${ANNEE}`,
 // fichier présent, crédit + licence affichés sous la photo, crédit dans « À propos », preuve de licence sauvegardée
 const LICENCE = /CC BY-SA \d\.\d|CC BY \d\.\d|CC0|domaine public/;
 const aPropos = lire("a-propos/index.html");
+// 25/10/2026 (RÈGLE d'Ahmed, règle commune § 44 : « la page Comment fonctionne le site doit être mise à jour chaque fois qu'on modifie le site ») :
+// chaque fonction visible du site (repère dans le code ou les pages) doit être expliquée dans a-propos/ ; nouvelle fonction = une ligne ici + son explication FR + AR
+{ const ap = aPropos.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/[\u00a0\u2068\u2069]/g, " ").replace(/\s+/g, " ");
+  const acc = lire("index.html"), js = ["page.js", "pass.js", "impot.js", "credit.js"].map(f => lire("assets/" + f)).join("\n");
+  const FONCTIONS = [
+    ["salaire brut ⇄ net", existsSync(join(root, "salaire-net/index.html")), /Salaire brut ⇄ net : passer du salaire brut au salaire net/],
+    ["impôt sur le revenu + TUNIMPOT", existsSync(join(root, "impot-revenu/index.html")) && /tunimpot/.test(lire("impot-revenu/index.html")), /Impôt sur le revenu : l'impôt annuel calculé tranche par tranche, avec un lien vers TUNIMPOT/],
+    ["crédit et tableau d'amortissement", existsSync(join(root, "credit/index.html")), /Crédit immobilier et auto : la mensualité[^.]*tableau d'amortissement/],
+    ["auto-entrepreneur", existsSync(join(root, "auto-entrepreneur/index.html")), /Auto-entrepreneur : savoir si vous êtes éligible/],
+    ["retenue à la source", existsSync(join(root, "retenue-source/index.html")), /Retenue à la source : le montant retenu/],
+    ["exemple gratuit à l'ouverture", true, /Un exemple à l'ouverture : chaque calculateur s'ouvre avec un exemple/],
+    ["Trouver un comptable", /comptables/.test(js) && /Trouver un comptable/.test(acc), /Trouver un comptable : bouton doré du menu et encart sous le résultat/],
+    ["Documents prêts à remplir", /Documents prêts à remplir/.test(acc), /Documents prêts à remplir : lien vers notre site Documents Tunisie/],
+    ["date « Règles à jour au »", /data-maj/.test(lire("salaire-net/index.html")), /Règles à jour au… : la date de la dernière vérification/],
+    ["langue FR / AR", /\.langue/.test(js), /Français \/ arabe : le bouton de langue/],
+    ["bouton Partager", /\.partager/.test(js), /Partager : le bouton rond/],
+    ["Votre avis", /id="avis"/.test(acc), /Votre avis : un formulaire/],
+    ["installation et hors connexion", existsSync(join(root, "sw.js")), /Installer sur le téléphone/],
+    ["vidéo de présentation", existsSync(join(root, "video/index.html")), /Vidéo de présentation : courte vidéo/],
+    ["1 calcul gratuit par jour et Pass Journée (prix, code)", existsSync(join(root, "pass/index.html")), /1 calcul personnel par jour[\s\S]*Pass Journée \(payant, 7 DT\)[\s\S]*code/],
+    ["rappel de fin du Pass", /afficherRappel/.test(js), /Peu avant la fin du Pass, un bandeau vous prévient/],
+    ["vie privée", true, /Les calculs se font dans votre téléphone/],
+    ["mises à jour automatiques (calculs de référence, TMM)", existsSync(join(root, "tools/verifier_regles.py")), /Chaque mois, un robot refait nos calculs de référence[^.]*TMM/],
+    ["site indépendant", true, /Ce site est indépendant/]];
+  const manque = FONCTIONS.filter(([, sur, re]) => sur && !re.test(ap)).map(([n]) => n);
+  check(`page « Comment fonctionne le site ? » à jour : titre et chaque fonction du site expliquée (${FONCTIONS.length} fonctions)` + (manque.length ? " — manque : " + manque.join(", ") : ""),
+    manque.length === 0 && /<h1>[^]*?Comment fonctionne le site \?[^]*?كيف يعمل الموقع؟[^]*?<\/h1>/.test(aPropos)
+    && /a-propos\/">\$\{T\("Comment fonctionne le site \?"/.test(lire("assets/page.js")) && /id="lien-fonctionnement"/.test(acc)); }
 // preuves hors du dépôt (dossier parent) : vérifiées sur le PC d'Ahmed, absentes sur GitHub
 const dossierPreuves = join(root, "..", "preuves conditions d'utilisation");
 const lisezMoi = existsSync(dossierPreuves) ? readdirSync(dossierPreuves).map(d => join(dossierPreuves, d, "photos", "LISEZ-MOI.md"))

@@ -59,7 +59,7 @@ const MENU_SITE = [
           <a href="${racine}credit/">${T("Crédit immobilier et auto", "القرض العقاري والسيارة")}</a>
           <a href="${racine}auto-entrepreneur/">${T("Auto-entrepreneur", "المبادر الذاتي")}</a>
           <a href="${racine}retenue-source/">${T("Retenue à la source", "الخصم من المورد")}</a>
-          <a href="${racine}a-propos/">${T("À propos et méthode", "من نحن والمنهجية")}</a>
+          <a href="${racine}a-propos/">${T("Comment fonctionne le site ?", "كيف يعمل الموقع؟")}</a>
           ${racine ? `<a href="${racine}pass/">${T("Pass Journée", "باقة اليوم")}</a>` : ""}
           <a href="${racine}#avis">${T("Votre avis", "رأيك")}</a>
         <a href="https://clicvia.com/" rel="noopener" target="_blank">${T("Tous nos services", "كل خدماتنا")}</a>
