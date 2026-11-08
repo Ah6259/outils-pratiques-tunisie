@@ -97,6 +97,18 @@ check("impôt : revenu 0 -> 0,000", texte(d.getElementById("grand")).includes("0
 const TOUTES = ["index.html", "salaire-net/index.html", "impot-revenu/index.html", "a-propos/index.html",
                 "credit/index.html", "auto-entrepreneur/index.html", "retenue-source/index.html",
                 "pass/index.html", "pass/conditions/index.html"];
+// ---- SEO (plan d'Ahmed, 08/11/2026) : titre de 10 à 70 caractères et description de 40 à 170, titres uniques ----
+{
+  const titres = new Map(), mal = [];
+  for (const p of [...TOUTES, "video/index.html"]) {
+    const h = lire(p), t = (h.match(/<title>([^<]*)<\/title>/) || [])[1] || "", d = (h.match(/name="description" content="([^"]*)"/) || [])[1] || "";
+    if (t.length < 10 || t.length > 70) mal.push(`${p} titre ${t.length}`);
+    if (d.length < 40 || d.length > 170) mal.push(`${p} description ${d.length}`);
+    if (titres.has(t)) mal.push(`${p} même titre que ${titres.get(t)}`); titres.set(t, p);
+  }
+  check(`SEO : titre de 10 à 70 caractères et description de 40 à 170 sur chaque page, titres uniques ${mal.join(" | ")}`, mal.length === 0);
+}
+
 const AVEC_PHOTO = TOUTES.filter(p => p !== "a-propos/index.html" && !p.startsWith("pass/"));
 for (const p of TOUTES) {
   const s = lire(p);

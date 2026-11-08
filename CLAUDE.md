@@ -191,3 +191,9 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   impots.finances.gov.tn/…/tunimpot (en http, injoignable depuis nos serveurs le 20/10) : à ajouter si elle répond un jour en https.
 
 - **RÈGLE D'AHMED (25/10/2026, règle commune § 44) : la page « Comment fonctionne le site ? » (`a-propos/`, FR + AR, h1 « Comment fonctionne le site ? » / « كيف يعمل الموقع؟ ») est mise à jour à CHAQUE modification visible, dans le même envoi** (nouveau calculateur, fonction changée ou retirée). Cartes `#fonctionnement` (chaque fonction en une ligne), `#gratuit-pass` (exemple + 1 calcul gratuit par jour, Pass Journée), `#mises-a-jour` (robot mensuel, TMM, site indépendant), puis méthode / vos données / limites / sources / photos. Liens : pied de page de toutes les pages (`page.js`, « Comment fonctionne le site ? ») et accueil (`#lien-fonctionnement`). **Test `FONCTIONS` dans `tools/test_site.mjs`** (repère dans le code -> phrase attendue dans la page) : fonction présente mais non expliquée = test rouge = publication bloquée. Nouvelle fonction = une ligne dans `FONCTIONS` + son explication FR + AR. Pas d'année écrite dans ces nouvelles cartes (test « toutes les pages affichent l'année »). Versions 20261025a.
+
+- **08/11/2026 — plan SEO d'Ahmed appliqué à ce site (phase 2 ; contrôle commun `outils visibilite/controle_seo.mjs` de projets-ahmed ;
+  plan : `consignes des taches/seo-outils.md`)** : titres des 9 pages ramenés à <= 70 caractères (le suffixe « | Outils pratiques Tunisie »
+  retiré des calculateurs), descriptions <= 165 ; « 1 calcul gratuit par jour » reste dans la description de l'accueil et d'À propos
+  (test existant). Avant : titres de 84 à 114 caractères, descriptions de 182 à 300 (Google les coupait). Test « SEO : titre de 10 à 70
+  caractères et description de 40 à 170, titres uniques » dans test_site.mjs ; les 6 tests verts.
