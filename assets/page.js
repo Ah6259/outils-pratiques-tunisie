@@ -63,6 +63,8 @@ const MENU_SITE = [
           ${racine ? `<a href="${racine}pass/">${T("Pass Journée", "باقة اليوم")}</a>` : ""}
           <a href="${racine}#avis">${T("Votre avis", "رأيك")}</a>
         <a href="https://clicvia.com/" rel="noopener" target="_blank">${T("Tous nos services", "كل خدماتنا")}</a>
+        <a href="${T("https://clicvia.com/confidentialite/", "https://clicvia.com/ar/confidentialite/")}" rel="noopener" target="_blank">${T("Confidentialité", "الخصوصية")}</a>
+        <a href="${T("https://clicvia.com/conditions/", "https://clicvia.com/ar/conditions/")}" rel="noopener" target="_blank">${T("Conditions d'utilisation", "شروط الاستعمال")}</a>
         </nav>
         <p>${T(`Règles vérifiées le ${MAJ} : loi de finances 2025 (barème de l'impôt), taux de la CNSS 2026.`,
                `قواعد تم التثبت منها في ${MAJ}: قانون المالية 2025 (جدول الضريبة)، نسب الضمان الاجتماعي 2026.`)}</p>

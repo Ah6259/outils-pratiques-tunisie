@@ -120,7 +120,18 @@ for (const p of TOUTES) {
   check(`${p} : en-tête avec logo`, !!w2.document.querySelector("#entete .logo-mark"));
   check(`${p} : pied de page ©, non officiel, date de vérification`, pied.includes("©") && pied.includes("pas un service officiel") && /\d{2}\/\d{2}\/\d{4}/.test(pied));
   check(`${p} : date « à jour au » remplie`, [...w2.document.querySelectorAll("[data-maj]")].every(x => /\d{2}\/\d{2}\/\d{4}/.test(x.textContent)));
+  // 17/11/2026 : liens vers les pages communes « Confidentialité » et « Conditions d'utilisation » de clicvia.com, dans la langue de la page
+  const lien = (dd, u, t) => [...dd.querySelectorAll("#pied nav a")].some(a => a.getAttribute("href") === u && a.textContent.trim() === t);
+  const wa = await page(p, "ar");
+  check(`${p} : pied : liens « Confidentialité » et « Conditions d'utilisation » (français et arabe, adresse dans la langue)`,
+    lien(w2.document, "https://clicvia.com/confidentialite/", "Confidentialité") && lien(w2.document, "https://clicvia.com/conditions/", "Conditions d'utilisation")
+    && wa.document.documentElement.lang === "ar" && lien(wa.document, "https://clicvia.com/ar/confidentialite/", "الخصوصية") && lien(wa.document, "https://clicvia.com/ar/conditions/", "شروط الاستعمال"));
 }
+// Page 404 commune (17/11/2026, règle commune § 58 point 14 ; modèle : outils communs/page-404 de projets-ahmed) : sinon GitHub montre sa page anglaise
+check("page 404 commune à la racine publiée : 404.html (nom du site, couleur) + 404.js qui cherche la page (« Recherche de la page »)",
+  existsSync(join(root, "404.html")) && existsSync(join(root, "404.js")) && lire("404.html").includes("<title>Page introuvable — Outils pratiques Tunisie</title>")
+  && lire("404.html").includes('<script src="/404.js"></script>') && lire("404.js").includes("Recherche de la page"));
+check("À propos : la page introuvable et les liens Confidentialité / Conditions sont expliqués (FR + AR)", lire("a-propos/index.html").includes("Page introuvable, confidentialité, conditions") && lire("a-propos/index.html").includes("صفحة غير موجودة، الخصوصية، الشروط"));
 check("FAQ Google sur les 2 calculateurs", ["salaire-net/index.html", "impot-revenu/index.html"].every(p => lire(p).includes("FAQPage")));
 check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v6.jpg")));
 // manifeste : id UNIQUE = chemin du site (sinon Chrome croit le site « déjà installé » : tous les sites partagent ah6259.github.io)

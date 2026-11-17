@@ -197,3 +197,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   retiré des calculateurs), descriptions <= 165 ; « 1 calcul gratuit par jour » reste dans la description de l'accueil et d'À propos
   (test existant). Avant : titres de 84 à 114 caractères, descriptions de 182 à 300 (Google les coupait). Test « SEO : titre de 10 à 70
   caractères et description de 40 à 170, titres uniques » dans test_site.mjs ; les 6 tests verts.
+- **17/11/2026 — page 404 commune + liens Confidentialité / Conditions (liste des « 20 points » d'Ahmed)** : `404.html` + `404.js` à la racine
+  (modèle `outils communs/page-404/` de projets-ahmed : le modifier là-bas puis `installer.py site "Outils pratiques Tunisie" "#0B7A53"`) ;
+  pied (assets/page.js) : liens https://clicvia.com/confidentialite/ et /conditions/ (versions ar/ quand la page est en arabe) ;
+  test_site.mjs bloque si la 404 ou un lien manque (FR + AR, toutes les pages) ; 404.html exclue de test_sw / test_avis. Version 20261117a.
