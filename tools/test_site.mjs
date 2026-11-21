@@ -167,6 +167,9 @@ check("accueil : 5 calculateurs en vrais liens (salaire, impôt, crédit, auto-e
 check("accueil : plus aucune carte « bientôt »", d.querySelectorAll(".outil.bientot").length === 0);
 check("accueil : carte Documents = lien vers notre site Documents Tunisie", texte(d.getElementById("carte-documents")).includes("Sur notre site Documents Tunisie")
   && d.getElementById("carte-documents").tagName === "A");
+// 21/11/2026 (« plus de vues ») : l'accueil d'Outils est enregistré par Google ; carte vers l'Immobilier (vrai lien, nouvel onglet)
+check("accueil : carte Immobilier = lien vers notre site Immobilier Tunisie", (c => c && c.tagName === "A" && c.href === "https://immobilier.clicvia.com/"
+  && c.target === "_blank" && c.rel.includes("noopener") && texte(c).includes("Sur notre site Immobilier Tunisie"))(d.getElementById("carte-immobilier")));
 for (const p of TOUTES) {
   const w2 = p === "index.html" ? w : await page(p);
   const liens = [...w2.document.querySelectorAll(p === "index.html" ? "main a[href], #pied a[href], #entete a[href]" : "#pied a[href], #entete a[href], .fil a[href]")]
