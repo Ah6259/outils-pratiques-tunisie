@@ -10,6 +10,10 @@ import { createRequire } from "module";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const lire = f => readFileSync(join(root, f), "utf8");
+// UNE ADRESSE PAR LANGUE (21/11/2026) : les pages sont fabriquées depuis tools/sources/ (bilingues) par tools/construire.py ;
+// <chemin> = page française seule, ar/<chemin> = page arabe seule. lireSource = la page bilingue écrite à la main.
+const lireSource = f => existsSync(join(root, "tools/sources", f)) ? readFileSync(join(root, "tools/sources", f), "utf8") : lire(f);
+const versionAr = (chemin, lang) => lang === "ar" && existsSync(join(root, "ar", chemin)) ? "ar/" + chemin : chemin;
 let erreurs = 0;
 const check = (desc, cond) => { console.log((cond ? "OK   " : "FAIL ") + desc); if (!cond) erreurs++; };
 const proche = (a, b) => Math.abs(a - b) < 0.0015;   // au millime près
@@ -51,10 +55,12 @@ check("format tunisien : 1 849,310 DT", c.dt(1849.31).replace(/[⁦⁩  ]/g, "
 async function page(chemin, lang = "fr", modifier = js => js) {
   // comme un navigateur : chaque <script src> est remplacé par son contenu, puis tout s'exécute dans l'ordre
   // (modifier : permet de tester une variante d'un script, ex. URL_DOCUMENTS remplie)
+  // lang = "ar" : la page arabe ar/<chemin> (une adresse par langue) ; video/ garde ?lang=ar
+  const ar = versionAr(chemin, lang); const q = ar === chemin ? `?lang=${lang}` : ""; chemin = ar;
   const dossier = dirname(join(root, chemin));
   const html = lire(chemin).replace(/<script([^>]*) src="(?!https?:)([^"?]+)(\?[^"]*)?"([^>]*)><\/script>/g,
     (_, a, src) => `<script>${modifier(readFileSync(join(dossier, src), "utf8"), src)}</script>`);
-  const dom = new JSDOM(html, { url: `https://outils.clicvia.com/${chemin.replace("index.html", "")}?lang=${lang}`,
+  const dom = new JSDOM(html, { url: `https://outils.clicvia.com/${chemin.replace("index.html", "")}${q}`,
                                runScripts: "dangerously", pretendToBeVisual: true });
   await new Promise(ok => dom.window.addEventListener("load", ok));
   return dom.window;
@@ -131,7 +137,7 @@ for (const p of TOUTES) {
 check("page 404 commune à la racine publiée : 404.html (nom du site, couleur) + 404.js qui cherche la page (« Recherche de la page »)",
   existsSync(join(root, "404.html")) && existsSync(join(root, "404.js")) && lire("404.html").includes("<title>Page introuvable — Outils pratiques Tunisie</title>")
   && lire("404.html").includes('<script src="/404.js"></script>') && lire("404.js").includes("Recherche de la page"));
-check("À propos : la page introuvable et les liens Confidentialité / Conditions sont expliqués (FR + AR)", lire("a-propos/index.html").includes("Page introuvable, confidentialité, conditions") && lire("a-propos/index.html").includes("صفحة غير موجودة، الخصوصية، الشروط"));
+check("À propos : la page introuvable et les liens Confidentialité / Conditions sont expliqués (FR + AR)", lire("a-propos/index.html").includes("Page introuvable, confidentialité, conditions") && lire("ar/a-propos/index.html").includes("صفحة غير موجودة، الخصوصية، الشروط"));
 check("FAQ Google sur les 2 calculateurs", ["salaire-net/index.html", "impot-revenu/index.html"].every(p => lire(p).includes("FAQPage")));
 check("image d'aperçu présente", existsSync(join(root, "assets/og-image-v6.jpg")));
 // manifeste : id UNIQUE = chemin du site (sinon Chrome croit le site « déjà installé » : tous les sites partagent ah6259.github.io)
@@ -193,11 +199,11 @@ check(`toutes les pages affichent l'année ${ANNEE}`,
 // une VRAIE PHOTO libre de droits dans le bandeau de chaque calculateur (règle commune) :
 // fichier présent, crédit + licence affichés sous la photo, crédit dans « À propos », preuve de licence sauvegardée
 const LICENCE = /CC BY-SA \d\.\d|CC BY \d\.\d|CC0|domaine public/;
-const aPropos = lire("a-propos/index.html");
+const aPropos = lireSource("a-propos/index.html");   // page bilingue écrite à la main (les pages FR et ar/ en sont tirées)
 // 25/10/2026 (RÈGLE d'Ahmed, règle commune § 44 : « la page Comment fonctionne le site doit être mise à jour chaque fois qu'on modifie le site ») :
 // chaque fonction visible du site (repère dans le code ou les pages) doit être expliquée dans a-propos/ ; nouvelle fonction = une ligne ici + son explication FR + AR
 { const ap = aPropos.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/[\u00a0\u2068\u2069]/g, " ").replace(/\s+/g, " ");
-  const acc = lire("index.html"), js = ["page.js", "pass.js", "impot.js", "credit.js"].map(f => lire("assets/" + f)).join("\n");
+  const acc = lireSource("index.html"), js = ["page.js", "pass.js", "impot.js", "credit.js"].map(f => lire("assets/" + f)).join("\n");
   const FONCTIONS = [
     ["salaire brut ⇄ net", existsSync(join(root, "salaire-net/index.html")), /Salaire brut ⇄ net : passer du salaire brut au salaire net/],
     ["impôt sur le revenu + TUNIMPOT", existsSync(join(root, "impot-revenu/index.html")) && /tunimpot/.test(lire("impot-revenu/index.html")), /Impôt sur le revenu : l'impôt annuel calculé tranche par tranche, avec un lien vers TUNIMPOT/],
@@ -209,6 +215,7 @@ const aPropos = lire("a-propos/index.html");
     ["Documents prêts à remplir", /Documents prêts à remplir/.test(acc), /Documents prêts à remplir : lien vers notre site Documents Tunisie/],
     ["date « Règles à jour au »", /data-maj/.test(lire("salaire-net/index.html")), /Règles à jour au… : la date de la dernière vérification/],
     ["langue FR / AR", /\.langue/.test(js), /Français \/ arabe : le bouton de langue/],
+    ["une adresse par langue (ar/)", existsSync(join(root, "ar/index.html")) && /autreLangue/.test(js), /Une adresse par langue : chaque page existe en français [\s\S]{0,60}et en arabe \(outils\.clicvia\.com\/ar\//],
     ["bouton Partager", /\.partager/.test(js), /Partager : le bouton rond/],
     ["Votre avis", /id="avis"/.test(acc), /Votre avis : un formulaire/],
     ["installation et hors connexion", existsSync(join(root, "sw.js")), /Installer sur le téléphone/],
@@ -304,7 +311,8 @@ for (const [calc, champ, mot] of [["salaire-net", "montant", "fiches de paie"], 
     const b = d.getElementById("lien-pro"), a = b?.querySelector("a");
     check(`${p} (${lang}) : cadre affiché après le calcul, lien vers l'annuaire (nouvel onglet, noopener)`, !!a && !b.hidden
           && a.href === COMPTABLES && a.target === "_blank" && a.rel.includes("noopener") && a.dataset.compteur === `lien-comptables/${calc}`);
-    const fr = a?.querySelector('[data-l="fr"]')?.textContent || "", ar = a?.querySelector('[data-l="ar"]')?.textContent || "";
+    const src = new JSDOM(lireSource(p)).window.document.getElementById("lien-pro");   // la page bilingue (source) a les deux textes
+    const fr = src?.querySelector('[data-l="fr"]')?.textContent || "", ar = src?.querySelector('[data-l="ar"]')?.textContent || "";
     check(`${p} (${lang}) : texte français et arabe, sobre (jamais « meilleur »)`, fr.includes(mot) && fr.includes("près de chez vous")
           && /[؀-ۿ]/.test(ar) && ar.includes("قريب منك") && !/meilleur|أفضل/i.test(fr + ar));
   }
@@ -344,7 +352,7 @@ for (const p of TOUTES) {
   const morts = tuilesSansLien(new JSDOM(lire(p)).window.document);
   check(`${p} : aucune carte avec une icône sans lien (pas de faux bouton)${morts.length ? " → " + morts.join(" | ") : ""}`, !morts.length);
 }
-check("accueil : « 1 calcul gratuit par jour, sans inscription » dans l'intro (FR + AR), sans badge", /1 calcul gratuit par jour, sans inscription/.test(lire("index.html")) && /حساب مجاني كل يوم، دون تسجيل/.test(lire("index.html")) && !/badge-c|class="paie-confiance"/.test(lire("index.html")));
+check("accueil : « 1 calcul gratuit par jour, sans inscription » dans l'intro (FR + AR), sans badge", /1 calcul gratuit par jour, sans inscription/.test(lire("index.html")) && /حساب مجاني كل يوم، دون تسجيل/.test(lire("ar/index.html")) && !/badge-c|class="paie-confiance"/.test(lire("index.html") + lire("ar/index.html")));
 await passJournee();
 await boutonComptables();
 await boutonPartager();
@@ -362,12 +370,13 @@ async function passJournee() {
   const futur = new Date(Date.now() + 20 * 3600000).toISOString(), passe = new Date(Date.now() - 3600000).toISOString();
   // fenêtre comme un navigateur ; avant = réglages du stockage avant le chargement (calcul gratuit déjà utilisé, code gardé…)
   async function ouvrir(chemin, { lang = "fr", avant = null } = {}) {
+    const ar = versionAr(chemin, lang); const q = ar === chemin ? `?lang=${lang}` : ""; chemin = ar;
     const dossier = dirname(join(root, chemin));
     const html = lire(chemin).replace(/<script([^>]*) src="(?!https?:)([^"?]+)(\?[^"]*)?"([^>]*)><\/script>/g,
       (_, a, src) => `<script>${readFileSync(join(dossier, src), "utf8")}</script>`);
     const fautes = [], vc = new VirtualConsole();
     vc.on("jsdomError", e => { if (!/Not implemented/.test(e.message)) fautes.push(e.message); });
-    const dom = new JSDOM(html, { url: `https://outils.clicvia.com/${chemin.replace("index.html", "")}?lang=${lang}`,
+    const dom = new JSDOM(html, { url: `https://outils.clicvia.com/${chemin.replace("index.html", "")}${q}`,
       runScripts: "dangerously", pretendToBeVisual: true, virtualConsole: vc, beforeParse(w) { if (avant) avant(w); } });
     await new Promise(ok => dom.window.addEventListener("load", ok));
     dom.window.fautes = fautes;
@@ -685,17 +694,91 @@ async function boutonPartager() {
     const adresse = "https://outils.clicvia.com/video/?lang=ar";
     check(`${p} : sans navigator.share, « Partager » ouvre wa.me avec la page vidéo + l'adresse du site et compte le clic`, !wx.navigator.share && ouverts.length === 1
       && ouverts[0][0].startsWith("https://wa.me/?text=") && decodeURIComponent(ouverts[0][0].slice(20)).endsWith(" " + adresse)
-      && decodeURIComponent(ouverts[0][0]).includes("https://outils.clicvia.com/?lang=ar") && ouverts[0][1] === "_blank"
+      && decodeURIComponent(ouverts[0][0]).includes("https://outils.clicvia.com/ar/") && ouverts[0][1] === "_blank"
       && comptes.length === 1 && comptes[0].path.startsWith("partage/") && comptes[0].event === true);
   }
 }
 
 // 20/10/2026 (Ahmed) : lien vers le simulateur officiel TUNIMPOT du ministère des Finances (Android ; plus sur l'App Store)
-{ const d = new JSDOM(lire("impot-revenu/index.html")).window.document, b = d.getElementById("tunimpot"), a = b?.querySelector("a");
+{ const d = new JSDOM(lireSource("impot-revenu/index.html")).window.document, b = d.getElementById("tunimpot"), a = b?.querySelector("a");
   check("impot-revenu : lien vers l'application officielle TUNIMPOT (Google Play, tn.gov.finances.tunimpot), FR + AR, nouvel onglet, clic compté",
     !!a && a.getAttribute("href") === "https://play.google.com/store/apps/details?id=tn.gov.finances.tunimpot" && a.getAttribute("rel") === "noopener"
     && a.getAttribute("target") === "_blank" && a.dataset.compteur === "lien-tunimpot/impot-revenu"
     && !!b.querySelector('[data-l="fr"]') && !!b.querySelector('[data-l="ar"]') && /ministère des Finances/.test(b.textContent)); }
+
+// ---- UNE ADRESSE PAR LANGUE (21/11/2026, règle commune § 8 point 9 : « une adresse par langue, jamais seulement ?lang= ») ----
+// tools/sources/<chemin>/index.html (bilingue, écrit à la main) -> <chemin>/index.html (français seul) + ar/<chemin>/index.html (arabe seul)
+{
+  const SITE = "https://outils.clicvia.com/";
+  const chemins = TOUTES.map(p => p.replace("index.html", ""));
+  const sources = []; (function walk(dossier, rel) { for (const n of readdirSync(dossier)) { const f = join(dossier, n);
+    if (statSync(f).isDirectory()) walk(f, rel + n + "/"); else if (n === "index.html") sources.push(rel); } })(join(root, "tools/sources"), "");
+  check(`une adresse par langue : une source bilingue par page publique (${sources.length})`, sources.sort().join() === [...chemins].sort().join());
+  // pages fabriquées à jour (sinon on a modifié une page à la main au lieu de sa source)
+  let aJour = false, sortie = "";
+  for (const py of [process.env.PYTHON, "python3", "python"].filter(Boolean)) {
+    try { sortie = execSync(`${py} tools/construire.py --verifier`, { cwd: root, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }); aJour = true; break; }
+    catch (e) { sortie = (e.stdout || "") + (e.stderr || ""); if (/ÉCHEC/.test(sortie)) break; }
+  }
+  check(`une adresse par langue : pages fabriquées à jour (python tools/construire.py --verifier) ${aJour ? "" : sortie.trim()}`, aJour);
+  const tete = h => [...h.matchAll(/<link rel="alternate" hreflang="([^"]+)" href="([^"]+)">/g)].map(m => m[1] + "=" + m[2]).sort().join(" ");
+  const mal = [], titresAr = new Map();
+  for (const c of chemins) {
+    const fr = lire(c + "index.html"), ar = lire("ar/" + c + "index.html");
+    const attendu = [`ar=${SITE}ar/${c}`, `fr=${SITE}${c}`, `x-default=${SITE}${c}`].sort().join(" ");
+    if (!/<html lang="fr" dir="ltr"[^>]*data-langue-fixe="fr"/.test(fr) || /data-l="ar"/.test(fr)) mal.push(c + " : page française pas seule");
+    if (!/<html lang="ar" dir="rtl"[^>]*data-langue-fixe="ar"/.test(ar) || /data-l="fr"/.test(ar)) mal.push(c + " : page arabe pas seule");
+    if (tete(fr) !== attendu || tete(ar) !== attendu) mal.push(c + " : hreflang fr / ar / x-default pas réciproques");
+    if (!fr.includes(`<link rel="canonical" href="${SITE}${c}">`) || !ar.includes(`<link rel="canonical" href="${SITE}ar/${c}">`)) mal.push(c + " : canonical");
+    if (!fr.includes(`<meta property="og:url" content="${SITE}${c}">`) || !ar.includes(`<meta property="og:url" content="${SITE}ar/${c}">`)) mal.push(c + " : og:url");
+    if (!fr.includes('<meta property="og:locale" content="fr_FR">') || !ar.includes('<meta property="og:locale" content="ar_AR">')) mal.push(c + " : og:locale");
+    if (/ld\+json/.test(ar)) mal.push(c + " : FAQ Google française sur la page arabe");
+    const t = (ar.match(/<title>([^<]*)<\/title>/) || [])[1] || "", de = (ar.match(/name="description" content="([^"]*)"/) || [])[1] || "";
+    if (!/[؀-ۿ]/.test(t) || t.length < 10 || t.length > 70) mal.push(c + ` : titre arabe (${t.length})`);
+    if (!/[؀-ۿ]/.test(de) || de.length < 40 || de.length > 170) mal.push(c + ` : description arabe (${de.length})`);
+    if (titresAr.has(t)) mal.push(c + " : même titre arabe que " + titresAr.get(t)); titresAr.set(t, c);
+    // liens relatifs de la page arabe : fichiers à la racine, pages dans ar/ ; tout doit exister
+    for (const m of ar.matchAll(/\b(?:href|src)="(?![a-z]+:|\/\/|#|\?)([^"#?]*)[^"]*"/g)) {
+      const cible = join(root, "ar", c, m[1]);
+      if (!existsSync(cible) || (statSync(cible).isDirectory() && !existsSync(join(cible, "index.html")))) mal.push(c + " : lien mort " + m[1]);
+      else if (/\/$|^\.\.\/$|^$/.test(m[1]) && !cible.startsWith(join(root, "ar")) && !/video\/$/.test(m[1])) mal.push(c + " : la page arabe mène vers une page française " + m[1]);
+    }
+  }
+  check(`une adresse par langue : chaque page en français seul ET en arabe seul (lang, dir), hreflang réciproques, canonical, og:url, og:locale, titres arabes uniques <= 70, liens valides ${mal.join(" | ")}`, mal.length === 0);
+  const locsTous = [...lire("sitemap.xml").matchAll(/<loc>https:\/\/outils\.clicvia\.com\/([^<]*)<\/loc>/g)].map(m => m[1]);
+  check("plan du site : pages françaises ET arabes (ar/…)", chemins.every(c => locsTous.includes(c) && locsTous.includes("ar/" + c)));
+  // menu et pied de la page arabe : liens vers les pages ARABES
+  const wa = await page("salaire-net/index.html", "ar");
+  const liens = [...wa.document.querySelectorAll("#entete nav.menu a:not(.menu-annuaire), #pied nav a")].map(a => a.href).filter(h => h.startsWith(SITE));
+  check("page arabe : menu et pied de page mènent aux pages arabes (ar/…)", liens.length >= 8 && liens.every(h => h.startsWith(SITE + "ar/")) && wa.document.querySelector("#entete a.logo").href === SITE + "ar/");
+  const wf = await page("salaire-net/index.html");
+  check("page française : menu et pied de page restent en français", [...wf.document.querySelectorAll("#entete nav.menu a:not(.menu-annuaire), #pied nav a")].map(a => a.href).filter(h => h.startsWith(SITE)).every(h => !h.startsWith(SITE + "ar/")));
+  // bouton de langue et renvoi d'un ancien lien « ?lang=ar » : vers l'autre adresse (mêmes paramètres, même ancre)
+  async function avecRenvoi(chemin, suite, referrer) {
+    const dossier = dirname(join(root, chemin)), allers = [];
+    const html = lire(chemin).replace(/<script([^>]*) src="(?!https?:)([^"?]+)(\?[^"]*)?"([^>]*)><\/script>/g, (_, a, src) => `<script>${readFileSync(join(dossier, src), "utf8")}</script>`);
+    const dom = new JSDOM(html, { url: SITE + chemin.replace("index.html", "") + suite, referrer, runScripts: "dangerously", pretendToBeVisual: true,
+      beforeParse(w) { w.allerVers = u => allers.push(new URL(u, w.location.href).href); } });
+    await new Promise(ok => dom.window.addEventListener("load", ok));
+    return { w: dom.window, allers };
+  }
+  let r = await avecRenvoi("salaire-net/index.html", "?lang=ar#detail");
+  check("ancien lien salaire-net/?lang=ar#detail -> renvoyé vers ar/salaire-net/#detail", r.allers.length === 1 && r.allers[0] === SITE + "ar/salaire-net/#detail");
+  r = await avecRenvoi("ar/credit/index.html", "?x=1");
+  check("page arabe ouverte directement (lien partagé, Google) : aucun renvoi", r.allers.length === 0 && r.w.document.documentElement.lang === "ar");
+  r.w.document.querySelector("#entete button.langue").click();
+  check("bouton de langue de la page arabe -> page française, mêmes paramètres", r.allers.length === 1 && r.allers[0] === SITE + "credit/?x=1"
+    && r.w.document.querySelector("#entete button.langue").textContent === "Fr");
+  r = await avecRenvoi("index.html", "");
+  r.w.document.querySelector("#entete button.langue").click();
+  check("bouton de langue de l'accueil -> ar/", r.allers.length === 1 && r.allers[0] === SITE + "ar/");
+  r = await avecRenvoi("pass/conditions/index.html", "", SITE + "ar/pass/");
+  check("pass/conditions/ en français sans choix gardé : reste en français (jamais de bascule automatique)", r.allers.length === 0 && r.w.document.documentElement.lang === "fr");
+  // le calcul reste juste en arabe (montants isolés)
+  const ws = await page("salaire-net/index.html", "ar");
+  ws.document.getElementById("montant").value = "2500"; ws.document.getElementById("montant").dispatchEvent(new ws.Event("input"));
+  check("page arabe du salaire : 2 500 -> 1 849,310, montant isolé (ordre lisible)", texte(ws.document.getElementById("grand")).includes("1 849,310") && ws.document.getElementById("grand").textContent.startsWith("⁦"));
+}
 
 console.log(erreurs ? `\n${erreurs} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(erreurs ? 1 : 0);

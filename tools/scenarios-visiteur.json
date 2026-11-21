@@ -226,7 +226,7 @@
   "lire": "#grand"
  },
  {
-  "page": "salaire-net/?lang=ar",
+  "page": "ar/salaire-net/",
   "nom": "salaire-net/ : exemple affiché (ar)",
   "lire": "#grand"
  },
@@ -236,7 +236,7 @@
   "lire": "#grand"
  },
  {
-  "page": "impot-revenu/?lang=ar",
+  "page": "ar/impot-revenu/",
   "nom": "impot-revenu/ : exemple affiché (ar)",
   "lire": "#grand"
  },
@@ -246,7 +246,7 @@
   "lire": "#grand"
  },
  {
-  "page": "credit/?lang=ar",
+  "page": "ar/credit/",
   "nom": "credit/ : exemple affiché (ar)",
   "lire": "#grand"
  },
@@ -365,7 +365,7 @@
   "lire": "#grand"
  },
  {
-  "page": "salaire-net/?lang=ar",
+  "page": "ar/salaire-net/",
   "nom": "salaire-net/ : exemple affiché (ar)",
   "lire": "#grand"
  },
@@ -375,7 +375,7 @@
   "lire": "#grand"
  },
  {
-  "page": "impot-revenu/?lang=ar",
+  "page": "ar/impot-revenu/",
   "nom": "impot-revenu/ : exemple affiché (ar)",
   "lire": "#grand"
  },
@@ -385,7 +385,7 @@
   "lire": "#grand"
  },
  {
-  "page": "credit/?lang=ar",
+  "page": "ar/credit/",
   "nom": "credit/ : exemple affiché (ar)",
   "lire": "#grand"
  },
@@ -395,7 +395,7 @@
   "lire": "#grand"
  },
  {
-  "page": "auto-entrepreneur/?lang=ar",
+  "page": "ar/auto-entrepreneur/",
   "nom": "auto-entrepreneur/ : exemple affiché (ar)",
   "lire": "#grand"
  },
@@ -405,7 +405,7 @@
   "lire": "#grand"
  },
  {
-  "page": "retenue-source/?lang=ar",
+  "page": "ar/retenue-source/",
   "nom": "retenue-source/ : exemple affiché (ar)",
   "lire": "#grand"
  },
@@ -415,7 +415,7 @@
   "lire": "#grand"
  },
  {
-  "page": "salaire-net/?lang=ar",
+  "page": "ar/salaire-net/",
   "nom": "salaire-net/ : exemple affiché (ar)",
   "lire": "#grand"
  },
@@ -646,7 +646,7 @@
   "lire": "#grand"
  },
  {
-  "page": "salaire-net/?lang=ar",
+  "page": "ar/salaire-net/",
   "nom": "salaire-net/ : exemple affiché (ar)",
   "lire": "#grand"
  },
@@ -656,7 +656,7 @@
   "lire": "#grand"
  },
  {
-  "page": "impot-revenu/?lang=ar",
+  "page": "ar/impot-revenu/",
   "nom": "impot-revenu/ : exemple affiché (ar)",
   "lire": "#grand"
  },
@@ -829,7 +829,7 @@
   "lire": "#grand"
  },
  {
-  "page": "salaire-net/?lang=ar",
+  "page": "ar/salaire-net/",
   "nom": "salaire-net/ : exemple affiché (ar)",
   "lire": "#grand"
  },
@@ -839,7 +839,7 @@
   "lire": "#grand"
  },
  {
-  "page": "impot-revenu/?lang=ar",
+  "page": "ar/impot-revenu/",
   "nom": "impot-revenu/ : exemple affiché (ar)",
   "lire": "#grand"
  },
@@ -849,7 +849,7 @@
   "lire": "#grand"
  },
  {
-  "page": "credit/?lang=ar",
+  "page": "ar/credit/",
   "nom": "credit/ : exemple affiché (ar)",
   "lire": "#grand"
  },
@@ -859,7 +859,7 @@
   "lire": "#grand"
  },
  {
-  "page": "auto-entrepreneur/?lang=ar",
+  "page": "ar/auto-entrepreneur/",
   "nom": "auto-entrepreneur/ : exemple affiché (ar)",
   "lire": "#grand"
  },
@@ -869,7 +869,7 @@
   "lire": "#grand"
  },
  {
-  "page": "retenue-source/?lang=ar",
+  "page": "ar/retenue-source/",
   "nom": "retenue-source/ : exemple affiché (ar)",
   "lire": "#grand"
  },

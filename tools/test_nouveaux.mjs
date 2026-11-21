@@ -116,10 +116,13 @@ check("règles de la retenue datées, sources officielles", /\d{2}\/\d{2}\/\d{4}
 
 // ================= 4. PAGES (comme un navigateur) =================
 async function page(chemin, lang = "fr") {
+  // une adresse par langue (21/11/2026) : la page arabe est ar/<chemin>, fabriquée par tools/construire.py
+  let q = `?lang=${lang}`;
+  if (lang === "ar" && existsSync(join(root, "ar", chemin))) { chemin = "ar/" + chemin; q = ""; }
   const dossier = dirname(join(root, chemin));
   const html = lire(chemin).replace(/<script([^>]*) src="(?!https?:)([^"?]+)(\?[^"]*)?"([^>]*)><\/script>/g,
     (_, a, src) => `<script>${readFileSync(join(dossier, src), "utf8")}</script>`);
-  const dom = new JSDOM(html, { url: `https://outils.clicvia.com/${chemin.replace("index.html", "")}?lang=${lang}`,
+  const dom = new JSDOM(html, { url: `https://outils.clicvia.com/${chemin.replace("index.html", "")}${q}`,
                                runScripts: "dangerously", pretendToBeVisual: true });
   await new Promise(ok => dom.window.addEventListener("load", ok));
   return dom.window;
@@ -192,7 +195,8 @@ for (const p of PAGES) {
   check(`${p} en arabe : lang=ar, dir=rtl, bouton court « Fr » (title Français)`, d.documentElement.lang === "ar" && d.documentElement.dir === "rtl" && d.querySelector(".langue").textContent === "Fr" && d.querySelector(".langue").title === "Français");
   check(`${p} en arabe : montant isolé (ordre lisible)`, d.getElementById("grand").textContent.startsWith("⁦"));
   check(`${p} en arabe : textes calculés en arabe, pas de NaN`, /[؀-ۿ]/.test(d.getElementById("tableau").textContent) && propre(w));
-  check(`${p} en arabe : chaque texte FR a sa traduction AR`, d.querySelectorAll('[data-l="fr"]').length === d.querySelectorAll('[data-l="ar"]').length);
+  const src = new JSDOM(existsSync(join(root, "tools/sources", p)) ? lire("tools/sources/" + p) : lire(p)).window.document;   // page bilingue écrite à la main
+  check(`${p} en arabe : chaque texte FR a sa traduction AR (source bilingue)`, src.querySelectorAll('[data-l="fr"]').length === src.querySelectorAll('[data-l="ar"]').length && src.querySelectorAll('[data-l="ar"]').length > 0);
 }
 
 // ================= 5. Règles communes : référencement, sources, sécurité =================
@@ -221,8 +225,9 @@ for (const p of PAGES) {
   const externes = [...s.matchAll(/(?:href|src)="(https?:\/\/[^"\/]+)/g)].map(m => m[1].replace(/^https?:\/\//, ""));
   check(`${p} : liens externes uniquement vers des sources officielles (${[...new Set(externes)].filter(x => !DOMAINES_OK.includes(x)).join(", ") || "ok"})`, externes.every(x => DOMAINES_OK.includes(x)));
   if (CONCURRENTS) check(`${p} : aucun concurrent cité`, sansConcurrent(s));
-  check(`${p} : section « Sources officielles » en FR et AR`, s.includes("Sources officielles") && s.includes("المصادر الرسمية"));
-  check(`${p} : avertissement « pas un service officiel » / indicatif`, /indicatif/.test(s) && /تقريبية/.test(s));
+  const s2 = s + (existsSync(join(root, "ar", p)) ? lire("ar/" + p) : "");   // page française + page arabe (une adresse par langue)
+  check(`${p} : section « Sources officielles » en FR et AR`, s2.includes("Sources officielles") && s2.includes("المصادر الرسمية"));
+  check(`${p} : avertissement « pas un service officiel » / indicatif`, /indicatif/.test(s2) && /تقريبية/.test(s2));
   check(`${p} : liens externes ouverts dans une nouvelle fenêtre`, [...s.matchAll(/<a [^>]*href="https?:\/\/(?!ah6259|outils\.clicvia)[^"]+"[^>]*>/g)].every(m => m[0].includes('target="_blank"') && m[0].includes("noopener")));
   w = await page(p); d = w.document;
   const pied = d.getElementById("pied")?.textContent || "";

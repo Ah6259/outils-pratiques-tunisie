@@ -20,11 +20,34 @@ const MENU_SITE = [
 // (le site des conférences gardait « en » → textes tous cachés)
 (function () {
   const html = document.documentElement;
-  const racine = html.dataset.racine || "";
-  let langue = "fr";
-  try { langue = (/^(fr|ar)$/.test(localStorage.getItem("langue") || "") ? localStorage.getItem("langue") : "") || (navigator.language || "").startsWith("ar") && "ar" || "fr"; } catch (e) {}
+  const racine = html.dataset.racine || "";                      // dossier des fichiers (style, scripts, images)
+  // UNE ADRESSE PAR LANGUE (21/11/2026, tools/construire.py) : la page française est à son adresse, la page arabe dans ar/.
+  // Sur ces pages (data-langue-fixe), la langue est celle de l'ADRESSE : le bouton de langue ouvre l'autre adresse
+  // (data-autre-langue, mêmes paramètres, même ancre) ; un ancien lien « ?lang=ar », ou un visiteur venu d'une page du site
+  // qui avait choisi l'autre langue, est renvoyé vers la bonne adresse. Jamais pour un robot (Google, visiteur simulé) ni dans un cadre.
+  // video/ garde une seule adresse (?lang=ar) et l'ancien bouton qui change la page sur place.
+  const FIXE = html.dataset.langueFixe === "fr" || html.dataset.langueFixe === "ar" ? html.dataset.langueFixe : "";
+  const site = html.dataset.site !== undefined ? html.dataset.site : racine;   // dossier des PAGES (ar/… sur une page arabe)
+  window.racinePages = () => site;
+  let langue = "fr", gardee = "";
+  try { gardee = /^(fr|ar)$/.test(localStorage.getItem("langue") || "") ? localStorage.getItem("langue") : ""; } catch (e) {}
+  langue = gardee || ((navigator.language || "").startsWith("ar") ? "ar" : "fr");
   const demande = new URLSearchParams(location.search).get("lang");
   if (demande === "ar" || demande === "fr") langue = demande;
+  const aller = () => {                                           // autre adresse de la même page, mêmes paramètres, même ancre
+    const q = new URLSearchParams(location.search); q.delete("lang");
+    const u = html.dataset.autreLangue + (q.toString() ? "?" + q : "") + location.hash;
+    if (window.allerVers) return window.allerVers(u);            // pour les tests
+    try { location.replace(u); } catch (e) {}
+  };
+  if (FIXE) {
+    let robot = false;
+    try { robot = navigator.webdriver === true || window.top !== window.self; } catch (e) { robot = true; }
+    const duSite = (document.referrer || "").indexOf(location.origin + "/") === 0;
+    const voulue = (demande === "ar" || demande === "fr") ? demande : (duSite ? gardee : "");
+    langue = FIXE;
+    if (voulue && voulue !== FIXE && !robot) aller();
+  }
 
   window.T = (fr, ar) => html.lang === "ar" ? ar : fr;
 
@@ -35,33 +58,33 @@ const MENU_SITE = [
     const e = document.getElementById("entete");
     if (e) e.innerHTML = `
       <div class="wrap">
-        <a class="logo" href="${racine || "./"}">
+        <a class="logo" href="${site || "./"}">
           <img class="logo-mark" src="${racine}assets/logo.svg" alt="" width="34" height="34">
           <span class="logo-nom">${T("Outils pratiques Tunisie", "أدوات عملية تونس")}
             <small>${T("1 calcul gratuit par jour · règles 2026", "حساب مجاني كل يوم · قواعد 2026")}</small></span>
         </a>
         <div class="entete-boutons">
-          ${passIci ? `<a class="entete-pass${typeof passActif === "function" && passActif() ? " actif" : ""}" href="${racine}pass/"><span class="long">${T("Pass Journée", "باقة اليوم")}</span><span class="court">${T("Pass", "الباقة")}</span></a>` : ""}
+          ${passIci ? `<a class="entete-pass${typeof passActif === "function" && passActif() ? " actif" : ""}" href="${site}pass/"><span class="long">${T("Pass Journée", "باقة اليوم")}</span><span class="court">${T("Pass", "الباقة")}</span></a>` : ""}
           <button class="partager" type="button" aria-label="${T("Partager cette page", "شارك هذه الصفحة")}" title="${T("Partager", "شارك")}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg></button>
           <button class="langue" type="button" aria-label="${T("Lire en arabe", "Lire en français")}" title="${T("العربية", "Français")}">${T("ع", "Fr")}</button>
         </div>
       </div>
       <nav class="menu" aria-label="${T("Calculateurs", "الحاسبات")}"><div class="wrap">${MENU_SITE.map(([h, fr, ar, ico]) => /^https:/.test(h)
         ? `<a class="menu-annuaire" href="${h}" target="_blank" rel="noopener" data-compteur="lien-site/comptables">${ico ? `<img src="${racine}${ico}" alt="" width="20" height="20">` : ""}${T(fr, ar)}</a>`
-        : `<a href="${racine}${h}"${location.pathname.endsWith("/" + h) ? ' aria-current="page"' : ""}>${T(fr, ar)}</a>`).join("")}</div></nav>`;
+        : `<a href="${site}${h}"${location.pathname.endsWith("/" + h) ? ' aria-current="page"' : ""}>${T(fr, ar)}</a>`).join("")}</div></nav>`;
     const p = document.getElementById("pied");
     if (p) p.innerHTML = `
       <div class="wrap">
         <div class="pied-logo"><img src="${racine}assets/logo.svg" alt="" width="24" height="24"> ${T("Outils pratiques Tunisie", "أدوات عملية تونس")}</div>
         <nav>
-          <a href="${racine}salaire-net/">${T("Salaire brut ⇄ net", "الأجر الخام ⇄ الصافي")}</a>
-          <a href="${racine}impot-revenu/">${T("Impôt sur le revenu", "الضريبة على الدخل")}</a>
-          <a href="${racine}credit/">${T("Crédit immobilier et auto", "القرض العقاري والسيارة")}</a>
-          <a href="${racine}auto-entrepreneur/">${T("Auto-entrepreneur", "المبادر الذاتي")}</a>
-          <a href="${racine}retenue-source/">${T("Retenue à la source", "الخصم من المورد")}</a>
-          <a href="${racine}a-propos/">${T("Comment fonctionne le site ?", "كيف يعمل الموقع؟")}</a>
-          ${racine ? `<a href="${racine}pass/">${T("Pass Journée", "باقة اليوم")}</a>` : ""}
-          <a href="${racine}#avis">${T("Votre avis", "رأيك")}</a>
+          <a href="${site}salaire-net/">${T("Salaire brut ⇄ net", "الأجر الخام ⇄ الصافي")}</a>
+          <a href="${site}impot-revenu/">${T("Impôt sur le revenu", "الضريبة على الدخل")}</a>
+          <a href="${site}credit/">${T("Crédit immobilier et auto", "القرض العقاري والسيارة")}</a>
+          <a href="${site}auto-entrepreneur/">${T("Auto-entrepreneur", "المبادر الذاتي")}</a>
+          <a href="${site}retenue-source/">${T("Retenue à la source", "الخصم من المورد")}</a>
+          <a href="${site}a-propos/">${T("Comment fonctionne le site ?", "كيف يعمل الموقع؟")}</a>
+          ${site ? `<a href="${site}pass/">${T("Pass Journée", "باقة اليوم")}</a>` : ""}
+          <a href="${site}#avis">${T("Votre avis", "رأيك")}</a>
         <a href="https://clicvia.com/" rel="noopener" target="_blank">${T("Tous nos services", "كل خدماتنا")}</a>
         <a href="${T("https://clicvia.com/confidentialite/", "https://clicvia.com/ar/confidentialite/")}" rel="noopener" target="_blank">${T("Confidentialité", "الخصوصية")}</a>
         <a href="${T("https://clicvia.com/conditions/", "https://clicvia.com/ar/conditions/")}" rel="noopener" target="_blank">${T("Conditions d'utilisation", "شروط الاستعمال")}</a>
@@ -70,11 +93,16 @@ const MENU_SITE = [
                `قواعد تم التثبت منها في ${MAJ}: قانون المالية 2025 (جدول الضريبة)، نسب الضمان الاجتماعي 2026.`)}</p>
         <p>${T("Résultats indicatifs : ce site n'est pas un service officiel. Les calculs se font dans votre téléphone, aucune donnée n'est envoyée.",
                "نتائج تقريبية: هذا الموقع ليس خدمة رسمية. الحساب يتم في هاتفك، لا تُرسل أي معطيات.")}</p>
-        <p>${T("Photos : Wikimedia Commons, licences libres —", "الصور: ويكيميديا كومنز، رخص حرة —")} <a href="${racine}a-propos/#photos">${T("auteurs et licences", "المؤلفون والرخص")}</a>.</p>
+        <p>${T("Photos : Wikimedia Commons, licences libres —", "الصور: ويكيميديا كومنز، رخص حرة —")} <a href="${site}a-propos/#photos">${T("auteurs et licences", "المؤلفون والرخص")}</a>.</p>
         <p>© 2026 Outils pratiques Tunisie — ${T("tous droits réservés.", "جميع الحقوق محفوظة.")}</p>
       </div>`;
     document.querySelectorAll(".langue").forEach(b =>
-      b.addEventListener("click", () => appliquer(html.lang === "ar" ? "fr" : "ar")));
+      b.addEventListener("click", () => {
+        const l = html.lang === "ar" ? "fr" : "ar";
+        if (!FIXE) return appliquer(l);
+        try { localStorage.setItem("langue", l); } catch (e) {}
+        aller();
+      }));
     // bouton Partager (demande d'Ahmed) : menu de partage du téléphone, sinon WhatsApp avec le lien de la page
     document.querySelectorAll(".partager").forEach(b => b.addEventListener("click", async () => {
       const url = location.href.split("#")[0].replace(/[?&]lang=(fr|ar)/, ""), titre = document.title.split(" | ")[0];
@@ -191,7 +219,8 @@ window.VIDEO_SITE = {"base": BASE_SITE, "defaut": "fr", "nom": {"fr": "Outils pr
     var chemin = location.pathname, pro = false;
     for (var i = 0; i < (S.pro || []).length; i++) if (chemin.indexOf(S.base + S.pro[i]) === 0) pro = true;
     var l = langue(), q = l !== S.defaut ? "?lang=" + l : "";
-    return { page: ORIGINE + S.base + (pro ? "video-pro/" : "video/") + q, site: ORIGINE + S.base + (pro ? S.site_pro : "") + q + (pro ? (S.ancre_pro || "") : ""),
+    // une adresse par langue (21/11/2026) : le site en arabe est à ar/ (la page vidéo garde ?lang=ar)
+    return { page: ORIGINE + S.base + (pro ? "video-pro/" : "video/") + q, site: ORIGINE + S.base + (pro ? S.site_pro + q + (S.ancre_pro || "") : (l === "ar" ? "ar/" : "")),
              titre: M(pro ? S.titre_pro : S.nom) };
   };
   window.partagerLien = function (titre, site) {
@@ -222,7 +251,7 @@ window.VIDEO_SITE = {"base": BASE_SITE, "defaut": "fr", "nom": {"fr": "Outils pr
     }
     // lien discret « Vidéo de présentation » en bas de l'accueil et de À propos -> la page vidéo
     var p = location.pathname.replace(/index\.html$/, "");
-    if (p === S.base || p === S.base + "a-propos/") {
+    if (p === S.base || p === S.base + "a-propos/" || p === S.base + "ar/" || p === S.base + "ar/a-propos/") {
       var b = document.getElementById("lien-video");
       if (!b) {
         b = document.createElement("p"); b.id = "lien-video"; b.className = "lien-video"; b.appendChild(document.createElement("a"));
