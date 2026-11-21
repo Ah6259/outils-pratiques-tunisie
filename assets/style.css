@@ -354,3 +354,18 @@ html[dir="rtl"] .paie-etapes>li::before{left:auto;right:12px}
 .rappel-pass .rappel-avis{font-weight:700;color:var(--vert)}
 .rappel-fermer{position:absolute;top:6px;inset-inline-end:6px;width:36px;height:36px;border:0;background:transparent;color:var(--doux);font-size:24px;line-height:1;cursor:pointer;border-radius:50%}
 .rappel-fermer:hover,.rappel-fermer:focus-visible{background:var(--ligne);color:var(--texte)}
+
+/* Bloc « Paiement » (ol.paie-etapes, D17/IZI) : ce site n'a pas de --p ; couleurs du site (21/11/2026). */
+:root{--p:var(--vert);--p-clair:var(--vert-clair);--p-tres-clair:var(--vert-tres-clair)}
+
+/* Mode sombre lisible (21/11/2026) : en sombre, --vert devient clair ; le texte blanc posé dessus devenait
+   illisible (contraste ~2) -> texte foncé ; fonds blancs codés en dur -> fond de carte ; bandeau du haut foncé. */
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){--rouge:#F07A6E}
+  :root:not([data-theme="light"]) .hero{background:linear-gradient(160deg,#0B7A53 0%,#085C3F 100%)}
+  :root:not([data-theme="light"]) .avis-envoyer,:root:not([data-theme="light"]) .menu a[aria-current="page"],
+  :root:not([data-theme="light"]) .btn-video-site,:root:not([data-theme="light"]) .paie-etapes>li::before{color:#06261A}
+  :root:not([data-theme="light"]) .btn-video-partager,:root:not([data-theme="light"]) .appli-btn{background:var(--carte)}
+  :root:not([data-theme="light"]) .btn-avis-autre{background:var(--carte);color:var(--vert);border-color:var(--vert)}
+  :root:not([data-theme="light"]) .partage,:root:not([data-theme="light"]) .btn-wa{background:#146C3C}
+}
