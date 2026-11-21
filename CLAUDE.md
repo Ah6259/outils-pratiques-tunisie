@@ -201,3 +201,8 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   (modèle `outils communs/page-404/` de projets-ahmed : le modifier là-bas puis `installer.py site "Outils pratiques Tunisie" "#0B7A53"`) ;
   pied (assets/page.js) : liens https://clicvia.com/confidentialite/ et /conditions/ (versions ar/ quand la page est en arabe) ;
   test_site.mjs bloque si la 404 ou un lien manque (FR + AR, toutes les pages) ; 404.html exclue de test_sw / test_avis. Version 20261117a.
+
+## 21/11/2026 — Mode sombre lisible (signalé par Ahmed : mots illisibles en sombre) — version 20261121a
+- En sombre, `--vert` devient clair : texte blanc dessus illisible (bouton « Envoyer », onglet du calculateur courant, vidéo) et bandeau du haut blanc sur vert clair (~2,2).
+  Bloc « Mode sombre lisible » à la fin de `assets/style.css` : bandeau aux verts foncés, texte foncé sur l'accent, fonds blancs -> `var(--carte)`, verts WhatsApp foncés, `--rouge` plus clair (montants « − »).
+- Bloc « Paiement » (`ol.paie-etapes`, D17/IZI) : ce site n'avait PAS de `--p` (fond clair codé en dur, texte clair en sombre = 1,0 ; puces invisibles en clair) -> `--p` / `--p-clair` / `--p-tres-clair` = verts du site. Contrôle Playwright (≥ 4,5 en sombre, toutes les pages) : 0 défaut.
