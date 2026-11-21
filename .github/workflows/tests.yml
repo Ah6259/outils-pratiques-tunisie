@@ -26,6 +26,9 @@ jobs:
         run: |
           pip install pyyaml
           python -c "import yaml,glob;[yaml.safe_load(open(f,encoding='utf-8')) for f in glob.glob('.github/workflows/*.yml')]"
+      - name: Pages fabriquees a jour (une adresse par langue)
+        # 21/11/2026 : les pages FR et ar/ sont fabriquées depuis tools/sources/ par tools/construire.py ; une page modifiée à la main = rouge
+        run: python tools/construire.py --verifier
       - run: node tools/test_site.mjs
       - run: node tools/test_nouveaux.mjs
       - run: node tools/test_sw.mjs

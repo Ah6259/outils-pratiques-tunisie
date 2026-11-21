@@ -40,8 +40,10 @@ URL = os.environ.get("REF_URL") or ((ROOT / "tools" / ".reference").read_text(en
 P = "ctl00$MainContent$ctl00$ctl02$ctl06$ctl04$"
 CHEF, ENF, BRUT, NET = P + "ctl07$CheckBox", P + "ctl08$NumericInput", P + "ctl09$NumericInput", P + "ctl10$NumericInput"
 TOLERANCE = 0.002   # DT
-FICHIERS_ANNEE = ["index.html", "salaire-net/index.html", "impot-revenu/index.html", "a-propos/index.html", "assets/calcul.js",
-                  "assets/page.js", "README.md"]
+# Une adresse par langue (21/11/2026) : les pages sont FABRIQUÉES par tools/construire.py depuis tools/sources/ (français + arabe) ;
+# l'année est donc changée dans les SOURCES (et les titres arabes de textes-ar.json pour les mêmes pages), puis les pages sont refaites.
+PAGES_ANNEE = ["", "salaire-net/", "impot-revenu/", "a-propos/"]
+FICHIERS_ANNEE = ["tools/sources/" + c + "index.html" for c in PAGES_ANNEE] + ["assets/calcul.js", "assets/page.js", "README.md"]
 # Volontairement ABSENTS : credit/ (aucune année écrite ; le mois du TMM vient de calcul-credit.js), auto-entrepreneur/ et
 # retenue-source/ (dates fixes à ne jamais changer : « Depuis le 1er janvier 2026 », « septembre 2026 », « 2e trimestre 2026 »).
 # Leurs titres « (2026) » restent donc tels quels en janvier : à revoir à la main avec la loi de finances.
@@ -160,13 +162,26 @@ def ecrire_maj(date_fr):
     p.write_text(re.sub(r'const MAJ = "[^"]+"', f'const MAJ = "{date_fr}"', js), encoding="utf-8", newline="\n")
 
 def changer_annee(ancienne, nouvelle):
-    """Remplace l'année seule (pas les dates jj/mm/aaaa ni aaaa-mm-jj, pas « loi de finances 2025 »)."""
+    """Remplace l'année seule (pas les dates jj/mm/aaaa ni aaaa-mm-jj, pas « loi de finances 2025 »), puis refait les pages FR + AR."""
     motif = re.compile(r"(?<![\d/\-])" + str(ancienne) + r"(?![\d/\-])")
     for f in FICHIERS_ANNEE:
         p = ROOT / f
         if p.exists():
             p.write_text(motif.sub(str(nouvelle), p.read_text(encoding="utf-8")), encoding="utf-8", newline="\n")
-
+    tx = ROOT / "tools" / "sources" / "textes-ar.json"
+    if tx.exists():
+        import json
+        textes = json.loads(tx.read_text(encoding="utf-8"))
+        for c in PAGES_ANNEE:
+            if c in textes:
+                textes[c] = {k: motif.sub(str(nouvelle), v) for k, v in textes[c].items()}
+        tx.write_text(json.dumps(textes, ensure_ascii=False, indent=1) + "\n", encoding="utf-8", newline="\n")
+    construire = ROOT / "tools" / "construire.py"
+    if construire.exists():
+        import importlib.util
+        spec = importlib.util.spec_from_file_location("construire", construire)
+        m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+        m.main([])
 
 def main():
     aujourd_hui = dt.date.today()

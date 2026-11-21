@@ -2,7 +2,7 @@
  "site": "https://outils.clicvia.com/",
  "logo": "assets/logo.svg",
  "defaut": "fr",
- "modele": "a-propos/index.html",
+ "modele": "tools/sources/a-propos/index.html",
  "nom": {
   "fr": "Outils pratiques Tunisie",
   "ar": "أدوات عملية تونس"

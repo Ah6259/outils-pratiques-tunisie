@@ -115,9 +115,11 @@ function porteCalcul(nom) {
 }
 
 const ICONE_TICKET = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16v4a2 2 0 0 0 0 4v4H4v-4a2 2 0 0 0 0-4z"/><path d="M14 7v12"/></svg>';
-function racineSite() { return document.documentElement.dataset.racine || ""; }
+function racineSite() { return document.documentElement.dataset.racine || ""; }   // fichiers (données du Pass)
+// pages : dossier de la langue (ar/… sur une page arabe, une adresse par langue depuis le 21/11/2026)
+function racinePagesPass() { return window.racinePages ? window.racinePages() : racineSite(); }
 function htmlBoutonPass(id) {
-  return `<a class="btn-pass-grand" id="${id}" href="${racineSite()}pass/">${ICONE_TICKET}<span>${T("Pass Journée : 7 DT", "باقة اليوم: " + isoP("7") + " د")}<small>${T("Tous les calculs pendant 24 heures, sur les 5 calculateurs", "كل الحسابات طيلة " + isoP("24") + " ساعة، في الحاسبات الخمس")}</small></span></a>`;
+  return `<a class="btn-pass-grand" id="${id}" href="${racinePagesPass()}pass/">${ICONE_TICKET}<span>${T("Pass Journée : 7 DT", "باقة اليوم: " + isoP("7") + " د")}<small>${T("Tous les calculs pendant 24 heures, sur les 5 calculateurs", "كل الحسابات طيلة " + isoP("24") + " ساعة، في الحاسبات الخمس")}</small></span></a>`;
 }
 
 // écran « Vous avez utilisé votre calcul gratuit du jour », à la place du résultat
@@ -134,7 +136,7 @@ function afficherVerrou(bloque, nom) {
   if (!b) return;
   b.hidden = !bloque;
   if (!bloque) return;
-  const r = racineSite();
+  const r = racinePagesPass();
   b.innerHTML = `<h2>${T("Vous avez utilisé votre calcul gratuit du jour", "استعملت حسابك المجاني لهذا اليوم")}</h2>
     <p>${T("Avec le <b>Pass Journée à 7 DT</b>, faites tous vos calculs pendant 24 heures, sur les 5 calculateurs.",
            "مع <b>باقة اليوم بـ" + isoP("7") + " د</b>، قم بكل حساباتك طيلة " + isoP("24") + " ساعة، في الحاسبات الخمس.")}</p>
@@ -156,7 +158,7 @@ function noteResultat(mode) {
   let n = document.getElementById("pass-note");
   if (!n) { n = document.createElement("p"); n.id = "pass-note"; n.className = "pass-note"; res.appendChild(n); }
   n.hidden = mode === "bloque";
-  const lien = `<a class="btn-pass-petit" href="${racineSite()}pass/">${T("Pass Journée 7 DT", "باقة اليوم " + isoP("7") + " د")}</a>`;
+  const lien = `<a class="btn-pass-petit" href="${racinePagesPass()}pass/">${T("Pass Journée 7 DT", "باقة اليوم " + isoP("7") + " د")}</a>`;
   if (mode === "pass") {
     n.className = "pass-note actif";
     n.innerHTML = T(`<b>Pass Journée actif</b> jusqu'au ${finLisible(finPass())} : calculs illimités.`,
@@ -334,7 +336,7 @@ function dessinerRappel() {
   if (ancien) ancien.remove();
   const e = rappelMontre, main = document.querySelector("main");
   if (!e || !main) return;
-  const racine = document.documentElement.dataset.racine || "";
+  const racine = racinePagesPass();
   const b = document.createElement("aside");
   b.className = "rappel-pass" + (e.type === "fini" ? " fini" : "");
   b.id = "rappel-pass";

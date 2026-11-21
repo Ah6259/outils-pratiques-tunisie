@@ -50,6 +50,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   net 5 771,500 ; non-résident 10 000 HT → 1 785 + TVA retenue 1 900, net 8 215. Depuis le 1er janvier 2026, certificats sur TEJ seulement.
 
 ## Avant chaque publication
+0. Pages modifiées dans `tools/sources/` (JAMAIS `<chemin>/index.html` ni `ar/` à la main) puis `python tools/construire.py` (voir 21/11/2026, une adresse par langue).
 1. Les cinq tests (tout doit être vert) :
    `node tools/test_site.mjs` (≈ 410 vérifications, dont le Pass Journée et le bouton « Trouver un comptable » : calculs de référence, pages FR/AR, liens de l'accueil et du pied, photos, sécurité…),
    `node tools/test_nouveaux.mjs` (≈ 140 : crédit, auto-entrepreneur, retenue ; accepte un dossier en argument pour tester une copie),
@@ -57,7 +58,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
    `node tools/test_sw.mjs` (service worker : réseau d'abord, exclusions, meta iPhone ; accepte un dossier en argument),
    `node tools/test_avis.mjs` (Votre avis : section, pied de page de toutes les pages, CSP, envoi simulé ; accepte un dossier en argument).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
-2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261020a`) — les tests le vérifient.
+2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261121b`) — les tests le vérifient.
 3. Capture mobile 340/390 px en français ET en arabe si l'affichage change : Chrome sans écran sur une page HTML locale
    contenant deux `<iframe>` (340 et 390 px) vers les fichiers `file:///…?lang=fr|ar` (la fenêtre de Chrome sans écran ne descend
    pas sous ~500 px ; l'anti-iframe de page.js laisse passer `file:`).
@@ -206,3 +207,26 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - En sombre, `--vert` devient clair : texte blanc dessus illisible (bouton « Envoyer », onglet du calculateur courant, vidéo) et bandeau du haut blanc sur vert clair (~2,2).
   Bloc « Mode sombre lisible » à la fin de `assets/style.css` : bandeau aux verts foncés, texte foncé sur l'accent, fonds blancs -> `var(--carte)`, verts WhatsApp foncés, `--rouge` plus clair (montants « − »).
 - Bloc « Paiement » (`ol.paie-etapes`, D17/IZI) : ce site n'avait PAS de `--p` (fond clair codé en dur, texte clair en sombre = 1,0 ; puces invisibles en clair) -> `--p` / `--p-clair` / `--p-tres-clair` = verts du site. Contrôle Playwright (≥ 4,5 en sombre, toutes les pages) : 0 défaut.
+
+## 21/11/2026 — UNE ADRESSE PAR LANGUE (règle commune § 8 point 9 ; méthode de Code de la route) — version 20261121b, `CACHE_VERSION` 5
+- Avant : français et arabe mêlés dans la même page (`?lang=ar`), Google ne voyait qu'une page « française » à moitié arabe (« hreflang : aucun »).
+- Les 9 pages publiques (accueil, 5 calculateurs, a-propos, pass, pass/conditions) sont ÉCRITES dans `tools/sources/<chemin>/index.html`
+  (bilingues, spans data-l comme avant) et FABRIQUÉES par `python tools/construire.py` : `<chemin>/index.html` = français seul
+  (lang="fr", data-langue-fixe="fr", data-autre-langue) et `ar/<chemin>/index.html` = arabe seul (lang="ar" dir="rtl", titre et description
+  arabes de `tools/sources/textes-ar.json`, canonical / og:url ar/…, og:locale ar_AR, alt des photos en arabe, FAQ JSON-LD française retirée,
+  fichiers pris à la racine : data-racine un niveau plus bas, data-site = dossier des pages), hreflang fr / ar / x-default (= fr) sur les deux.
+  Plan du site : 9 FR + 9 AR + video/. **Modifier les sources puis construire, jamais `ar/` (ni les pages françaises) à la main** :
+  `python tools/construire.py --verifier` (étape de `tests.yml` + test_site.mjs) rougit si une page fabriquée n'est pas à jour.
+- `video/` garde une seule adresse (`?lang=ar`) ; `tools/page_video.json` prend maintenant `tools/sources/a-propos/index.html` comme modèle
+  (sinon la page vidéo hériterait de data-langue-fixe).
+- `assets/page.js` : langue = celle de l'adresse ; bouton de langue = autre adresse (mêmes paramètres et ancre ; crochet `window.allerVers` des
+  tests) ; ancien lien `?lang=ar` renvoyé vers ar/ ; langue gardée renvoyée seulement en venant d'une page du site (jamais robot, lien partagé,
+  Google, cadre) ; liens des pages (menu, pied, logo, Pass) = `window.racinePages()`, fichiers = `data-racine`. pass.js : `racinePagesPass()`.
+  Partager : l'adresse du site en arabe est `…/ar/`.
+- Robot `surveillance.yml` : `FICHIERS_ANNEE` vise les SOURCES (accueil, salaire-net, impot-revenu, a-propos) + les titres arabes de ces pages
+  dans textes-ar.json, puis `changer_annee()` relance la construction (pages FR + ar/ refaites ; test_robot.py le vérifie : 32 scénarios).
+- Tests : `page(p, "ar")` / `ouvrir(p, {lang:"ar"})` ouvrent ar/<chemin> ; bloc « une adresse par langue » de test_site.mjs (une langue par page,
+  hreflang réciproques, canonical, og:url, og:locale, titres arabes uniques <= 70, liens valides, menu/pied en ar/, bouton de langue, renvoi
+  `?lang=ar`, pages à jour) ; test_nouveaux, test_avis, test_video adaptés ; scénarios du visiteur simulé en arabe sur `ar/…`.
+- Mode clair : boutons WhatsApp (`.partage`, `.btn-wa`) en vert #1A7F45 (blanc dessus 3,5 / 2,9 avant) ; contrôle sombre + clair (4,5) : 0.
+- Page « Comment fonctionne le site ? » : ligne « Une adresse par langue » (FR + AR) + ligne `FONCTIONS`.

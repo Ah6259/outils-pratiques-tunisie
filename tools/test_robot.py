@@ -20,7 +20,7 @@ def check(desc, cond):
 def copie():
     d = Path(tempfile.mkdtemp())
     for f in ["index.html", "salaire-net", "impot-revenu", "a-propos", "credit", "auto-entrepreneur", "retenue-source",
-              "assets", "tools", "README.md"]:
+              "pass", "ar", "assets", "tools", "README.md", "sitemap.xml"]:
         s = ICI / f
         (shutil.copytree if s.is_dir() else shutil.copy)(s, d / f)
     return d
@@ -83,9 +83,13 @@ check("titre de la page salaire en 2027", "Salaire brut ⇄ net en Tunisie (2027
 check("« loi de finances 2025 » non modifiée", "loi de finances pour 2025" in s)
 VERSION = __import__("re").search(r"\?v=\w+", (ICI / "salaire-net" / "index.html").read_text(encoding="utf-8")).group(0)  # version actuelle du site
 check("numéros de version ?v= non modifiés", VERSION in s)
-check("aucun « 2026 » isolé restant dans les pages",
+check("aucun « 2026 » isolé restant dans les pages (françaises ET arabes, refaites depuis les sources)",
       all(__import__("re").search(r"(?<![\d/\-])2026(?![\d/\-])", (d / f).read_text(encoding="utf-8")) is None
-          for f in ["index.html", "salaire-net/index.html", "impot-revenu/index.html", "a-propos/index.html"]))
+          for c in ["", "ar/"] for f in [c + "index.html", c + "salaire-net/index.html", c + "impot-revenu/index.html", c + "a-propos/index.html"]))
+check("une adresse par langue : page arabe du salaire refaite en 2027 (titre arabe compris)", "2027" in (d / "ar" / "salaire-net" / "index.html").read_text(encoding="utf-8")
+      and "<title>حساب الأجر الصافي في تونس 2027" in (d / "ar" / "salaire-net" / "index.html").read_text(encoding="utf-8"))
+check("une adresse par langue : sources changées aussi (sinon la prochaine construction remettrait 2026)",
+      "Salaire brut ⇄ net en Tunisie (2027)" in (d / "tools" / "sources" / "salaire-net" / "index.html").read_text(encoding="utf-8"))
 shutil.rmtree(d)
 
 # 4. résultats différents : alerte (code 2), rien de modifié
@@ -108,6 +112,7 @@ shutil.rmtree(d)
 # 6. passage à 2027 : les pages Crédit, Auto-entrepreneur et Retenue ne sont PAS touchées (dates fixes protégées)
 d = copie()
 avant_nouv = {f: (d / f).read_text(encoding="utf-8") for f in ["credit/index.html", "auto-entrepreneur/index.html", "retenue-source/index.html",
+                                                              "ar/credit/index.html", "ar/auto-entrepreneur/index.html", "ar/retenue-source/index.html",
                                                               "assets/calcul-credit.js", "assets/calcul-auto.js", "assets/calcul-retenue.js"]}
 calc = d / "assets" / "calcul.js"
 calc.write_text(calc.read_text(encoding="utf-8").replace("cssReduiteJusqua: 2026", "cssReduiteJusqua: 2027"), encoding="utf-8")
