@@ -1,22 +1,25 @@
-# Outils pratiques Tunisie
+# Outils pratiques Tunisie — calculateurs : salaire net, impôt, crédit, auto-entrepreneur, retenue à la source
 
-> Calculateurs pour la Tunisie, en français et en arabe (1 calcul gratuit par jour) : salaire brut en net, impôt sur le revenu 2026, crédit et TMM, auto-entrepreneur, retenue à la source. أدوات حساب لتونس، حساب مجاني كل يوم.
+> Calculateurs pour la Tunisie, en français et en arabe, d'après les barèmes officiels en vigueur : salaire brut en net (et l'inverse), impôt sur le revenu (IRPP) tranche par tranche, mensualité d'un crédit (taux fixe ou TMM + marge), contribution unique de l'auto-entrepreneur, retenue à la source. Tout est calculé dans le téléphone : aucune donnée envoyée. L'exemple de chaque calculateur et 1 calcul personnel par jour sont gratuits. أدوات حساب لتونس.
 
-Site gratuit et indépendant, publié par Clicvia (https://clicvia.com/), le portail de services pratiques pour la Tunisie. Adresse : https://outils.clicvia.com/
-Langues : français, arabe.
+Site gratuit et indépendant (non officiel), publié par Clicvia (https://clicvia.com/), qui réunit des services pratiques pour la Tunisie. Adresse : https://outils.clicvia.com/
+Langues : français (pages à leur adresse) et arabe (même page dans https://outils.clicvia.com/ar/…, une adresse par langue).
 
 ## Pages principales
 
-- [Salaire brut → net en Tunisie (2026)](https://outils.clicvia.com/salaire-net/) : Calculez votre salaire net en Tunisie en 2026 à partir du brut (ou l'inverse), 1 calcul gratuit par jour : CNSS 9,68 %, impôt sur le revenu (IRPP, barème en vigueur en 2026), CSS 0,5 %, chef de famille et enfants. حساب ا
-- [Impôt sur le revenu en Tunisie (2026)](https://outils.clicvia.com/impot-revenu/) : Calculez votre impôt sur le revenu (IRPP) en Tunisie avec le barème 2025-2026 à 8 tranches, tranche par tranche, avec la contribution sociale de solidarité. حساب الضريبة على الدخل في تونس.
-- [Outils pratiques Tunisie](https://outils.clicvia.com/a-propos/) : Qui sommes-nous, d'où viennent les règles de calcul et comment elles sont vérifiées. Calculateurs pour la Tunisie, en français et en arabe (1 calcul gratuit par jour) : salaire brut en net, impôt sur le revenu 2026, créd
-- [Crédit immobilier et auto en Tunisie : mensualité et coût total](https://outils.clicvia.com/credit/) : Calculez la mensualité de votre crédit immobilier ou auto en Tunisie : taux fixe ou TMM + marge, apport, assurance, coût total et tableau d'amortissement. حساب القسط الشهري للقرض في تونس.
-- [Auto-entrepreneur en Tunisie : éligibilité et contribution unique](https://outils.clicvia.com/auto-entrepreneur/) : Auto-entrepreneur en Tunisie : vérifiez si vous êtes éligible (nationalité, activité, chiffre d'affaires jusqu'à 75 000 DT) et calculez la contribution unique (impôt 100 ou 200 DT + CNSS), gratuite la 1re année. نظام الم
-- [Retenue à la source en Tunisie (2026) : le calcul en 2 secondes](https://outils.clicvia.com/retenue-source/) : Calculez la retenue à la source en Tunisie en 2026 : honoraires 3 % ou 10 %, loyers 10 %, achats de 1 000 DT et plus 1,5 %, retenue sur la TVA 25 %. Montant brut, net payé et retenue. حساب الخصم من المورد في تونس.
+- [Salaire brut → net en Tunisie](https://outils.clicvia.com/salaire-net/) : du brut au net (ou l'inverse) : CNSS, impôt sur le revenu, contribution sociale de solidarité, chef de famille et enfants, comme sur une fiche de paie.
+- [Impôt sur le revenu en Tunisie](https://outils.clicvia.com/impot-revenu/) : l'IRPP calculé tranche par tranche avec le barème en vigueur, et la contribution sociale de solidarité.
+- [Crédit immobilier et auto en Tunisie](https://outils.clicvia.com/credit/) : mensualité, coût total et tableau d'amortissement ; taux fixe ou TMM de la Banque centrale + marge, apport, assurance.
+- [Auto-entrepreneur en Tunisie](https://outils.clicvia.com/auto-entrepreneur/) : éligibilité et contribution unique (impôt + CNSS) d'après la DGI et la CNSS.
+- [Retenue à la source en Tunisie](https://outils.clicvia.com/retenue-source/) : montant brut, retenue et net payé selon le taux officiel (honoraires, loyers, achats, TVA) ; codes de la plateforme TEJ.
+- [Comment fonctionne le site ?](https://outils.clicvia.com/a-propos/) : règles de calcul, sources officielles, vérification chaque mois, qui publie le site.
+- [Pass Journée](https://outils.clicvia.com/pass/) : partie payante (tous les calculs pendant 24 heures).
+
+La liste complète des pages est dans le plan du site : https://outils.clicvia.com/sitemap.xml
 
 ## À savoir
 
-- Calculateurs indicatifs à partir des barèmes officiels tunisiens (salaire, impôt, crédit).
+- Calculs indicatifs à partir des barèmes officiels tunisiens ; un robot refait chaque mois des calculs de référence et surveille le TMM. La date de vérification des règles est écrite sur chaque page.
 - Site non officiel : en cas de doute, la source officielle indiquée sur la page fait foi.
-- Pour citer : « Outils pratiques Tunisie » avec le lien de la page utilisée.
+- Pour citer : « Outils pratiques Tunisie » (outils.clicvia.com) avec le lien de la page utilisée.
 - Les assistants IA qui répondent à une question en citant leur source sont les bienvenus ; l'aspiration du contenu pour entraîner un modèle n'est pas autorisée (voir robots.txt).

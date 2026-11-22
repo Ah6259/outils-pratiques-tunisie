@@ -230,3 +230,11 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   `?lang=ar`, pages à jour) ; test_nouveaux, test_avis, test_video adaptés ; scénarios du visiteur simulé en arabe sur `ar/…`.
 - Mode clair : boutons WhatsApp (`.partage`, `.btn-wa`) en vert #1A7F45 (blanc dessus 3,5 / 2,9 avant) ; contrôle sombre + clair (4,5) : 0.
 - Page « Comment fonctionne le site ? » : ligne « Une adresse par langue » (FR + AR) + ligne `FONCTIONS`.
+
+## 21-22/11/2026 — Google + IA (demande d'Ahmed : « que Google et les IA indexent nos sites »)
+- État Search Console (21/11) : accueil « Submitted and indexed » (une des 3 pages enregistrées de tous les sites) ; salaire-net/ et
+  impot-revenu/ « Discovered - currently not indexed ». Requêtes vues : « simulateur cea tunisie » (aucun calculateur CEA : idée possible).
+- Accueil : H1 français « Salaire net, impôt, crédit : les calculs du quotidien en Tunisie » (mots tapés) ; JSON-LD WebSite + éditeur
+  `Organization` Clicvia (sameAs page Facebook) dans tools/sources/index.html.
+- `llms.txt` réécrit à la main SANS année ni chiffre périmé (l'ancien, de l'outil commun du 13/10, écrivait « 2026 » partout).
+- « Comment fonctionne le site ? » (FR + AR) : « Publié par Clicvia… pour nous écrire : Votre avis » (carte « Mises à jour automatiques et site indépendant »).
