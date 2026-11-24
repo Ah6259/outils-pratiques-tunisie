@@ -67,7 +67,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
    `node tools/test_sw.mjs` (service worker : réseau d'abord, exclusions, meta iPhone ; accepte un dossier en argument),
    `node tools/test_avis.mjs` (Votre avis : section, pied de page de toutes les pages, CSP, envoi simulé ; accepte un dossier en argument).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
-2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261121b`) — les tests le vérifient.
+2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261124a`) — les tests le vérifient.
 3. Capture mobile 340/390 px en français ET en arabe si l'affichage change : Chrome sans écran sur une page HTML locale
    contenant deux `<iframe>` (340 et 390 px) vers les fichiers `file:///…?lang=fr|ar` (la fenêtre de Chrome sans écran ne descend
    pas sous ~500 px ; l'anti-iframe de page.js laisse passer `file:`).
@@ -247,3 +247,9 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   `Organization` Clicvia (sameAs page Facebook) dans tools/sources/index.html.
 - `llms.txt` réécrit à la main SANS année ni chiffre périmé (l'ancien, de l'outil commun du 13/10, écrivait « 2026 » partout).
 - « Comment fonctionne le site ? » (FR + AR) : « Publié par Clicvia… pour nous écrire : Votre avis » (carte « Mises à jour automatiques et site indépendant »).
+
+## 24/11/2026 — Pass : E-MAIL OBLIGATOIRE (règle d'Ahmed : un e-mail automatique enverra bientôt au client son code et les étapes du paiement)
+- Formulaire `#pass-form` (source `tools/sources/pass/index.html`, FR + AR fabriquées) : champ `#pass-email` (`type="email" name="email" required`)
+  juste après le téléphone ; `assets/pass.js` refuse l'envoi si l'e-mail est vide ou invalide (`^[^\s@]+@[^\s@]+\.[^\s@]{2,}$`) et l'envoie à Formspree.
+  Texte « données » du formulaire et des conditions du Pass : e-mail ajouté (nom, téléphone, e-mail). Tests « e-mail » dans test_site.mjs
+  (champ required FR + AR + source, envoi refusé sans e-mail ou avec un e-mail invalide, e-mail transmis). Version 20261124a.
