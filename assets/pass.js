@@ -251,25 +251,26 @@ function ecrireCommande(c) {
 function nomFormule(f) {
   return /Pass/i.test(f || "") || !f ? T("Pass Journée (7 DT, 24 heures)", "باقة اليوم (" + isoP("7") + " د، " + isoP("24") + " ساعة)") : f;
 }
-// message WhatsApp de la preuve de paiement : AVEC le code (le client n'a rien à recopier)
-function lienPreuve(code) {
-  const site = T("Outils pratiques Tunisie", "أدوات عملية تونس");
+// message WhatsApp de la preuve de paiement : AVEC le code et le NOM (demande d'Ahmed du 25/11/2026 ; le client n'a rien à recopier).
+// Le nom vient du formulaire au moment de l'envoi ; il n'est JAMAIS gardé par le téléphone : au retour (bandeau), code + formule seulement.
+function lienPreuve(code, nom) {
+  const site = T("Outils pratiques Tunisie", "أدوات عملية تونس"), n = nom ? " — " + nom : "";
   const txt = code
-    ? T("Voici ma preuve de paiement — " + site + " — code " + joliCode(code) + " — " + nomFormule(),
-        "هذا وصل الدفع — " + site + " — الرمز " + joliCode(code) + " — " + nomFormule())
+    ? T("Voici ma preuve de paiement — " + site + " — code " + joliCode(code) + n + " — " + nomFormule(),
+        "هذا وصل الدفع — " + site + " — الرمز " + joliCode(code) + n + " — " + nomFormule())
     : T("Voici ma preuve de paiement — " + site + " — Pass Journée", "هذا وصل الدفع — " + site + " — باقة اليوم");
   return "https://wa.me/" + PASS.whatsapp + "?text=" + encodeURIComponent(txt.replace(/[⁦-⁩]/g, ""));
 }
-function majLiensPreuve(code) {
-  document.querySelectorAll("#pass-preuve, #pass-preuve-apres").forEach(a => a.setAttribute("href", lienPreuve(code)));
+function majLiensPreuve(code, nom) {
+  document.querySelectorAll("#pass-preuve, #pass-preuve-apres").forEach(a => a.setAttribute("href", lienPreuve(code, nom)));
 }
 // affiche la « Dernière étape » (après l'envoi) ou, en revenant sur la page, le bandeau « Votre commande en attente »
-function montrerCommande(c, retour) {
+function montrerCommande(c, retour, nom) {
   const form = document.getElementById("pass-form"), apres = document.getElementById("apres-pass");
   if (!form || !apres) return;
   document.querySelectorAll("[data-code-commande]").forEach(e => { e.textContent = joliCode(c.code); });
   document.querySelectorAll(".email-auto").forEach(e => { e.hidden = !EMAIL_AUTO; });
-  majLiensPreuve(c.code);
+  majLiensPreuve(c.code, nom);
   form.hidden = true;
   apres.hidden = false;
   const b = document.getElementById("commande-attente");
@@ -318,6 +319,8 @@ function brancherFormulairePass() {
   const form = document.getElementById("pass-form");
   if (!form || form.dataset.branche) return;
   form.dataset.branche = "1";
+  // « vous y recevez votre code et les étapes du paiement » (étiquette de l'e-mail) : montré seulement quand l'e-mail automatique marche
+  document.querySelectorAll(".email-auto").forEach(e => { e.hidden = !EMAIL_AUTO; });
   const statut = document.getElementById("pass-status"), bouton = form.querySelector("button[type=submit]");
   const apres = document.getElementById("apres-pass");
   const dire = (classe, fr, ar) => { statut.className = classe; statut.textContent = T(fr, ar); };
@@ -336,7 +339,11 @@ function brancherFormulairePass() {
     if (!val("nom")) { dire("err", "Indiquez votre nom.", "اكتب اسمك."); champ("nom").focus(); return; }
     if (!tel) { dire("err", "Téléphone : 8 chiffres, par exemple 24 321 390.", "الهاتف: " + isoP("8") + " أرقام، مثال " + isoP("24 321 390") + "."); champ("telephone").focus(); return; }
     const email = val("email");
-    if (!email) { dire("err", "Indiquez votre e-mail : vous y recevez votre code et les étapes du paiement.", "اكتب بريدك الإلكتروني: يصلك عليه رمزك وخطوات الدفع."); champ("email").focus(); return; }
+    if (!email) {
+      if (EMAIL_AUTO) dire("err", "Indiquez votre e-mail : vous y recevez votre code et les étapes du paiement.", "اكتب بريدك الإلكتروني: يصلك عليه رمزك وخطوات الدفع.");
+      else dire("err", "Indiquez votre e-mail.", "اكتب بريدك الإلكتروني.");
+      champ("email").focus(); return;
+    }
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { dire("err", "E-mail invalide : vérifiez-le, par exemple nom@exemple.com.", "البريد الإلكتروني غير صحيح: تثبّت منه، مثال " + isoP("nom@exemple.com") + "."); champ("email").focus(); return; }
     if (!champ("conditions").checked) { dire("err", "Cochez « J'accepte les conditions du Pass Journée ».", "يجب الموافقة على شروط باقة اليوم."); return; }
     // formulaire valide : le CODE DE COMMANDE est créé ici (motif du paiement, puis code d'accès une fois activé)
@@ -344,7 +351,7 @@ function brancherFormulairePass() {
     const commande = { code: codeCommande, formule: val("formule"), date: aujourdhui() };
     const fini = garder => {
       if (garder) { ecrireCommande(commande); codeCommande = ""; }
-      montrerCommande(commande, false);
+      montrerCommande(commande, false, val("nom"));        // nom dans le message WhatsApp, jamais dans la mémoire
       if (apres) { try { apres.scrollIntoView({ block: "start" }); } catch (x) {} }
     };
     if (val("_gotcha")) { fini(false); return; }           // champ piège rempli = robot : rien n'est envoyé ni gardé

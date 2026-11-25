@@ -568,7 +568,16 @@ async function passJournee() {
       return !(/type="email"/.test(i) && /name="email"/.test(i) && /\brequired\b/.test(i) && /autocomplete="email"/.test(i) && /maxlength="200"/.test(i) &&
         f.indexOf('id="pass-email"') > f.indexOf('id="pass-tel"') && f.indexOf('id="pass-tel"') > 0 && /<label class="abo-etiquette" for="pass-email">/.test(f)); });
     check(`pass/ : e-mail OBLIGATOIRE (champ name="email" required, juste après le téléphone) sur les pages FR et AR ${mauvaisEmail}`, mauvaisEmail.length === 0);
-    check("pass/ : étiquette de l'e-mail en français et en arabe", lire("pass/index.html").includes("E-mail (vous y recevez votre code et les étapes du paiement)") && lire("ar/pass/index.html").includes("البريد الإلكتروني (يصلك عليه رمزك وخطوات الدفع)"));
+    // 25/11/2026 : l'e-mail automatique n'est pas encore en service -> étiquette « E-mail » seule ; la promesse reste dans la page, CACHÉE (.email-auto)
+    check("pass/ : étiquette de l'e-mail en français et en arabe (« E-mail » / « البريد الإلكتروني » seuls, promesse dans une partie cachée)",
+      /<label class="abo-etiquette" for="pass-email"><span data-l="fr">E-mail<\/span><span data-l="ar">البريد الإلكتروني<\/span><span class="email-auto" hidden>/.test(lire("tools/sources/pass/index.html"))
+      && lire("pass/index.html").includes("(vous y recevez votre code et les étapes du paiement)") && lire("ar/pass/index.html").includes("(يصلك عليه رمزك وخطوات الدفع)"));
+    for (const lg of ["fr", "ar"]) {
+      const wl = await ouvrir("pass/index.html", { lang: lg }), lab = wl.document.querySelector('label[for="pass-email"]'), cache = lab && lab.querySelector(".email-auto");
+      const vu = lab ? [...lab.childNodes].filter(n => !(n.nodeType === 1 && (n.hidden || n.closest("[hidden]")))).map(n => n.textContent).join("").trim() : "";
+      check(`formulaire (${lg}) : la promesse « ${lg === "fr" ? "vous y recevez votre code et les étapes du paiement" : "يصلك عليه رمزك وخطوات الدفع"} » n'est PAS visible aujourd'hui (EMAIL_AUTO = false)`,
+        !!cache && cache.hidden && !/recevez votre code|يصلك عليه رمزك/.test(vu) && /const EMAIL_AUTO = false;/.test(lire("assets/pass.js")));
+    }
     check("conditions du Pass : l'e-mail figure dans les données gardées (FR + AR)", lire("pass/conditions/index.html").includes("nom, téléphone, e-mail, dates") && lire("ar/pass/conditions/index.html").includes("الاسم، الهاتف، البريد الإلكتروني"));
   }
   const appels = []; w.fetch = (u, o) => { appels.push({ u, o }); return Promise.resolve({ ok: true, status: 200 }); };
@@ -579,7 +588,7 @@ async function passJournee() {
   // e-mail OBLIGATOIRE (règle d'Ahmed du 24/11/2026 : le code et les étapes du paiement seront envoyés par e-mail)
   form.querySelector("[name=telephone]").value = "+216 98 765 432";
   form.dispatchEvent(new w.Event("submit", { bubbles: true, cancelable: true })); await pause(20);
-  check("pass/ : e-mail vide refusé (message « Indiquez votre e-mail »), rien envoyé", appels.length === 0 && d.getElementById("pass-status").className === "err" && /Indiquez votre e-mail/.test(t(d.getElementById("pass-status"))));
+  check("pass/ : e-mail vide refusé (message court « Indiquez votre e-mail. », sans promesse), rien envoyé", appels.length === 0 && d.getElementById("pass-status").className === "err" && t(d.getElementById("pass-status")) === "Indiquez votre e-mail.");
   form.querySelector("[name=email]").value = "client@exemple";
   form.dispatchEvent(new w.Event("submit", { bubbles: true, cancelable: true })); await pause(20);
   check("pass/ : e-mail invalide refusé, rien envoyé", appels.length === 0 && /E-mail invalide/.test(t(d.getElementById("pass-status"))));
@@ -608,8 +617,8 @@ async function passJournee() {
   check("commande : paiement en 3 étapes (D17 / IZI, 24 321 390, écrans d'exemple) avec MOTIF = le code",
     apresP.querySelectorAll("ol.paie-etapes > li").length === 3 && t(apresP).includes("24 321 390") && !!apresP.querySelector(".aide-transfert") &&
     t(apresP.querySelector("ol.paie-etapes > li:nth-child(3)")).includes("Motif") && t(apresP.querySelector(".motif-code")) === codeVu);
-  check("commande : bouton vert WhatsApp pré-rempli AVEC le code (« Voici ma preuve de paiement — Outils pratiques Tunisie — code … — Pass Journée »)",
-    waApres.startsWith("https://wa.me/21624321390?text=") && waApres.includes("Voici ma preuve de paiement — Outils pratiques Tunisie — code " + codeVu + " — Pass Journée"));
+  check("commande : bouton vert WhatsApp pré-rempli AVEC le code ET le nom (« Voici ma preuve de paiement — Outils pratiques Tunisie — code … — <nom> — Pass Journée », 25/11/2026)",
+    waApres.startsWith("https://wa.me/21624321390?text=") && waApres.includes("Voici ma preuve de paiement — Outils pratiques Tunisie — code " + codeVu + " — Test Client — Pass Journée"));
   check("commande : ce qui se passe ensuite (activation, code essayé tout seul, 24 heures à partir de l'activation) + filet « code oublié dans le motif »",
     t(apresP).includes("nous activons ce code") && t(apresP).includes("le code est essayé tout seul") && t(apresP).includes("24 heures à partir de l'activation") &&
     t(apresP).includes("Vous avez oublié le code dans le motif ? Ce n'est pas grave : envoyez quand même la preuve sur WhatsApp, nous retrouvons votre demande."));
@@ -647,7 +656,7 @@ async function passJournee() {
       !ban.hidden && t(ban).includes("Votre commande en attente : code WXYZ-K7M3 — Pass Journée") && t(dx.getElementById("commande-statut")).includes("En attente de votre paiement") && wx.fautes.length === 0);
     check("retour : les 3 étapes du paiement (motif = le code) et le bouton WhatsApp avec le code, formulaire caché, mémoire gardée",
       dx.getElementById("pass-form").hidden && !dx.getElementById("apres-pass").hidden && t(dx.querySelector("#apres-pass .motif-code")) === "WXYZ-K7M3" &&
-      decodeURIComponent(dx.getElementById("pass-preuve-apres").href).includes("code WXYZ-K7M3") && decodeURIComponent(dx.getElementById("pass-preuve").href).includes("code WXYZ-K7M3") &&
+      decodeURIComponent(dx.getElementById("pass-preuve-apres").href).includes("code WXYZ-K7M3 — Pass Journée") && decodeURIComponent(dx.getElementById("pass-preuve").href).includes("code WXYZ-K7M3") &&
       !!wx.localStorage.getItem("pass-commande") && !wx.eval("passActif()"));
     const ACTIVE = { ...LISTE, codes: [...LISTE.codes, { h: h("WXYZK7M3"), fin: futur }] };
     wx = await ouvrir("pass/index.html", { avant: avecCommande(ACTIVE) }); await pause(300); dx = wx.document;
@@ -690,6 +699,9 @@ async function passJournee() {
     fa.dispatchEvent(new wx.Event("submit", { bubbles: true, cancelable: true })); await pause(30);
     check("formulaire arabe : après l'envoi, code au bon format, même code à Formspree et dans pour_activer",
       ea.length === 1 && FORME.test(t(dx.getElementById("code-commande"))) && ea[0].code === t(dx.getElementById("code-commande")) && ea[0].pour_activer.endsWith("; code: " + ea[0].code));
+    check("formulaire arabe : WhatsApp « هذا وصل الدفع — أدوات عملية تونس — الرمز <CODE> — <الاسم> — باقة اليوم … » (code ET nom), nom absent de la mémoire",
+      decodeURIComponent(dx.getElementById("pass-preuve-apres").href).includes("هذا وصل الدفع — أدوات عملية تونس — الرمز " + ea[0].code + " — Test — باقة اليوم")
+      && !/"Test"|a@b\.tn/.test(wx.localStorage.getItem("pass-commande") || ""));
   }
   {  // les 5 champs obligatoires (FR + AR) et plus aucun « motif : nom et téléphone »
     const mal = ["pass/index.html", "ar/pass/index.html"].filter(p => { const f = (lire(p).match(/<form id="pass-form"[\s\S]*?<\/form>/) || [""])[0];
