@@ -226,6 +226,9 @@ const aPropos = lireSource("a-propos/index.html");   // page bilingue écrite à
     ["1 calcul gratuit par jour et Pass Journée (prix, code)", existsSync(join(root, "pass/index.html")), /1 calcul personnel par jour[\s\S]*Pass Journée \(payant, 7 DT\)[\s\S]*code/],
     ["rappel de fin du Pass", /afficherRappel/.test(js), /Peu avant la fin du Pass, un bandeau vous prévient/],
     ["code de commande créé au formulaire (motif du paiement, essayé tout seul)", /pass-commande/.test(js) && /nouveauCode\(/.test(lire("assets/pass-commun.js")), /code de commande[\s\S]{0,80}motif du paiement = votre code de commande[\s\S]{0,200}essaie toute seule[\s\S]{0,120}Code oublié dans le motif/],
+    // 25/11/2026 (décision d'Ahmed, pas de gratuité) : « Calculs qui vont ensemble » + ligne du Pass sous chaque résultat ; clics comptés
+    ["calculs qui vont ensemble + ligne « Pass Journée 7 DT » sous le résultat", /id="calculs-lies"/.test(lire("salaire-net/index.html")), /Calculs qui vont ensemble : sous chaque résultat[\s\S]{0,200}Tous les calculs pendant 24 h : Pass Journée 7 DT[\s\S]{0,40}cachée si votre Pass est actif/],
+    ["clics vers le Pass et entre les calculs comptés (GoatCounter, sans savoir qui)", /\/outils-pratiques-tunisie\/clic\//.test(js), /sans savoir qui vous êtes, les clics sur les liens vers le Pass Journée et entre les calculs/],
     ["vie privée", true, /Les calculs se font dans votre téléphone/],
     ["mises à jour automatiques (calculs de référence, TMM)", existsSync(join(root, "tools/verifier_regles.py")), /Chaque mois, un robot refait nos calculs de référence[^.]*TMM/],
     ["site indépendant", true, /Ce site est indépendant/],
@@ -362,6 +365,7 @@ check("accueil : « 1 calcul gratuit par jour, sans inscription » dans l'intro 
 await passJournee();
 await boutonComptables();
 await boutonPartager();
+await calculsLies();
 
 // ---- Pass Journée (partie payante, 06/10/2026, accord écrit d'Ahmed) -----------------------------------------
 // exemple gratuit, 1 calcul personnel gratuit par jour (tous calculateurs), 2e bloqué, lendemain, code valide / expiré / faux,
@@ -984,3 +988,70 @@ async function boutonPartager() {
 
 console.log(erreurs ? `\n${erreurs} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(erreurs ? 1 : 0);
+
+// ---- 25/11/2026 (décision d'Ahmed : amener vers le Pass, PAS DE GRATUITÉ ; modèle Alerte Concours) : « Calculs qui vont ensemble » sous chaque
+//      résultat (FR + ar/), ligne « Tous les calculs pendant 24 h : Pass Journée 7 DT », clics comptés en événements GoatCounter
+//      /outils-pratiques-tunisie/clic/<nom> (pass-resultat, pass-entete, pass-blocage, pass-note, pass-pied, calcul-lie…)
+async function calculsLies() {
+  const LIES = { "salaire-net": ["impot-revenu", "credit"], "impot-revenu": ["salaire-net", "retenue-source"], "retenue-source": ["impot-revenu", "auto-entrepreneur"],
+    "credit": ["salaire-net", "impot-revenu"], "auto-entrepreneur": ["impot-revenu", "retenue-source"] };
+  const bloc = h => (h.match(/<!--calculs-lies-->([\s\S]*?)<!--\/calculs-lies-->/) || [])[1] || "";
+  const ko = [];
+  for (const [calc, cibles] of Object.entries(LIES)) for (const pref of ["", "ar/"]) {
+    const f = `${pref}${calc}/index.html`, h = lire(f), b = bloc(h);
+    const liens = [...b.matchAll(/<a href="([^"]+)" data-clic="calcul-lie">/g)].map(m => m[1]);
+    const pass = b.match(/<a class="btn-pass-petit" id="lies-pass-btn" href="([^"]+)" data-clic="pass-resultat">/);
+    const bonTexte = pref ? /حسابات مرتبطة/.test(b) && /كل الحسابات طيلة/.test(b) && !/Calculs qui vont|Tous les calculs/.test(b)
+                          : /Calculs qui vont ensemble/.test(b) && /Tous les calculs pendant 24&nbsp;h :/.test(b) && /Pass Journée 7&nbsp;DT/.test(b) && !/[؀-ۿ]/.test(b);
+    const apres = h.indexOf("<!--calculs-lies-->") > h.indexOf('class="carte resultat"') && h.indexOf('class="carte resultat"') > 0;
+    if (liens.join() !== cibles.map(c => `../${c}/`).join() || !liens.every(l => existsSync(join(root, pref + calc, l, "index.html"))) || !pass || pass[1] !== "../pass/"
+      || !existsSync(join(root, pref + "pass/index.html")) || !bonTexte || !apres || (h.match(/id="calculs-lies"/g) || []).length !== 1) ko.push(f);
+    if (/gratuit|offert|essai|مجان/i.test(b)) ko.push(f + " (gratuité)");
+  }
+  check("« Calculs qui vont ensemble » sous le résultat des 5 calculateurs (FR + ar/) : bons liens (salaire → impôt → retenue, crédit, auto-entrepreneur), ligne « Tous les calculs pendant 24 h : Pass Journée 7 DT » vers pass/ de la même langue, aucune gratuité" + (ko.length ? " — " + ko.join(", ") : ""), !ko.length);
+  check("accueil (FR + ar/) : toujours AUCUN lien vers pass/ ni calculs liés (décision d'Ahmed)", !/href="[^"]*pass\//.test(lire("index.html") + lire("ar/index.html")) && !/calculs-lies/.test(lire("index.html") + lire("ar/index.html")));
+  async function ouvrir(chemin, { lang = "fr", avant = null } = {}) {
+    const ar = versionAr(chemin, lang); chemin = ar;
+    const dossier = dirname(join(root, chemin));
+    const html = lire(chemin).replace(/<script([^>]*) src="(?!https?:)([^"?]+)(\?[^"]*)?"([^>]*)><\/script>/g, (_, a, src) => `<script>${readFileSync(join(dossier, src), "utf8")}</script>`);
+    const fautes = [], vc = new VirtualConsole();
+    vc.on("jsdomError", e => { if (!/Not implemented/.test(e.message)) fautes.push(e.message); });
+    const dom = new JSDOM(html, { url: `https://outils.clicvia.com/${chemin.replace("index.html", "")}`, runScripts: "dangerously", pretendToBeVisual: true, virtualConsole: vc,
+      beforeParse(w) { if (avant) avant(w); } });
+    await new Promise(ok => dom.window.addEventListener("load", ok));
+    dom.window.fautes = fautes; return dom.window;
+  }
+  const JOUR = (d => d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"))(new Date());
+  const essai = async (chemin, opts, sel, { gc = true, saisir = null } = {}) => {
+    const w = await ouvrir(chemin, opts), comptes = [], erreurs = [];
+    w.addEventListener("error", e => erreurs.push(e.message));
+    if (gc) w.goatcounter.count = o => comptes.push(o); else delete w.goatcounter.count;
+    if (saisir) { const e = w.document.getElementById(saisir[0]); e.value = saisir[1]; e.dispatchEvent(new w.Event("input")); e.dispatchEvent(new w.Event("change")); comptes.length = 0; }
+    const a = w.document.querySelector(sel);
+    if (a) { a.addEventListener("click", e => e.preventDefault()); a.dispatchEvent(new w.MouseEvent("click", { bubbles: true, cancelable: true })); }
+    return { w, a, comptes, erreurs: erreurs.concat(w.fautes) };
+  };
+  const deja = w => w.localStorage.setItem("opt-calcul-gratuit-v1", JSON.stringify({ jour: JOUR, calc: "autre", debut: Date.now() - 3600000 }));
+  for (const [chemin, opts, sel, nom, extra] of [
+    ["salaire-net/index.html", {}, "#lies-pass-btn", "pass-resultat"], ["credit/index.html", { lang: "ar" }, "#lies-pass-btn", "pass-resultat"],
+    ["salaire-net/index.html", {}, '#calculs-lies a[href="../impot-revenu/"]', "calcul-lie"], ["ar/auto-entrepreneur/index.html", {}, '#calculs-lies a[href="../retenue-source/"]', "calcul-lie"],
+    ["impot-revenu/index.html", {}, "#entete a.entete-pass", "pass-entete"], ["retenue-source/index.html", {}, "#pied a[href$=\"pass/\"]", "pass-pied"],
+    ["credit/index.html", {}, "#pass-note a.btn-pass-petit", "pass-note"], ["a-propos/index.html", {}, 'a[data-clic="pass-a-propos"]', "pass-a-propos"],
+    ["salaire-net/index.html", { avant: deja }, "#pass-bloque-bouton", "pass-blocage", { saisir: ["montant", "3333"] }]]) {
+    const r = await essai(chemin, opts, sel, extra);
+    const ok = !!r.a && r.comptes.length === 1 && r.comptes[0].path === "/outils-pratiques-tunisie/clic/" + nom && r.comptes[0].event === true && !!r.comptes[0].title && !r.erreurs.length;
+    check(`clic compté (faux GoatCounter) ${opts.lang === "ar" ? "ar/" : ""}${chemin} ${sel} → « /outils-pratiques-tunisie/clic/${nom} »` + (nom === "calcul-lie" && r.comptes[0] ? ` (${r.comptes[0].title})` : ""), ok
+      && (nom !== "calcul-lie" || /^Calcul lié : [a-z-]+ -> [a-z-]+$/.test(r.comptes[0].title)));
+  }
+  const s0 = await essai("salaire-net/index.html", {}, "#lies-pass-btn", { gc: false });
+  check("sans GoatCounter (bloqué) : aucun compte, aucune erreur", !!s0.a && !s0.comptes.length && !s0.erreurs.length);
+  const s1 = await essai("salaire-net/index.html", {}, '#pied a[href$="a-propos/"]');
+  check("lien qui ne mène ni au Pass ni à un calcul lié (pied « Comment fonctionne le site ? ») : rien compté", !!s1.a && !s1.comptes.length);
+  const s2 = await essai("pass/index.html", {}, '#pied a[href$="pass/"]');
+  check("sur la page pass/ elle-même : aucun clic compté", !!s2.a && !s2.comptes.length);
+  const futur = new Date(Date.now() + 20 * 3600000).toISOString();
+  const wp = await ouvrir("salaire-net/index.html", { avant: w => w.localStorage.setItem("opt-pass-v1", JSON.stringify({ code: "ABCDEF23", fin: futur, verifie: new Date().toISOString() })) });
+  check("Pass actif : ligne « Tous les calculs pendant 24 h » cachée, calculs liés toujours là", (wp.passActif && wp.passActif()) ? wp.document.getElementById("lies-pass").hidden === true && !wp.document.getElementById("calculs-lies").hidden : false);
+  const w0 = await ouvrir("salaire-net/index.html");
+  check("sans Pass : ligne « Tous les calculs pendant 24 h » visible", w0.document.getElementById("lies-pass").hidden === false);
+}

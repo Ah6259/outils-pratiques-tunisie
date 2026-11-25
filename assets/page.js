@@ -178,6 +178,43 @@ document.addEventListener("copy", e => {
   if (!memeSite) { try { window.top.location.href = location.href; } catch (e) { document.documentElement.style.display = "none"; } }
 })();
 
+/* Clics comptés (25 novembre 2026, demande d'Ahmed, modèle Alerte Concours ; pas de gratuité) : ÉVÉNEMENTS GoatCounter
+   « /outils-pratiques-tunisie/clic/<nom> » (préfixe du site dans le compteur commun), seulement si GoatCounter est là ; le lien s'ouvre toujours.
+   - tout lien vers la page pass/ (FR ou ar/, jamais depuis pass/) : nom = data-clic (pass-resultat : ligne sous « Calculs qui vont ensemble »)
+     sinon l'endroit (pass-entete, pass-blocage, pass-note, pass-renouveler, pass-pied, pass-a-propos, pass-autre) ;
+   - « Calculs qui vont ensemble » (data-clic="calcul-lie") : clic/calcul-lie (titre : de quel calcul vers lequel).
+   Avec un Pass actif, la ligne « Tous les calculs pendant 24 h : Pass Journée 7 DT » est cachée (inutile de le proposer). */
+(function () {
+  var ZONES = [["#pass-bloque", "pass-blocage"], ["#pass-note", "pass-note"], [".rappel-pass", "pass-renouveler"], ["a.entete-pass", "pass-entete"],
+    ["#pied", "pass-pied"], ["#fonctionnement, #gratuit-pass", "pass-a-propos"]];
+  var TITRES = { "pass-resultat": "Clic vers le Pass (sous le résultat, calculs liés)", "pass-entete": "Clic vers le Pass (en-tête)",
+    "pass-blocage": "Clic vers le Pass (calcul gratuit du jour déjà utilisé)", "pass-note": "Clic vers le Pass (petite ligne du résultat)",
+    "pass-renouveler": "Clic « Renouveler mon Pass »", "pass-pied": "Clic vers le Pass (pied de page)", "pass-a-propos": "Clic vers le Pass (Comment fonctionne le site ?)" };
+  function dossier(p) { var m = String(p).match(/([a-z-]+)\/$/); return m ? m[1] : "accueil"; }
+  window.nomClic = function (a) {
+    var u; try { u = new URL(a.getAttribute("href") || "", location.href); } catch (x) { return ""; }
+    var dc = (a.getAttribute("data-clic") || "").replace(/[^a-z-]/g, "");
+    if (dc === "calcul-lie") return dc;
+    if (!/\/pass\/$/.test(u.pathname) || /\/pass\/$/.test(location.pathname)) return "";      // seulement vers pass/, jamais depuis pass/
+    var nom = dc;
+    for (var i = 0; !nom && i < ZONES.length; i++) if (a.closest(ZONES[i][0])) nom = ZONES[i][1];
+    return nom || "pass-autre";
+  };
+  document.addEventListener("click", function (e) {
+    var a = e.target && e.target.closest && e.target.closest("a[href]");
+    var nom = a ? window.nomClic(a) : "";
+    if (!nom) return;
+    var titre = TITRES[nom] || "Clic vers le Pass";
+    if (nom === "calcul-lie") { var u = new URL(a.getAttribute("href"), location.href); titre = "Calcul lié : " + dossier(location.pathname) + " -> " + dossier(u.pathname); }
+    try { if (window.goatcounter && typeof window.goatcounter.count === "function")
+      window.goatcounter.count({ path: "/outils-pratiques-tunisie/clic/" + nom, title: titre, event: true }); } catch (x) {}
+  });
+  function cacherSiPass() {
+    if (typeof passActif === "function" && passActif()) document.querySelectorAll(".lies-pass").forEach(function (x) { x.hidden = true; });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", cacherSiPass); else cacherSiPass();
+})();
+
 /* Installation sur le téléphone : service worker PRUDENT (sw.js : réseau d'abord pour les pages et les données).
    Seulement en https (jamais en file: pendant les tests locaux). */
 if ("serviceWorker" in navigator && location.protocol === "https:") {

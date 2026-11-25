@@ -27,8 +27,8 @@
 <meta property="og:url" content="https://outils.clicvia.com/retenue-source/">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261125g">
-<link rel="stylesheet" href="../assets/nouveaux.css?v=20261125g">
+<link rel="stylesheet" href="../assets/style.css?v=20261125h">
+<link rel="stylesheet" href="../assets/nouveaux.css?v=20261125h">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"Comment calculer une retenue à la source en Tunisie ?","acceptedAnswer":{"@type":"Answer","text":"La retenue = montant TTC (TVA comprise) × taux de l'opération. Le montant net payé = TTC − retenue − retenue sur la TVA éventuelle. Exemple officiel : honoraires de 5 000 DT hors TVA à un prestataire au régime réel, TVA 19 % = 950 DT, TTC 5 950 DT, retenue 3 % = 178,500 DT, net payé 5 771,500 DT."}},
@@ -36,10 +36,10 @@
 {"@type":"Question","name":"Où établir le certificat de retenue à la source ?","acceptedAnswer":{"@type":"Answer","text":"Depuis le 1er janvier 2026, le certificat de retenue à la source doit être établi sur la plateforme officielle TEJ (tej.finances.gov.tn), au plus tard à la fin du mois qui suit le paiement. Un certificat délivré en dehors de la plateforme est puni d'une amende de 30 % de la retenue, au moins 50 DT par certificat."}}
 ]}
 </script>
-<script src="../assets/calcul.js?v=20261125g"></script>
-<script src="../assets/page.js?v=20261125g"></script>
-<script src="../assets/pass.js?v=20261125g"></script>
-<script src="../assets/calcul-retenue.js?v=20261125g"></script>
+<script src="../assets/calcul.js?v=20261125h"></script>
+<script src="../assets/page.js?v=20261125h"></script>
+<script src="../assets/pass.js?v=20261125h"></script>
+<script src="../assets/calcul-retenue.js?v=20261125h"></script>
 </head>
 <body data-pass>
 <header class="entete" id="entete"></header>
@@ -102,6 +102,15 @@
     <p class="lien-pro" id="lien-pro" hidden><a href="https://comptables.clicvia.com/" target="_blank" rel="noopener" data-compteur="lien-comptables/retenue-source"><span data-l="fr">Faire tenir votre comptabilité : <b>trouver un expert-comptable près de chez vous</b></span><span data-l="ar">لمسك محاسبتك: <b>ابحث عن خبير محاسب قريب منك</b></span></a></p>
   </section>
 
+  <!--calculs-lies--><section class="carte calculs-lies" id="calculs-lies">
+    <h2><span data-l="fr">Calculs qui vont ensemble</span><span data-l="ar">حسابات مرتبطة</span></h2>
+    <ul class="lies-liste">
+      <li><a href="../impot-revenu/" data-clic="calcul-lie"><b><span data-l="fr">Impôt sur le revenu</span><span data-l="ar">الضريبة على الدخل</span></b> <small><span data-l="fr">l'impôt annuel sur l'ensemble de vos revenus</span><span data-l="ar">الضريبة السنوية على مجموع مداخيلك</span></small></a></li>
+      <li><a href="../auto-entrepreneur/" data-clic="calcul-lie"><b><span data-l="fr">Auto-entrepreneur</span><span data-l="ar">المبادر الذاتي</span></b> <small><span data-l="fr">si vous travaillez seul : le régime de l'auto-entrepreneur</span><span data-l="ar">إن كنت تعمل لحسابك: نظام المبادر الذاتي</span></small></a></li>
+    </ul>
+    <p class="lies-pass" id="lies-pass"><span data-l="fr">Tous les calculs pendant 24&nbsp;h :</span><span data-l="ar">كل الحسابات طيلة <bdi dir="ltr">24</bdi> ساعة:</span> <a class="btn-pass-petit" id="lies-pass-btn" href="../pass/" data-clic="pass-resultat"><span data-l="fr">Pass Journée 7&nbsp;DT</span><span data-l="ar">باقة اليوم <bdi dir="ltr">7</bdi> د</span></a></p>
+  </section><!--/calculs-lies-->
+
   <section class="carte">
     <details>
       <summary><span data-l="fr">Tous les taux 2026</span><span data-l="ar">كل النسب 2026</span></summary>
@@ -152,7 +161,7 @@
 </main>
 <footer id="pied"></footer>
 
-<script src="../assets/retenue.js?v=20261125g"></script>
+<script src="../assets/retenue.js?v=20261125h"></script>
 <script data-goatcounter="https://prix-eaux-tunisie.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

@@ -32,8 +32,8 @@
 <meta property="og:locale:alternate" content="ar_AR">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/style.css?v=20261125g">
-<link rel="stylesheet" href="../assets/nouveaux.css?v=20261125g">
+<link rel="stylesheet" href="../assets/style.css?v=20261125h">
+<link rel="stylesheet" href="../assets/nouveaux.css?v=20261125h">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[
 {"@type":"Question","name":"Comment calculer la mensualité d'un crédit en Tunisie ?","acceptedAnswer":{"@type":"Answer","text":"Pour un crédit à mensualités constantes : mensualité = capital × r / (1 − (1 + r) puissance −n), où r est le taux annuel divisé par 12 et n le nombre de mois. Exemple : 100 000 DT sur 20 ans à 10 % par an donnent 965,022 DT par mois, hors assurance."}},
@@ -41,10 +41,10 @@
 {"@type":"Question","name":"Que comprend le coût total du crédit ?","acceptedAnswer":{"@type":"Answer","text":"Le coût total = la somme des intérêts payés sur toute la durée + l'assurance si elle est payée chaque mois. Les frais de dossier, de garantie et de notaire, propres à chaque banque, ne sont pas compris : demandez-les à votre banque."}}
 ]}
 </script>
-<script src="../assets/calcul.js?v=20261125g"></script>
-<script src="../assets/page.js?v=20261125g"></script>
-<script src="../assets/pass.js?v=20261125g"></script>
-<script src="../assets/calcul-credit.js?v=20261125g"></script>
+<script src="../assets/calcul.js?v=20261125h"></script>
+<script src="../assets/page.js?v=20261125h"></script>
+<script src="../assets/pass.js?v=20261125h"></script>
+<script src="../assets/calcul-credit.js?v=20261125h"></script>
 </head>
 <body data-pass>
 <header class="entete" id="entete"></header>
@@ -127,6 +127,15 @@
     <p class="lien-pro" id="lien-pro" hidden><a href="https://comptables.clicvia.com/" target="_blank" rel="noopener" data-compteur="lien-comptables/credit"><span data-l="fr">Faire tenir votre comptabilité : <b>trouver un expert-comptable près de chez vous</b></span></a></p>
   </section>
 
+  <!--calculs-lies--><section class="carte calculs-lies" id="calculs-lies">
+    <h2><span data-l="fr">Calculs qui vont ensemble</span></h2>
+    <ul class="lies-liste">
+      <li><a href="../salaire-net/" data-clic="calcul-lie"><b><span data-l="fr">Salaire brut ⇄ net</span></b> <small><span data-l="fr">votre salaire net, pour savoir quelle mensualité vous pouvez payer</span></small></a></li>
+      <li><a href="../impot-revenu/" data-clic="calcul-lie"><b><span data-l="fr">Impôt sur le revenu</span></b> <small><span data-l="fr">l'impôt annuel sur votre salaire</span></small></a></li>
+    </ul>
+    <p class="lies-pass" id="lies-pass"><span data-l="fr">Tous les calculs pendant 24&nbsp;h :</span> <a class="btn-pass-petit" id="lies-pass-btn" href="../pass/" data-clic="pass-resultat"><span data-l="fr">Pass Journée 7&nbsp;DT</span></a></p>
+  </section><!--/calculs-lies-->
+
   <section class="carte" data-resultat>
     <details>
       <summary><span data-l="fr">Tableau d'amortissement (mois par mois)</span></summary>
@@ -161,7 +170,7 @@
 </main>
 <footer id="pied"></footer>
 
-<script src="../assets/credit.js?v=20261125g"></script>
+<script src="../assets/credit.js?v=20261125h"></script>
 <script data-goatcounter="https://prix-eaux-tunisie.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>

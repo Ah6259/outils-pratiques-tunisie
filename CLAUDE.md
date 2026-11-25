@@ -67,7 +67,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
    `node tools/test_sw.mjs` (service worker : réseau d'abord, exclusions, meta iPhone ; accepte un dossier en argument),
    `node tools/test_avis.mjs` (Votre avis : section, pied de page de toutes les pages, CSP, envoi simulé ; accepte un dossier en argument).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
-2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261125f`) — les tests le vérifient.
+2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261125h`) — les tests le vérifient.
 3. Capture mobile 340/390 px en français ET en arabe si l'affichage change : Chrome sans écran sur une page HTML locale
    contenant deux `<iframe>` (340 et 390 px) vers les fichiers `file:///…?lang=fr|ar` (la fenêtre de Chrome sans écran ne descend
    pas sous ~500 px ; l'anti-iframe de page.js laisse passer `file:`).
@@ -293,3 +293,15 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   WhatsApp sans commande (`majLiensPreuve()`), `cacherCommande()`, `finCommande()` (code tapé = commande effacée). Rien ne change pour le visiteur
   (comparaison avant / après FR + AR) ; différence voulue : e-mail automatique UNE fois par commande. Tests : bloc « module commun du Pass » de
   test_site.mjs (empreinte, copie identique si projets-ahmed est à côté — variable `PROJETS_AHMED` —, scripts, module branché) ; 14 sabotages vérifiés. Version 20261125e.
+
+## 25/11/2026 — « CALCULS QUI VONT ENSEMBLE » + CLICS COMPTÉS (décision d'Ahmed : amener vers la page d'achat, PAS DE GRATUITÉ ; prix inchangés ; modèle Alerte Concours)
+- OUT.1 : sous la carte `.resultat` des 5 calculateurs (sources `tools/sources/<calculateur>/index.html`, FR + ar/), carte `#calculs-lies`
+  (`<!--calculs-lies-->…<!--/calculs-lies-->`) : liens `data-clic="calcul-lie"` vers les calculs liés (salaire-net -> impot-revenu, credit ;
+  impot-revenu -> salaire-net, retenue-source ; retenue-source -> impot-revenu, auto-entrepreneur ; credit -> salaire-net, impot-revenu ;
+  auto-entrepreneur -> impot-revenu, retenue-source) + ligne `#lies-pass` « Tous les calculs pendant 24 h : Pass Journée 7 DT » (vrai lien `../pass/`,
+  `#lies-pass-btn`), cachée si un Pass est actif. **Toujours rien sur l'accueil** (décision d'Ahmed, testé).
+- C.1 : `assets/page.js` (`window.nomClic`) compte en ÉVÉNEMENT GoatCounter `/outils-pratiques-tunisie/clic/<nom>` (seulement si `goatcounter.count` existe) :
+  tout lien vers pass/ (jamais depuis pass/) = `data-clic` (pass-resultat, pass-a-propos) sinon l'endroit (pass-entete, pass-blocage = écran du 2e calcul,
+  pass-note = petite ligne du résultat, pass-renouveler, pass-pied, pass-autre) ; liens liés = `clic/calcul-lie` (titre « Calcul lié : salaire-net -> impot-revenu »).
+  L'ancien événement `pass-bloque/<calculateur>` (affichage de l'écran bloqué) reste.
+- « Comment fonctionne le site ? » FR + AR + 2 lignes FONCTIONS ; fonction `calculsLies()` de test_site.mjs (+ 7 sabotages vérifiés) ; version `?v=20261125h`.

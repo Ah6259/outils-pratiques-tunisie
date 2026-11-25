@@ -381,3 +381,11 @@ html[dir="rtl"] .paie-etapes>li::before{left:auto;right:12px}
 .code-court{letter-spacing:.06em;white-space:nowrap}
 #commande-statut.attente{color:var(--vert-fonce);font-weight:700}
 #commande-statut.err{color:var(--rouge);font-weight:700}
+/* 25/11/2026 — « Calculs qui vont ensemble » sous chaque résultat + ligne « Tous les calculs pendant 24 h : Pass Journée 7 DT » (pas de gratuité) */
+.calculs-lies h2{font-size:17px;margin:0 0 8px}
+.lies-liste{list-style:none;margin:0 0 12px;padding:0;display:flex;flex-direction:column;gap:8px}
+.lies-liste a{display:block;padding:10px 12px;border:1px solid var(--ligne);border-radius:12px;text-decoration:none;color:var(--texte);background:var(--vert-tres-clair)}
+.lies-liste a:hover{border-color:var(--vert)}
+.lies-liste b{color:var(--vert-fonce)}
+.lies-liste small{display:block;font-size:13px;color:var(--doux);margin-top:2px}
+.lies-pass{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;margin:0;font-size:14px;font-weight:700;color:var(--texte)}
