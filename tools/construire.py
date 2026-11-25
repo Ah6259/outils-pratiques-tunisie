@@ -24,6 +24,9 @@ import sys
 ICI = os.path.dirname(os.path.abspath(__file__))
 RACINE = os.path.dirname(ICI)
 SOURCES = os.path.join(ICI, "sources")
+sys.path.insert(0, ICI)
+import lastmod  # noqa: E402  (dates honnêtes du plan du site, 25/11/2026)
+MEMOIRE = "donnees/lastmod.json"
 URL_SITE = "https://outils.clicvia.com/"
 NOM_AR = "أدوات عملية تونس"
 
@@ -237,6 +240,8 @@ def main(argv):
     plan = sitemap(chemins, dates, changes, dt.date.today().isoformat())
     if "--verifier" in argv:
         manque = differents + orphelines + ([] if all(URL_SITE + c in dates for c in chemins + ["ar/" + c for c in chemins] + ["video/"]) else ["sitemap.xml"])
+        if not differents and lastmod.honnete(plan, RACINE, URL_SITE, MEMOIRE, ecrire_memoire=False) != sm:
+            manque.append("sitemap.xml (dates du dernier vrai changement)")
         if manque:
             print("ÉCHEC - pages fabriquées pas à jour (modifier tools/sources/ puis lancer python tools/construire.py) : " + ", ".join(manque))
             return 1
@@ -252,6 +257,9 @@ def main(argv):
         for dossier, _, _ in sorted(os.walk(base), key=lambda x: -len(x[0])):
             if dossier != base and not os.listdir(dossier):
                 os.rmdir(dossier)
+    # plan Google du 25/11/2026 (B.2) : date du dernier VRAI changement du contenu (empreinte gardée dans donnees/lastmod.json,
+    # outil commun tools/lastmod.py) ; un ?v= ou un menu changé ne change plus la date ; une page noindex sort du plan
+    plan = lastmod.honnete(plan, RACINE, URL_SITE, MEMOIRE)
     if plan != sm:
         open(os.path.join(RACINE, "sitemap.xml"), "w", encoding="utf-8", newline="\n").write(plan)
     print(f"{len(chemins)} page(s) : français + arabe (ar/) ; {len(differents)} fichier(s) refait(s) ; plan du site à jour")

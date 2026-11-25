@@ -305,3 +305,11 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   pass-note = petite ligne du résultat, pass-renouveler, pass-pied, pass-autre) ; liens liés = `clic/calcul-lie` (titre « Calcul lié : salaire-net -> impot-revenu »).
   L'ancien événement `pass-bloque/<calculateur>` (affichage de l'écran bloqué) reste.
 - « Comment fonctionne le site ? » FR + AR + 2 lignes FONCTIONS ; fonction `calculsLies()` de test_site.mjs (+ 7 sabotages vérifiés) ; version `?v=20261125h`.
+
+## 25/11/2026 — plan Google (B.2 + B.3, « fais » d'Ahmed après la chute Google d'octobre)
+- **lastmod HONNÊTE** : tools/construire.py passe le plan du site par `tools/lastmod.py` (outil COMMUN, copié tel quel) : date du dernier
+  VRAI changement du contenu de chaque page (empreinte du titre, de la description, du texte et des images, SANS menus, pied, scripts,
+  ?v= ni dates) gardée dans `donnees/lastmod.json` (enregistré avec les pages) ; page noindex = hors du plan ; `--verifier` contrôle aussi
+  les dates. Test : `python tools/test_lastmod.py donnees/lastmod.json` (tests.yml ; données inventées + vrai plan ; vérifié par sabotage).
+- **Accueil** : partie « Les règles de calcul à connaître en Tunisie » (3 courts paragraphes FR + AR : brut -> net, barème IRPP 2025,
+  crédit), reprise des pages de calcul, lisible sans JavaScript. Rien de nouveau de gratuit.
