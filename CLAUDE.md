@@ -67,7 +67,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
    `node tools/test_sw.mjs` (service worker : réseau d'abord, exclusions, meta iPhone ; accepte un dossier en argument),
    `node tools/test_avis.mjs` (Votre avis : section, pied de page de toutes les pages, CSP, envoi simulé ; accepte un dossier en argument).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
-2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261125c`) — les tests le vérifient.
+2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261125d`) — les tests le vérifient.
 3. Capture mobile 340/390 px en français ET en arabe si l'affichage change : Chrome sans écran sur une page HTML locale
    contenant deux `<iframe>` (340 et 390 px) vers les fichiers `file:///…?lang=fr|ar` (la fenêtre de Chrome sans écran ne descend
    pas sous ~500 px ; l'anti-iframe de page.js laisse passer `file:`).
@@ -271,3 +271,14 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   quel ; refusé si mauvais format ou déjà utilisé ; code vide = ancien comportement ; code seul d'un client connu = réactivation (codes déjà vendus OK).
 - Tests : bloc « CODE DE COMMANDE » de test_site.mjs (FR + AR, mémoire, retour, activation, 60 jours, données perso, 300 codes) + ligne FONCTIONS ;
   version 20261125b ; phrase « Vous le recevez aussi par e-mail » cachée tant que `EMAIL_AUTO = false` (assets/pass.js : e-mail automatique pas encore en service).
+
+## 25/11/2026 — E-MAIL AUTOMATIQUE EN SERVICE (A.17, méthode `outils communs/email-clients/BRANCHER-UN-SITE.md` de projets-ahmed, modèle Alerte Concours)
+- `assets/pass.js` : `EMAIL_AUTO = true` ; `envoyerEmail(d)` envoie (sans attendre, jamais bloquant) au service `https://api-email.clicvia.com/inscription`
+  le JSON `{ site: "outils", langue (fr|ar, langue de la page), nom, email, code (ABCD-EF23, celui affiché), formule (valeur exacte du champ caché) }`,
+  appelé UNE fois juste avant Formspree, après toutes les vérifications, jamais si le piège `_gotcha` est rempli. Le service (Worker Cloudflare + Resend,
+  copie à Ahmed) écrit au client dans la langue de la page. Retour en arrière : `EMAIL_AUTO = false` (phrases cachées, rien envoyé).
+- Phrases `.email-auto` affichées (« vous y recevez votre code et les étapes du paiement », « Vous le recevez aussi par e-mail ») ; CSP de `pass/`
+  (source `tools/sources/pass/index.html`) : `connect-src` + `https://api-email.clicvia.com` ; « Comment fonctionne le site ? » : « E-mail de confirmation »
+  + « Vos données » (Formspree, Resend, rien n'est gardé), 2 lignes FONCTIONS.
+- Tests (test_site.mjs, FR + AR) : promesses visibles, sans e-mail = erreur longue et rien envoyé, piège = rien, JSON exact, CSP, et JSON ACCEPTÉ par le vrai
+  `verifier()` du service (worker.js + sites.json de `../projets-ahmed` s'il existe ; sinon sauté). Version 20261125d.

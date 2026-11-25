@@ -31,9 +31,19 @@ const PASS = {
   joursCommande: 60
 };
 const isoP = s => "⁦" + s + "⁩";
-// E-mail automatique au client (code + étapes du paiement) : PAS ENCORE EN SERVICE (25/11/2026). Tant que false, la phrase
-// « Vous le recevez aussi par e-mail » reste cachée (jamais de promesse fausse) ; la passer à true le jour où l'e-mail part vraiment.
-const EMAIL_AUTO = false;      // nombre isolé dans un texte arabe
+// E-mail automatique au client (A.17) : EN SERVICE depuis le 25/11/2026 (Worker « email-clients » + Resend, copie à Ahmed).
+// EMAIL_AUTO = true : phrases « vous y recevez votre code… » / « Vous le recevez aussi par e-mail » affichées (.email-auto) et
+// demande envoyée au service ; false = tout caché, rien envoyé (retour en arrière en un mot si le service tombe).
+const EMAIL_AUTO = true;
+const EMAIL_API = "https://api-email.clicvia.com/inscription";
+// envoi au service d'e-mail : sans attendre la réponse, jamais bloquant (Formspree et le code restent la voie principale)
+function envoyerEmail(d) {
+  if (!EMAIL_AUTO || typeof fetch !== "function") return;
+  try {
+    fetch(EMAIL_API, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(d), keepalive: true })
+      .catch(() => {});
+  } catch (e) {}
+}
 
 /* ---- dates ---- */
 function aujourdhui(d) {
@@ -363,6 +373,9 @@ function brancherFormulairePass() {
     donnees.set("_subject", "Pass Journée — Outils pratiques Tunisie — code " + joliCode(commande.code));
     // ligne prête à recopier dans le bouton GitHub « pass » (dépôt privé) : action, nom, téléphone, CODE
     donnees.set("pour_activer", "action: paye ; nom: " + val("nom") + " ; telephone: " + tel + " ; code: " + joliCode(commande.code));
+    // e-mail automatique au client (code, prix, paiement, WhatsApp, page du Pass ; langue de la page ; Ahmed en copie)
+    envoyerEmail({ site: "outils", langue: document.documentElement.lang === "ar" ? "ar" : "fr", nom: val("nom"), email: email,
+      code: joliCode(commande.code), formule: val("formule") });
     bouton.disabled = true;
     dire("", "Envoi…", "جارٍ الإرسال…");
     fetch(form.getAttribute("action"), { method: "POST", body: donnees, headers: { "Accept": "application/json" } })
