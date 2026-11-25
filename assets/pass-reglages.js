@@ -50,8 +50,15 @@
     },
     // ligne prête à recopier dans le bouton GitHub « pass » (dépôt privé outils-pass) : action, nom, téléphone, CODE
     pourActiver: function (c) { return "action: paye ; nom: " + c.nom + " ; telephone: " + c.tel + " ; code: " + c.code; },
-    // même vérification que « J'ai un code », APRÈS la revérification du Pass déjà gardé (comme avant)
-    essayerCode: function (code) { return (window.PASS_PRET || Promise.resolve()).then(function () { return activerCode(code); }); },
+    // la commande en attente n'est regardée qu'APRÈS la revérification du Pass déjà gardé (window.PASS_PRET de pass.js), comme avant
+    attendreRetour: function () {
+      return new Promise(function (ok) {
+        function suite() { Promise.resolve(window.PASS_PRET).then(ok, ok); }
+        if (window.PASS_PRET || document.readyState === "complete") suite(); else document.addEventListener("DOMContentLoaded", suite);
+      });
+    },
+    // même vérification que « J'ai un code »
+    essayerCode: function (code) { return activerCode(code); },
     passOuvert: function () { cacherCommande(); },  // activé (Pass ouvert par activerCode) ou expiré : retour au formulaire
     nouvelle: function (p) { cacherCommande(); try { p.form.scrollIntoView({ block: "start" }); } catch (x) {} }
   });
