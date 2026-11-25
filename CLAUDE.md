@@ -67,7 +67,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
    `node tools/test_sw.mjs` (service worker : réseau d'abord, exclusions, meta iPhone ; accepte un dossier en argument),
    `node tools/test_avis.mjs` (Votre avis : section, pied de page de toutes les pages, CSP, envoi simulé ; accepte un dossier en argument).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
-2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261125a`) — les tests le vérifient.
+2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261125b`) — les tests le vérifient.
 3. Capture mobile 340/390 px en français ET en arabe si l'affichage change : Chrome sans écran sur une page HTML locale
    contenant deux `<iframe>` (340 et 390 px) vers les fichiers `file:///…?lang=fr|ar` (la fenêtre de Chrome sans écran ne descend
    pas sous ~500 px ; l'anti-iframe de page.js laisse passer `file:`).
@@ -270,4 +270,4 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - Activation (dépôt privé outils-pass, bouton « pass ») : action `paye` + `code` + `nom` + `telephone` (recopiés de `pour_activer`) -> CE code activé tel
   quel ; refusé si mauvais format ou déjà utilisé ; code vide = ancien comportement ; code seul d'un client connu = réactivation (codes déjà vendus OK).
 - Tests : bloc « CODE DE COMMANDE » de test_site.mjs (FR + AR, mémoire, retour, activation, 60 jours, données perso, 300 codes) + ligne FONCTIONS ;
-  version 20261125a.
+  version 20261125b ; phrase « Vous le recevez aussi par e-mail » cachée tant que `EMAIL_AUTO = false` (assets/pass.js : e-mail automatique pas encore en service).

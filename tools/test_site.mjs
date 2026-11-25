@@ -373,11 +373,11 @@ async function passJournee() {
   const AUJ = JOUR(new Date()), HIER = JOUR(new Date(Date.now() - 86400000 * 1.5));
   const futur = new Date(Date.now() + 20 * 3600000).toISOString(), passe = new Date(Date.now() - 3600000).toISOString();
   // fenêtre comme un navigateur ; avant = réglages du stockage avant le chargement (calcul gratuit déjà utilisé, code gardé…)
-  async function ouvrir(chemin, { lang = "fr", avant = null } = {}) {
+  async function ouvrir(chemin, { lang = "fr", avant = null, modifier = js => js } = {}) {
     const ar = versionAr(chemin, lang); const q = ar === chemin ? `?lang=${lang}` : ""; chemin = ar;
     const dossier = dirname(join(root, chemin));
     const html = lire(chemin).replace(/<script([^>]*) src="(?!https?:)([^"?]+)(\?[^"]*)?"([^>]*)><\/script>/g,
-      (_, a, src) => `<script>${readFileSync(join(dossier, src), "utf8")}</script>`);
+      (_, a, src) => `<script>${modifier(readFileSync(join(dossier, src), "utf8"), src)}</script>`);
     const fautes = [], vc = new VirtualConsole();
     vc.on("jsdomError", e => { if (!/Not implemented/.test(e.message)) fautes.push(e.message); });
     const dom = new JSDOM(html, { url: `https://outils.clicvia.com/${chemin.replace("index.html", "")}${q}`,
@@ -598,8 +598,13 @@ async function passJournee() {
   const apresP = d.getElementById("apres-pass"), waApres = decodeURIComponent(d.getElementById("pass-preuve-apres").href);
   check("commande : après l'envoi, « Dernière étape » à la place du formulaire, code en GROS au bon format (8 caractères sans O/0/I/1), dir=ltr",
     form.hidden && !apresP.hidden && FORME.test(codeVu) && d.getElementById("code-commande").getAttribute("dir") === "ltr" && t(d.getElementById("apres-titre")).includes("Dernière étape"));
-  check("commande : phrase « C'est votre numéro de commande : écrivez-le dans le motif du paiement… » + « Vous le recevez aussi par e-mail. »",
-    t(apresP).includes("C'est votre numéro de commande : écrivez-le dans le motif du paiement, il nous sert à reconnaître votre paiement.") && t(apresP).includes("Vous le recevez aussi par e-mail."));
+  check("commande : phrase « C'est votre numéro de commande : écrivez-le dans le motif du paiement, il nous sert à reconnaître votre paiement. »",
+    t(apresP).includes("C'est votre numéro de commande : écrivez-le dans le motif du paiement, il nous sert à reconnaître votre paiement."));
+  // e-mail automatique PAS ENCORE en service : la phrase « Vous le recevez aussi par e-mail » existe mais reste CACHÉE (EMAIL_AUTO = false)
+  { const em = [...apresP.querySelectorAll(".email-auto")];
+    check("commande : « Vous le recevez aussi par e-mail » CACHÉE aujourd'hui (EMAIL_AUTO = false dans assets/pass.js)",
+      /const EMAIL_AUTO = false;/.test(lire("assets/pass.js")) && em.length === 1 && em[0].hidden && t(em[0]) === "Vous le recevez aussi par e-mail." &&
+      [...apresP.querySelectorAll("*")].filter(e => !e.closest("[hidden]") && /recevez aussi par e-mail/.test(e.textContent) && !e.querySelector("*")).length === 0); }
   check("commande : paiement en 3 étapes (D17 / IZI, 24 321 390, écrans d'exemple) avec MOTIF = le code",
     apresP.querySelectorAll("ol.paie-etapes > li").length === 3 && t(apresP).includes("24 321 390") && !!apresP.querySelector(".aide-transfert") &&
     t(apresP.querySelector("ol.paie-etapes > li:nth-child(3)")).includes("Motif") && t(apresP.querySelector(".motif-code")) === codeVu);
@@ -667,6 +672,13 @@ async function passJournee() {
       t(dx.getElementById("commande-attente")).includes("طلبك المعلّق") && t(dx.getElementById("commande-statut")).includes("في انتظار دفعتك") &&
       ap.includes("هذا رقم طلبك: اكتبه في خانة سبب الدفع، يساعدنا على التعرّف على دفعتك.") && ap.includes("يصلك أيضًا عبر البريد الإلكتروني.") &&
       ap.includes("نسيت الرمز في سبب الدفع؟ لا بأس: أرسل الوصل على واتساب وسنجد طلبك.") && ap.includes("24321390") && !/[A-Za-z]{4,}/.test(ap.replace(/WXYZ-K7M3|D17|IZI|iPhone/g, "")));
+    { const em = [...dx.querySelectorAll("#apres-pass .email-auto")];
+      check("arabe : « يصلك أيضًا عبر البريد الإلكتروني » CACHÉE aujourd'hui (EMAIL_AUTO = false)", em.length === 1 && em[0].hidden && t(em[0]) === "يصلك أيضًا عبر البريد الإلكتروني."); }
+    for (const lg of ["fr", "ar"]) {
+      const wv = await ouvrir("pass/index.html", { lang: lg, avant: avecCommande(LISTE), modifier: (js, src) => /pass\.js$/.test(src) ? js.replace("const EMAIL_AUTO = false;", "const EMAIL_AUTO = true;") : js });
+      await pause(300); const em = [...wv.document.querySelectorAll("#apres-pass .email-auto")];
+      check(`EMAIL_AUTO = true (${lg}) : la phrase de l'e-mail apparaît`, em.length === 1 && !em[0].hidden && !em[0].closest("[hidden]"));
+    }
     check("WhatsApp en arabe : « هذا وصل الدفع — أدوات عملية تونس — الرمز WXYZ-K7M3 — باقة اليوم … »",
       decodeURIComponent(dx.getElementById("pass-preuve-apres").href).includes("هذا وصل الدفع — أدوات عملية تونس — الرمز WXYZ-K7M3 — باقة اليوم"));
     wx = await ouvrir("pass/index.html", { lang: "ar" }); dx = wx.document; const fa = dx.getElementById("pass-form"), ea = [];

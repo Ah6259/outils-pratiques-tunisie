@@ -30,7 +30,10 @@ const PASS = {
   cleCommande: "pass-commande",               // commande en attente : { code, formule, date } SEULEMENT (règle commune § 70)
   joursCommande: 60
 };
-const isoP = s => "⁦" + s + "⁩";      // nombre isolé dans un texte arabe
+const isoP = s => "⁦" + s + "⁩";
+// E-mail automatique au client (code + étapes du paiement) : PAS ENCORE EN SERVICE (25/11/2026). Tant que false, la phrase
+// « Vous le recevez aussi par e-mail » reste cachée (jamais de promesse fausse) ; la passer à true le jour où l'e-mail part vraiment.
+const EMAIL_AUTO = false;      // nombre isolé dans un texte arabe
 
 /* ---- dates ---- */
 function aujourdhui(d) {
@@ -265,6 +268,7 @@ function montrerCommande(c, retour) {
   const form = document.getElementById("pass-form"), apres = document.getElementById("apres-pass");
   if (!form || !apres) return;
   document.querySelectorAll("[data-code-commande]").forEach(e => { e.textContent = joliCode(c.code); });
+  document.querySelectorAll(".email-auto").forEach(e => { e.hidden = !EMAIL_AUTO; });
   majLiensPreuve(c.code);
   form.hidden = true;
   apres.hidden = false;
