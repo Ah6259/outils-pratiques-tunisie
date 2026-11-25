@@ -225,12 +225,12 @@ const aPropos = lireSource("a-propos/index.html");   // page bilingue écrite à
     ["vidéo de présentation", existsSync(join(root, "video/index.html")), /Vidéo de présentation : courte vidéo/],
     ["1 calcul gratuit par jour et Pass Journée (prix, code)", existsSync(join(root, "pass/index.html")), /1 calcul personnel par jour[\s\S]*Pass Journée \(payant, 7 DT\)[\s\S]*code/],
     ["rappel de fin du Pass", /afficherRappel/.test(js), /Peu avant la fin du Pass, un bandeau vous prévient/],
-    ["code de commande créé au formulaire (motif du paiement, essayé tout seul)", /pass-commande/.test(js) && /nouveauCodeCommande/.test(js), /code de commande[\s\S]{0,80}motif du paiement = votre code de commande[\s\S]{0,200}essaie toute seule[\s\S]{0,120}Code oublié dans le motif/],
+    ["code de commande créé au formulaire (motif du paiement, essayé tout seul)", /pass-commande/.test(js) && /nouveauCode\(/.test(lire("assets/pass-commun.js")), /code de commande[\s\S]{0,80}motif du paiement = votre code de commande[\s\S]{0,200}essaie toute seule[\s\S]{0,120}Code oublié dans le motif/],
     ["vie privée", true, /Les calculs se font dans votre téléphone/],
     ["mises à jour automatiques (calculs de référence, TMM)", existsSync(join(root, "tools/verifier_regles.py")), /Chaque mois, un robot refait nos calculs de référence[^.]*TMM/],
     ["site indépendant", true, /Ce site est indépendant/],
-    ["e-mail de confirmation automatique (A.17, 25/11/2026)", /const EMAIL_AUTO = true;/.test(lire("assets/pass.js")), /E-mail de confirmation : dans la minute qui suit, vous recevez aussi tout cela par e-mail/],
-    ["e-mail de confirmation : service d'envoi (Vos données)", /const EMAIL_AUTO = true;/.test(lire("assets/pass.js")), /l'e-mail de confirmation part par notre service d'envoi \(Resend\) ; rien n'est gardé/]];
+    ["e-mail de confirmation automatique (A.17, 25/11/2026)", /emailAuto: true,/.test(lire("assets/pass-reglages.js")), /E-mail de confirmation : dans la minute qui suit, vous recevez aussi tout cela par e-mail/],
+    ["e-mail de confirmation : service d'envoi (Vos données)", /emailAuto: true,/.test(lire("assets/pass-reglages.js")), /l'e-mail de confirmation part par notre service d'envoi \(Resend\) ; rien n'est gardé/]];
   const manque = FONCTIONS.filter(([, sur, re]) => sur && !re.test(ap)).map(([n]) => n);
   check(`page « Comment fonctionne le site ? » à jour : titre et chaque fonction du site expliquée (${FONCTIONS.length} fonctions)` + (manque.length ? " — manque : " + manque.join(", ") : ""),
     manque.length === 0 && /<h1>[^]*?Comment fonctionne le site \?[^]*?كيف يعمل الموقع؟[^]*?<\/h1>/.test(aPropos)
@@ -572,13 +572,13 @@ async function passJournee() {
     check(`pass/ : e-mail OBLIGATOIRE (champ name="email" required, juste après le téléphone) sur les pages FR et AR ${mauvaisEmail}`, mauvaisEmail.length === 0);
     // 25/11/2026 : e-mail automatique EN SERVICE (A.17) -> la promesse (.email-auto, cachée dans le HTML) est affichée par pass.js (EMAIL_AUTO = true)
     check("pass/ : étiquette de l'e-mail en français et en arabe (« E-mail » / « البريد الإلكتروني » + promesse dans une partie .email-auto)",
-      /<label class="abo-etiquette" for="pass-email"><span data-l="fr">E-mail<\/span><span data-l="ar">البريد الإلكتروني<\/span><span class="email-auto" hidden>/.test(lire("tools/sources/pass/index.html"))
+      /<label class="abo-etiquette" for="pass-email"><span data-l="fr">E-mail<\/span><span data-l="ar">البريد الإلكتروني<\/span><span class="email-auto" data-email-auto hidden>/.test(lire("tools/sources/pass/index.html"))
       && lire("pass/index.html").includes("(vous y recevez votre code et les étapes du paiement)") && lire("ar/pass/index.html").includes("(يصلك عليه رمزك وخطوات الدفع)"));
     for (const lg of ["fr", "ar"]) {
       const wl = await ouvrir("pass/index.html", { lang: lg }), lab = wl.document.querySelector('label[for="pass-email"]'), cache = lab && lab.querySelector(".email-auto");
       const vu = lab ? [...lab.childNodes].filter(n => !(n.nodeType === 1 && (n.hidden || n.closest("[hidden]")))).map(n => n.textContent).join("").trim() : "";
       check(`formulaire (${lg}) : la promesse « ${lg === "fr" ? "vous y recevez votre code et les étapes du paiement" : "يصلك عليه رمزك وخطوات الدفع"} » est VISIBLE (EMAIL_AUTO = true, e-mail automatique en service)`,
-        !!cache && !cache.hidden && (lg === "fr" ? /vous y recevez votre code et les étapes du paiement/ : /يصلك عليه رمزك وخطوات الدفع/).test(vu) && /const EMAIL_AUTO = true;/.test(lire("assets/pass.js")));
+        !!cache && !cache.hidden && (lg === "fr" ? /vous y recevez votre code et les étapes du paiement/ : /يصلك عليه رمزك وخطوات الدفع/).test(vu) && /emailAuto: true,/.test(lire("assets/pass-reglages.js")));
     }
     check("conditions du Pass : l'e-mail figure dans les données gardées (FR + AR)", lire("pass/conditions/index.html").includes("nom, téléphone, e-mail, dates") && lire("ar/pass/conditions/index.html").includes("الاسم، الهاتف، البريد الإلكتروني"));
   }
@@ -615,7 +615,7 @@ async function passJournee() {
   // e-mail automatique EN SERVICE (25/11/2026) : la phrase « Vous le recevez aussi par e-mail » est AFFICHÉE (EMAIL_AUTO = true)
   { const em = [...apresP.querySelectorAll(".email-auto")];
     check("commande : « Vous le recevez aussi par e-mail » AFFICHÉE (EMAIL_AUTO = true dans assets/pass.js)",
-      /const EMAIL_AUTO = true;/.test(lire("assets/pass.js")) && em.length === 1 && !em[0].hidden && !em[0].closest("[hidden]") && t(em[0]) === "Vous le recevez aussi par e-mail."); }
+      /emailAuto: true,/.test(lire("assets/pass-reglages.js")) && em.length === 1 && !em[0].hidden && !em[0].closest("[hidden]") && t(em[0]) === "Vous le recevez aussi par e-mail."); }
   check("commande : paiement en 3 étapes (D17 / IZI, 24 321 390, écrans d'exemple) avec MOTIF = le code",
     apresP.querySelectorAll("ol.paie-etapes > li").length === 3 && t(apresP).includes("24 321 390") && !!apresP.querySelector(".aide-transfert") &&
     t(apresP.querySelector("ol.paie-etapes > li:nth-child(3)")).includes("Motif") && t(apresP.querySelector(".motif-code")) === codeVu);
@@ -673,9 +673,10 @@ async function passJournee() {
     check("commande : code différent d'une commande à l'autre", envois[0].code !== codeVu);
     dx.getElementById("nouvelle-commande").dispatchEvent(new wx.MouseEvent("click", { bubbles: true }));
     check("commande : bouton « Nouvelle commande » -> mémoire effacée, formulaire de nouveau visible", !wx.localStorage.getItem("pass-commande") && !fx.hidden && dx.getElementById("apres-pass").hidden);
-    const codes = new Set(Array.from({ length: 300 }, () => wx.eval("nouveauCodeCommande()")));
+    const codes = new Set(Array.from({ length: 300 }, () => wx.eval("PassCommun.nouveauCode(PassCommun.reglage.code.alphabet, PassCommun.reglage.code.longueur)")));
     check("commande : 300 codes créés par crypto.getRandomValues, tous au format des codes d'accès, tous différents",
-      codes.size === 300 && [...codes].every(c => wx.eval(`formeCodeOk("${c}")`)) && /crypto\.getRandomValues/.test(lire("assets/pass.js")) && !/Math\.random/.test(lire("assets/pass.js")));
+      codes.size === 300 && [...codes].every(c => wx.eval(`formeCodeOk("${c}")`)) && /crypto\.getRandomValues/.test(lire("assets/pass-commun.js")) && !/Math\.random/.test(lire("assets/pass.js"))
+      && /code: \{ alphabet: PASS\.alphabet, longueur: PASS\.longueur,/.test(lire("assets/pass-reglages.js")));
   }
   {  // retour sur la page avec une commande en attente : bandeau + 3 étapes + WhatsApp ; code activé = Pass ouvert + clé effacée
     const CMD = { code: "WXYZK7M3", formule: "Pass Journée - 7 DT - 24 heures", date: AUJ };
@@ -714,7 +715,7 @@ async function passJournee() {
     { const em = [...dx.querySelectorAll("#apres-pass .email-auto")];
       check("arabe : « يصلك أيضًا عبر البريد الإلكتروني » AFFICHÉE (EMAIL_AUTO = true)", em.length === 1 && !em[0].hidden && !em[0].closest("[hidden]") && t(em[0]) === "يصلك أيضًا عبر البريد الإلكتروني."); }
     for (const lg of ["fr", "ar"]) {   // retour en arrière en un mot : EMAIL_AUTO = false cache tout et n'envoie rien
-      const wv = await ouvrir("pass/index.html", { lang: lg, avant: avecCommande(LISTE), modifier: (js, src) => /pass\.js$/.test(src) ? js.replace("const EMAIL_AUTO = true;", "const EMAIL_AUTO = false;") : js });
+      const wv = await ouvrir("pass/index.html", { lang: lg, avant: avecCommande(LISTE), modifier: (js, src) => /pass-reglages\.js$/.test(src) ? js.replace("emailAuto: true,", "emailAuto: false,") : js });
       await pause(300); const em = [...wv.document.querySelectorAll("#apres-pass .email-auto")];
       check(`EMAIL_AUTO = false (${lg}) : la phrase de l'e-mail est cachée`, em.length === 1 && em[0].hidden);
     }
@@ -958,6 +959,28 @@ async function boutonPartager() {
   ws.document.getElementById("montant").value = "2500"; ws.document.getElementById("montant").dispatchEvent(new ws.Event("input"));
   check("page arabe du salaire : 2 500 -> 1 849,310, montant isolé (ordre lisible)", texte(ws.document.getElementById("grand")).includes("1 849,310") && ws.document.getElementById("grand").textContent.startsWith("⁦"));
 }
+
+// 25/11/2026 (PASS.1, module commun du parcours d'achat, règle commune § 70.8) : assets/pass-commun.js = COPIE EXACTE du module de
+// projets-ahmed (« outils communs/pass-commun/pass-commun.js », recopié par synchroniser.py) ; assets/pass-reglages.js = ce qui est propre au site
+{ const { createHash } = await import("crypto");
+  const copie = readFileSync(join(root, "assets/pass-commun.js")), emp = createHash("sha256").update(copie).digest("hex");
+  const attendue = existsSync(join(root, "assets/pass-commun.empreinte")) ? lire("assets/pass-commun.empreinte").trim() : "";
+  check("module commun du Pass : assets/pass-commun.js NON modifié dans le site (empreinte écrite par synchroniser.py)", emp === attendue);
+  // dépôt général à côté (variable PROJETS_AHMED, puis ../projets-ahmed…) ; absent sur GitHub : comparaison sautée
+  const PROJ = [process.env.PROJETS_AHMED, join(root, "../projets-ahmed"), join(root, "../../projets-ahmed"), join(root, "../.."), "/home/user/projets-ahmed"]
+    .filter(Boolean).find(x => existsSync(join(x, "outils communs/pass-commun/pass-commun.js")));
+  if (PROJ) check("module commun du Pass : copie identique au module de projets-ahmed (sinon : python3 synchroniser.py)",
+    readFileSync(join(PROJ, "outils communs/pass-commun/pass-commun.js")).equals(copie));
+  else console.log("SAUTÉ comparaison avec le module de projets-ahmed (dépôt absent, normal sur GitHub)");
+  const scripts = h => (h.match(/<script src="[^"]*assets\/[^"?]+/g) || []).map(x => x.replace(/^.*assets\//, ""));
+  const sp = scripts(lire("pass/index.html")), sa = scripts(lire("ar/pass/index.html"));
+  check("module commun du Pass : pass/ et ar/pass/ chargent pass.js, puis pass-commun.js, puis pass-reglages.js (seulement ces pages)",
+    [sp, sa].every(x => x.indexOf("pass.js") >= 0 && x.indexOf("pass.js") < x.indexOf("pass-commun.js") && x.indexOf("pass-commun.js") === x.indexOf("pass-reglages.js") - 1)
+    && !/pass-commun\.js/.test(lire("index.html") + lire("salaire-net/index.html") + lire("pass/conditions/index.html"))
+    && !/brancherFormulairePass|nouveauCodeCommande|envoyerEmail|verifierCommandeAttente/.test(lire("assets/pass.js")));
+  const wm = await page("pass/index.html");
+  check(`module commun du Pass : branché sur le formulaire (version ${wm.PassCommun && wm.PassCommun.version}), réglage du site « outils »`,
+    !!wm.PassCommun && wm.PassCommun.reglage && wm.PassCommun.reglage.site === "outils" && wm.document.getElementById("pass-form").getAttribute("data-branche") === "1"); }
 
 console.log(erreurs ? `\n${erreurs} PROBLÈME(S)` : "\nTOUT PASSE");
 process.exit(erreurs ? 1 : 0);

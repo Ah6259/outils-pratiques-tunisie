@@ -67,7 +67,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
    `node tools/test_sw.mjs` (service worker : réseau d'abord, exclusions, meta iPhone ; accepte un dossier en argument),
    `node tools/test_avis.mjs` (Votre avis : section, pied de page de toutes les pages, CSP, envoi simulé ; accepte un dossier en argument).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
-2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261125d`) — les tests le vérifient.
+2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261125e`) — les tests le vérifient.
 3. Capture mobile 340/390 px en français ET en arabe si l'affichage change : Chrome sans écran sur une page HTML locale
    contenant deux `<iframe>` (340 et 390 px) vers les fichiers `file:///…?lang=fr|ar` (la fenêtre de Chrome sans écran ne descend
    pas sous ~500 px ; l'anti-iframe de page.js laisse passer `file:`).
@@ -282,3 +282,14 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   + « Vos données » (Formspree, Resend, rien n'est gardé), 2 lignes FONCTIONS.
 - Tests (test_site.mjs, FR + AR) : promesses visibles, sans e-mail = erreur longue et rien envoyé, piège = rien, JSON exact, CSP, et JSON ACCEPTÉ par le vrai
   `verifier()` du service (worker.js + sites.json de `../projets-ahmed` s'il existe ; sinon sauté). Version 20261125d.
+
+## 25/11/2026 — Pass : MODULE COMMUN du parcours d'achat (PASS.1, règle commune § 70.8 ; `outils communs/pass-commun/` de projets-ahmed)
+- La page pass/ (FR + ar/) charge `assets/pass.js` (codes d'accès, calcul gratuit, Pass ouvert, rappels : inchangé), puis **`assets/pass-commun.js`**
+  (COPIE EXACTE du module de projets-ahmed, empreinte `assets/pass-commun.empreinte` : NE JAMAIS LA MODIFIER ICI ; on améliore le module puis
+  `python3 "outils communs/pass-commun/synchroniser.py"`), puis **`assets/pass-reglages.js`** (propre au site : nom, formule unique, code
+  `PASS.alphabet` / `PASS.longueur` affiché ABCD-EF23, textes du site, `pour_activer`, bandeau du retour `auRetour`, `apresAuRetour`, `classesEtat`
+  attente / err, `essayerCode` = `activerCode()` APRÈS la revérification du Pass gardé (`window.PASS_PRET` de pass.js)). Source
+  `tools/sources/pass/index.html` : les 2 scripts + attributs `data-code`, `data-email-auto`, `data-etat-commande`. Restent dans pass.js : liens
+  WhatsApp sans commande (`majLiensPreuve()`), `cacherCommande()`, `finCommande()` (code tapé = commande effacée). Rien ne change pour le visiteur
+  (comparaison avant / après FR + AR) ; différence voulue : e-mail automatique UNE fois par commande. Tests : bloc « module commun du Pass » de
+  test_site.mjs (empreinte, copie identique si projets-ahmed est à côté — variable `PROJETS_AHMED` —, scripts, module branché) ; 14 sabotages vérifiés. Version 20261125e.
