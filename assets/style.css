@@ -369,3 +369,15 @@ html[dir="rtl"] .paie-etapes>li::before{left:auto;right:12px}
   :root:not([data-theme="light"]) .btn-avis-autre{background:var(--carte);color:var(--vert);border-color:var(--vert)}
   :root:not([data-theme="light"]) .partage,:root:not([data-theme="light"]) .btn-wa{background:#146C3C}
 }
+
+/* Code de commande créé au formulaire (25/11/2026, règle commune § 70) : « Dernière étape » et commande en attente */
+.code-commande-boite{background:var(--carte);border:2px dashed var(--vert);border-radius:14px;padding:12px 14px;margin:8px 0 12px;text-align:center}
+.code-commande{margin:0 0 6px;font-size:32px;line-height:1.2;font-weight:800;letter-spacing:.08em;color:var(--texte);font-family:ui-monospace,Menlo,Consolas,monospace;word-break:break-all}
+.code-explication{margin:0;font-weight:600}
+.motif-code{white-space:nowrap}
+.apres-abo .filet{background:var(--carte);border-inline-start:4px solid var(--or);border-radius:10px;padding:8px 12px;font-weight:600}
+.commande-attente{border-top:4px solid var(--or)}
+.commande-attente p{margin:0 0 6px}
+.code-court{letter-spacing:.06em;white-space:nowrap}
+#commande-statut.attente{color:var(--vert-fonce);font-weight:700}
+#commande-statut.err{color:var(--rouge);font-weight:700}

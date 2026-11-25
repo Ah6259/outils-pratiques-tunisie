@@ -32,9 +32,9 @@
 <meta name="theme-color" content="#0B7A53">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;600;700;800&family=Noto+Kufi+Arabic:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../assets/style.css?v=20261124a">
-<script src="../../assets/page.js?v=20261124a"></script>
-<script src="../../assets/pass.js?v=20261124a"></script>
+<link rel="stylesheet" href="../../assets/style.css?v=20261125a">
+<script src="../../assets/page.js?v=20261125a"></script>
+<script src="../../assets/pass.js?v=20261125a"></script>
 </head>
 <body data-pass>
 <header class="entete" id="entete"></header>
@@ -49,10 +49,15 @@
 
 <main class="wrap chevauche">
   <section class="carte pass-etat" id="pass-etat" hidden></section>
+  <section class="carte commande-attente" id="commande-attente" hidden>
+    <p class="commande-titre" id="commande-titre"></p>
+    <p id="commande-statut" role="status" aria-live="polite"></p>
+    <p class="petit"><a href="#apres-pass"><span data-l="ar">عرض خطوات الدفع</span></a></p>
+  </section>
   <section class="carte abo code-haut" id="code-acces">
     <h2><span data-l="ar">لدي رمز</span></h2>
     <form id="code-form" novalidate>
-      <label class="abo-etiquette" for="code-saisie"><span data-l="ar">رمز الدخول (⁦8⁩ حروف وأرقام)</span></label>
+      <label class="abo-etiquette" for="code-saisie"><span data-l="ar">رمز الدخول (⁦8⁩ حروف وأرقام): هو رقم طلبك</span></label>
       <input id="code-saisie" name="code" required maxlength="12" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text">
       <button type="submit" class="btn-pro"><span data-l="ar">تفعيل الباقة</span></button>
       <p id="code-status" role="status" aria-live="polite"></p>
@@ -69,15 +74,15 @@
     
     <ul class="avantages masque-si-paiement" data-l="ar">
       <li><b>كل الحسابات طيلة ⁦24⁩ ساعة</b>: الأجر الخام ⇄ الصافي، الضريبة على الدخل، القرض، المبادر الذاتي، الخصم من المورد</li>
-      <li><b>⁦24⁩ ساعة بداية من تفعيل رمزك</b>: ساعة النهاية بالضبط مكتوبة في الرسالة التي تحمل الرمز</li>
+      <li><b>⁦24⁩ ساعة بداية من تفعيل رمزك</b>: ساعة النهاية بالضبط مكتوبة في الرسالة التي تؤكد التفعيل</li>
       <li>دون حساب ولا تطبيق: رمز دخول تكتبه مرة واحدة</li>
       <li>تبقى الحسابات داخل هاتفك: لا تُرسل أرقامك إلى أحد</li>
       <li><strong>لا تجديد آلي</strong>: بعد ⁦24⁩ ساعة، تعود ببساطة إلى الحساب المجاني اليومي</li>
     </ul>
     <details class="paiement" id="paiement"><summary class="btn-clair"><span data-l="ar">الدفع</span></summary>
-      <div class="paie"><ol class="paie-etapes"><li><span data-l="ar">افتح التطبيق:</span> <span class="applis"><a class="appli-btn" href="https://play.google.com/store/apps/details?id=tn.mobipost" target="_blank" rel="noopener noreferrer"><img src="../../assets/paiement/d17.png" alt="D17" width="44" height="44"></a><a class="appli-btn" href="https://play.google.com/store/apps/details?id=tn.izi.consumer" target="_blank" rel="noopener noreferrer"><img src="../../assets/paiement/izi.png" alt="IZI" width="44" height="44"></a></span><br><span class="petit"><span data-l="ar">على آيفون:</span> <a class="appli" href="https://apps.apple.com/tn/app/digipostbank-d17/id1475640303" target="_blank" rel="noopener noreferrer">D17</a> · <a class="appli" href="https://apps.apple.com/tn/app/izi/id1603653941" target="_blank" rel="noopener noreferrer">IZI</a></span></li><li><span data-l="ar">في D17: « تحويل الأموال » ثم « التحويل السريع ». في IZI: « تحويل ». أدخل الرقم</span> <strong><bdi dir="ltr">24 321 390</bdi></strong>.<br><span data-l="ar">المبلغ:</span> <strong><span data-l="ar">⁦7⁩ د (باقة اليوم، ⁦24⁩ ساعة)</span></strong><details class="aide-transfert"><summary title="كيف أقوم بذلك؟" aria-label="كيف أقوم بذلك؟">?</summary><div class="aide-images"><figure><img src="../../assets/paiement/transfert-d17.svg" alt="مثال D17: التحويل السريع، الرقم 24 321 390، المبلغ، إرسال" width="240" height="300" loading="lazy"><figcaption>D17</figcaption></figure><figure><img src="../../assets/paiement/transfert-izi.svg" alt="مثال IZI: تحويل، المبلغ، الرقم 24 321 390، التالي" width="240" height="300" loading="lazy"><figcaption>IZI</figcaption></figure></div></details></li><li><span data-l="ar">سبب الدفع:</span> <strong><span data-l="ar">اسمك ورقم هاتفك</span></strong>. <span data-l="ar">ثم أرسل لقطة الدفع عبر واتساب (الزر الأخضر).</span></li></ol><p class="paie-confiance"><span data-l="ar">تدفع مباشرة في التطبيق الرسمي للبريد التونسي (D17) أو لزيتونة للدفع (IZI): لا نطّلع أبدًا على رموزك.</span></p></div>
-      <a class="btn-wa" id="pass-preuve" href="https://wa.me/21624321390?text=Bonjour%2C%20voici%20la%20preuve%20de%20paiement%20de%20mon%20Pass%20Journ%C3%A9e%20%28Outils%20pratiques%20Tunisie%29.%20Nom%20et%20t%C3%A9l%C3%A9phone%20%3A%20" data-texte="Bonjour, voici la preuve de paiement de mon Pass Journée (Outils pratiques Tunisie). Nom et téléphone : " target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8.4 19z"/><path d="M9 8.6c0 3.4 2.9 6.4 6.4 6.4l1-1.4-2-1-1 .9c-1-.4-2.1-1.5-2.5-2.5l.9-1-1-2z"/></svg><span data-l="ar">أرسل إثبات الدفع عبر واتساب</span></a>
-      <p class="petit"><span data-l="ar">ادفع مع ذكر اسمك ورقم هاتفك كسبب للدفع، ثم أرسل الإثبات عبر واتساب. يصلك رمز الدخول عبر واتساب، عادة في غضون ⁦24⁩ ساعة.</span></p>
+      <div class="paie"><ol class="paie-etapes"><li><span data-l="ar">افتح التطبيق:</span> <span class="applis"><a class="appli-btn" href="https://play.google.com/store/apps/details?id=tn.mobipost" target="_blank" rel="noopener noreferrer"><img src="../../assets/paiement/d17.png" alt="D17" width="44" height="44"></a><a class="appli-btn" href="https://play.google.com/store/apps/details?id=tn.izi.consumer" target="_blank" rel="noopener noreferrer"><img src="../../assets/paiement/izi.png" alt="IZI" width="44" height="44"></a></span><br><span class="petit"><span data-l="ar">على آيفون:</span> <a class="appli" href="https://apps.apple.com/tn/app/digipostbank-d17/id1475640303" target="_blank" rel="noopener noreferrer">D17</a> · <a class="appli" href="https://apps.apple.com/tn/app/izi/id1603653941" target="_blank" rel="noopener noreferrer">IZI</a></span></li><li><span data-l="ar">في D17: « تحويل الأموال » ثم « التحويل السريع ». في IZI: « تحويل ». أدخل الرقم</span> <strong><bdi dir="ltr" data-l="ar">24321390</bdi></strong>.<br><span data-l="ar">المبلغ:</span> <strong><span data-l="ar">⁦7⁩ د (باقة اليوم، ⁦24⁩ ساعة)</span></strong><details class="aide-transfert"><summary title="كيف أقوم بذلك؟" aria-label="كيف أقوم بذلك؟">?</summary><div class="aide-images"><figure><img src="../../assets/paiement/transfert-d17.svg" alt="مثال D17: التحويل السريع، الرقم 24 321 390، المبلغ، إرسال" width="240" height="300" loading="lazy"><figcaption>D17</figcaption></figure><figure><img src="../../assets/paiement/transfert-izi.svg" alt="مثال IZI: تحويل، المبلغ، الرقم 24 321 390، التالي" width="240" height="300" loading="lazy"><figcaption>IZI</figcaption></figure></div></details></li><li><span data-l="ar">سبب الدفع:</span> <strong class="motif-code"><span data-l="ar">رقم طلبك</span></strong> <span data-l="ar">(يُعطى لك بمجرد إرسال الاستمارة أسفله).</span> <span data-l="ar">ثم أرسل لقطة الدفع عبر واتساب (الزر الأخضر).</span></li></ol><p class="paie-confiance"><span data-l="ar">تدفع مباشرة في التطبيق الرسمي للبريد التونسي (D17) أو لزيتونة للدفع (IZI): لا نطّلع أبدًا على رموزك.</span></p></div>
+      <a class="btn-wa" id="pass-preuve" href="https://wa.me/21624321390?text=Voici%20ma%20preuve%20de%20paiement%20%E2%80%94%20Outils%20pratiques%20Tunisie%20%E2%80%94%20Pass%20Journ%C3%A9e" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8.4 19z"/><path d="M9 8.6c0 3.4 2.9 6.4 6.4 6.4l1-1.4-2-1-1 .9c-1-.4-2.1-1.5-2.5-2.5l.9-1-1-2z"/></svg><span data-l="ar">أرسل إثبات الدفع عبر واتساب</span></a>
+      <p class="petit"><span data-l="ar">املأ الاستمارة أولًا: تعطيك رقم طلبك لتكتبه في خانة سبب الدفع. ويصبح هذا الرمز نفسه رمز دخولك بمجرد استلام دفعتك (عادة في غضون ⁦24⁩ ساعة).</span></p>
     </details>
     <a class="btn-pro" href="#inscription"><span data-l="ar">أطلب باقة اليوم</span></a>
     <p class="petit"><span data-l="ar">الأسعار بالدينار التونسي. انظر</span> <a href="conditions/"><span data-l="ar">شروط باقة اليوم</span></a>.</p>
@@ -87,10 +92,10 @@
     <h2><span data-l="ar">كيف يعمل؟</span></h2>
     
     <ol class="etapes" data-l="ar">
-      <li>املأ الاستمارة أسفله (الاسم وهاتف واتساب والبريد الإلكتروني).</li>
-      <li>ادفع ⁦7⁩ د عبر ⁨D17⁩ أو ⁨IZI⁩ وأرسل الإثبات عبر واتساب.</li>
-      <li>يصلك <b>رمز الدخول</b> عبر واتساب (عادة في غضون ⁦24⁩ ساعة)، مع ساعة نهاية الباقة.</li>
-      <li>اكتب الرمز مرة واحدة في «لدي رمز»: تُفتح كل الحسابات على هذا الهاتف طيلة ⁦24⁩ ساعة.</li>
+      <li>املأ الاستمارة أسفله (الاسم وهاتف واتساب والبريد الإلكتروني): تحصل فورًا على <b>رقم طلبك</b>.</li>
+      <li>ادفع ⁦7⁩ د عبر ⁨D17⁩ أو ⁨IZI⁩ مع كتابة هذا الرمز في خانة سبب الدفع، وأرسل الوصل عبر واتساب (الرسالة جاهزة).</li>
+      <li>بمجرد استلام دفعتك نفعّل هذا الرمز نفسه (عادة في غضون ⁦24⁩ ساعة) ونؤكد لك ساعة النهاية عبر واتساب.</li>
+      <li>عد إلى هذه الصفحة من نفس الهاتف: يُجرَّب الرمز تلقائيًا (أو اكتبه مرة واحدة في «لدي رمز»). تُفتح كل الحسابات طيلة ⁦24⁩ ساعة.</li>
     </ol>
   </section>
 
@@ -114,11 +119,18 @@
       <p class="petit"><span data-l="ar">يُستعمل اسمك وهاتفك وبريدك الإلكتروني فقط لإرسال الرمز إليك: لا تُنشر ولا تُباع أبدًا (إرسال عبر خدمة ⁨Formspree⁩). لا يُرسل أي شيء دون الضغط على «أرسل».</span></p>
     </form>
     <div class="apres-abo" id="apres-pass" hidden>
-      <h3><span data-l="ar">شكرًا، وصلنا طلبك</span></h3>
-      <p><span data-l="ar">ادفع الآن ⁦7⁩ د عبر ⁨D17⁩ أو ⁨IZI⁩ مع ذكر اسمك ورقم هاتفك، ثم أرسل الإثبات عبر واتساب. <b>سيصلك الرمز عبر واتساب</b>، عادة في غضون ⁦24⁩ ساعة.</span></p>
-      <div class="paie"><ol class="paie-etapes"><li><span data-l="ar">افتح التطبيق:</span> <span class="applis"><a class="appli-btn" href="https://play.google.com/store/apps/details?id=tn.mobipost" target="_blank" rel="noopener noreferrer"><img src="../../assets/paiement/d17.png" alt="D17" width="44" height="44"></a><a class="appli-btn" href="https://play.google.com/store/apps/details?id=tn.izi.consumer" target="_blank" rel="noopener noreferrer"><img src="../../assets/paiement/izi.png" alt="IZI" width="44" height="44"></a></span><br><span class="petit"><span data-l="ar">على آيفون:</span> <a class="appli" href="https://apps.apple.com/tn/app/digipostbank-d17/id1475640303" target="_blank" rel="noopener noreferrer">D17</a> · <a class="appli" href="https://apps.apple.com/tn/app/izi/id1603653941" target="_blank" rel="noopener noreferrer">IZI</a></span></li><li><span data-l="ar">في D17: « تحويل الأموال » ثم « التحويل السريع ». في IZI: « تحويل ». أدخل الرقم</span> <strong><bdi dir="ltr">24 321 390</bdi></strong>.<br><span data-l="ar">المبلغ:</span> <strong><span data-l="ar">⁦7⁩ د</span></strong><details class="aide-transfert"><summary title="كيف أقوم بذلك؟" aria-label="كيف أقوم بذلك؟">?</summary><div class="aide-images"><figure><img src="../../assets/paiement/transfert-d17.svg" alt="مثال D17: التحويل السريع، الرقم 24 321 390، المبلغ، إرسال" width="240" height="300" loading="lazy"><figcaption>D17</figcaption></figure><figure><img src="../../assets/paiement/transfert-izi.svg" alt="مثال IZI: تحويل، المبلغ، الرقم 24 321 390، التالي" width="240" height="300" loading="lazy"><figcaption>IZI</figcaption></figure></div></details></li><li><span data-l="ar">سبب الدفع:</span> <strong><span data-l="ar">اسمك ورقم هاتفك</span></strong>. <span data-l="ar">ثم أرسل لقطة الدفع عبر واتساب (الزر الأخضر).</span></li></ol><p class="paie-confiance"><span data-l="ar">تدفع مباشرة في التطبيق الرسمي للبريد التونسي (D17) أو لزيتونة للدفع (IZI): لا نطّلع أبدًا على رموزك.</span></p></div>
-      <a class="btn-wa" id="pass-preuve-apres" href="https://wa.me/21624321390?text=Bonjour%2C%20voici%20la%20preuve%20de%20paiement%20de%20mon%20Pass%20Journ%C3%A9e%20%28Outils%20pratiques%20Tunisie%29.%20Nom%20et%20t%C3%A9l%C3%A9phone%20%3A%20" data-texte="Bonjour, voici la preuve de paiement de mon Pass Journée (Outils pratiques Tunisie). Nom et téléphone : " target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8.4 19z"/><path d="M9 8.6c0 3.4 2.9 6.4 6.4 6.4l1-1.4-2-1-1 .9c-1-.4-2.1-1.5-2.5-2.5l.9-1-1-2z"/></svg><span data-l="ar">أرسل إثبات الدفع عبر واتساب</span></a>
-      <p class="petit"><span data-l="ar">لا تجديد آلي. تدوم الباقة ⁦24⁩ ساعة بداية من تفعيل الرمز. عندما يصلك الرمز، اكتبه أعلاه في «لدي رمز».</span></p>
+      <h3 id="apres-titre"><span data-l="ar">الخطوة الأخيرة: الدفع</span></h3>
+      <div class="code-commande-boite">
+        <p class="code-commande" id="code-commande" dir="ltr" data-code-commande></p>
+        <p class="code-explication"><span data-l="ar">هذا رقم طلبك: اكتبه في خانة سبب الدفع، يساعدنا على التعرّف على دفعتك.</span> <span data-l="ar">يصلك أيضًا عبر البريد الإلكتروني.</span></p>
+      </div>
+      <div class="paie"><ol class="paie-etapes"><li><span data-l="ar">افتح التطبيق:</span> <span class="applis"><a class="appli-btn" href="https://play.google.com/store/apps/details?id=tn.mobipost" target="_blank" rel="noopener noreferrer"><img src="../../assets/paiement/d17.png" alt="D17" width="44" height="44"></a><a class="appli-btn" href="https://play.google.com/store/apps/details?id=tn.izi.consumer" target="_blank" rel="noopener noreferrer"><img src="../../assets/paiement/izi.png" alt="IZI" width="44" height="44"></a></span><br><span class="petit"><span data-l="ar">على آيفون:</span> <a class="appli" href="https://apps.apple.com/tn/app/digipostbank-d17/id1475640303" target="_blank" rel="noopener noreferrer">D17</a> · <a class="appli" href="https://apps.apple.com/tn/app/izi/id1603653941" target="_blank" rel="noopener noreferrer">IZI</a></span></li><li><span data-l="ar">في D17: « تحويل الأموال » ثم « التحويل السريع ». في IZI: « تحويل ». أدخل الرقم</span> <strong><bdi dir="ltr" data-l="ar">24321390</bdi></strong>.<br><span data-l="ar">المبلغ:</span> <strong><span data-l="ar">⁦7⁩ د</span></strong><details class="aide-transfert"><summary title="كيف أقوم بذلك؟" aria-label="كيف أقوم بذلك؟">?</summary><div class="aide-images"><figure><img src="../../assets/paiement/transfert-d17.svg" alt="مثال D17: التحويل السريع، الرقم 24 321 390، المبلغ، إرسال" width="240" height="300" loading="lazy"><figcaption>D17</figcaption></figure><figure><img src="../../assets/paiement/transfert-izi.svg" alt="مثال IZI: تحويل، المبلغ، الرقم 24 321 390، التالي" width="240" height="300" loading="lazy"><figcaption>IZI</figcaption></figure></div></details></li><li><span data-l="ar">سبب الدفع:</span> <strong class="motif-code" dir="ltr" data-code-commande></strong> <span data-l="ar">(رقم طلبك).</span> <span data-l="ar">ثم أرسل لقطة الدفع عبر واتساب (الزر الأخضر).</span></li></ol><p class="paie-confiance"><span data-l="ar">تدفع مباشرة في التطبيق الرسمي للبريد التونسي (D17) أو لزيتونة للدفع (IZI): لا نطّلع أبدًا على رموزك.</span></p></div>
+      <a class="btn-wa" id="pass-preuve-apres" href="https://wa.me/21624321390" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1.3-4A8 8 0 1 1 8.4 19z"/><path d="M9 8.6c0 3.4 2.9 6.4 6.4 6.4l1-1.4-2-1-1 .9c-1-.4-2.1-1.5-2.5-2.5l.9-1-1-2z"/></svg><span data-l="ar">أرسل وصل الدفع عبر واتساب</span></a>
+      <p class="petit"><span data-l="ar">رسالة واتساب تحتوي مسبقًا على رمزك: لا شيء لتنسخه.</span></p>
+      <p><b><span data-l="ar">بعد ذلك:</span></b> <span data-l="ar">بمجرد استلام دفعتك نفعّل هذا الرمز (عادة في غضون ⁦24⁩ ساعة) ونؤكد لك ساعة النهاية عبر واتساب. تدوم الباقة ⁦24⁩ ساعة بداية من التفعيل. عد إلى هذه الصفحة من هذا الهاتف: يُجرَّب الرمز تلقائيًا وتُفتح الباقة (أو اكتبه مرة واحدة في «لدي رمز» أعلاه).</span></p>
+      <p class="filet"><span data-l="ar">نسيت الرمز في سبب الدفع؟ لا بأس: أرسل الوصل على واتساب وسنجد طلبك.</span></p>
+      <p class="petit"><span data-l="ar">لا تجديد آلي. يحتفظ هذا الهاتف بطلبك المعلّق طيلة ⁦60⁩ يومًا (الرمز والباقة والتاريخ فقط).</span></p>
+      <p><button type="button" class="btn-clair" id="nouvelle-commande"><span data-l="ar">طلب جديد</span></button></p>
     </div>
   </section>
 

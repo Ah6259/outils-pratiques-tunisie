@@ -225,6 +225,7 @@ const aPropos = lireSource("a-propos/index.html");   // page bilingue écrite à
     ["vidéo de présentation", existsSync(join(root, "video/index.html")), /Vidéo de présentation : courte vidéo/],
     ["1 calcul gratuit par jour et Pass Journée (prix, code)", existsSync(join(root, "pass/index.html")), /1 calcul personnel par jour[\s\S]*Pass Journée \(payant, 7 DT\)[\s\S]*code/],
     ["rappel de fin du Pass", /afficherRappel/.test(js), /Peu avant la fin du Pass, un bandeau vous prévient/],
+    ["code de commande créé au formulaire (motif du paiement, essayé tout seul)", /pass-commande/.test(js) && /nouveauCodeCommande/.test(js), /code de commande[\s\S]{0,80}motif du paiement = votre code de commande[\s\S]{0,200}essaie toute seule[\s\S]{0,120}Code oublié dans le motif/],
     ["vie privée", true, /Les calculs se font dans votre téléphone/],
     ["mises à jour automatiques (calculs de référence, TMM)", existsSync(join(root, "tools/verifier_regles.py")), /Chaque mois, un robot refait nos calculs de référence[^.]*TMM/],
     ["site indépendant", true, /Ce site est indépendant/]];
@@ -549,8 +550,8 @@ async function passJournee() {
     ["Tous les calculs pendant 24 heures", "24 heures à partir de l'activation de votre code", "Pas de renouvellement automatique", "retenue à la source"].every(m => offre.includes(m)));
   check("pass/ : aucun prix « TTC » ni nom de société", !/TTC|SUARL|S\.?A\.?R\.?L/i.test(lire("pass/index.html") + lire("pass/conditions/index.html")));
   const pay = d.getElementById("paiement");
-  check("pass/ : bouton « Paiement » (<details>) avec D17 et IZI (liens vers les applications officielles) au 24 321 390, mode d'emploi, plus de Wafacash, 7 DT, motif nom + téléphone", !!pay && pay.tagName === "DETAILS" && t(pay.querySelector("summary")).startsWith("Paiement") &&
-    ["D17", "IZI", "Transfert rapide", "24 321 390", "7 DT", "votre nom et votre téléphone"].every(m => t(pay).includes(m)) && !/Wafacash/i.test(pay.outerHTML) && ["tn.mobipost", "tn.izi.consumer", "id1475640303", "id1603653941"].every(u => pay.querySelector(`a[href*="${u}"]`)));
+  check("pass/ : bouton « Paiement » (<details>) avec D17 et IZI (liens vers les applications officielles) au 24 321 390, mode d'emploi, plus de Wafacash, 7 DT, motif = votre code de commande", !!pay && pay.tagName === "DETAILS" && t(pay.querySelector("summary")).startsWith("Paiement") &&
+    ["D17", "IZI", "Transfert rapide", "24 321 390", "7 DT", "votre code de commande"].every(m => t(pay).includes(m)) && !/Wafacash/i.test(pay.outerHTML) && ["tn.mobipost", "tn.izi.consumer", "id1475640303", "id1603653941"].every(u => pay.querySelector(`a[href*="${u}"]`)));
   check("paiement : logos D17 / IZI dans les boutons, étape 2 pour les deux applications, bouton « ? » avec les deux écrans d'exemple", ["d17.png", "izi.png", "transfert-d17.svg", "transfert-izi.svg"].every(f => existsSync(join(root, "assets/paiement", f))) && /class="appli-btn"[^>]*><img src="\.\.\/assets\/paiement\/d17\.png"/.test(lire("pass/index.html")) && /class="aide-transfert"/.test(lire("pass/index.html")) && /Transfert d’argent/.test(lire("pass/index.html")));
   check("paiement simple et rassurant (règle commune du 08/10/2026) : 3 étapes numérotées, phrase de confiance, description de l'offre cachée quand « Paiement » est ouvert", /<ol class="paie-etapes">/.test(lire("pass/index.html")) && /class="paie-confiance"/.test(lire("pass/index.html")) && /class="avantages[^"]*masque-si-paiement/.test(lire("pass/index.html")) && lire("assets/style.css").includes(":has(> details.paiement[open]) > .masque-si-paiement{display:none}"));
   const wa = d.getElementById("pass-preuve");
@@ -591,8 +592,106 @@ async function passJournee() {
   const envoi = appels[0] ? Object.fromEntries(appels[0].o.body.entries()) : {};
   check("pass/ : envoi Formspree (nom, téléphone 8 chiffres, e-mail, formule 7 DT, ligne « pour_activer : action paye »)", appels.length === 1 && appels[0].u === "https://formspree.io/f/mwlpakqj" &&
     envoi.nom === "Test Client" && envoi.telephone === "98765432" && envoi.email === "client@exemple.com" && /7 DT/.test(envoi.formule) && String(envoi.pour_activer).includes("action: paye") && envoi.site === "Outils pratiques Tunisie");
-  check("pass/ : après l'envoi, paiement + « Vous recevrez votre code par WhatsApp » + preuve WhatsApp avec nom et téléphone", form.hidden && !d.getElementById("apres-pass").hidden &&
-    t(d.getElementById("apres-pass")).includes("Vous recevrez votre code par WhatsApp") && decodeURIComponent(d.getElementById("pass-preuve-apres").href).includes("Test Client — 98765432"));
+  // ---- CODE DE COMMANDE créé AU FORMULAIRE (25/11/2026, règle commune § 70 : projets-ahmed/outils communs/pass-commun/CONSIGNES.md) ----
+  const FORME = /^[A-HJ-NP-Z2-9]{4}-[A-HJ-NP-Z2-9]{4}$/;           // même alphabet et même longueur que les codes d'accès (8, sans O/0/I/1)
+  const codeVu = t(d.getElementById("code-commande")), codeBrut = codeVu.replace("-", "");
+  const apresP = d.getElementById("apres-pass"), waApres = decodeURIComponent(d.getElementById("pass-preuve-apres").href);
+  check("commande : après l'envoi, « Dernière étape » à la place du formulaire, code en GROS au bon format (8 caractères sans O/0/I/1), dir=ltr",
+    form.hidden && !apresP.hidden && FORME.test(codeVu) && d.getElementById("code-commande").getAttribute("dir") === "ltr" && t(d.getElementById("apres-titre")).includes("Dernière étape"));
+  check("commande : phrase « C'est votre numéro de commande : écrivez-le dans le motif du paiement… » + « Vous le recevez aussi par e-mail. »",
+    t(apresP).includes("C'est votre numéro de commande : écrivez-le dans le motif du paiement, il nous sert à reconnaître votre paiement.") && t(apresP).includes("Vous le recevez aussi par e-mail."));
+  check("commande : paiement en 3 étapes (D17 / IZI, 24 321 390, écrans d'exemple) avec MOTIF = le code",
+    apresP.querySelectorAll("ol.paie-etapes > li").length === 3 && t(apresP).includes("24 321 390") && !!apresP.querySelector(".aide-transfert") &&
+    t(apresP.querySelector("ol.paie-etapes > li:nth-child(3)")).includes("Motif") && t(apresP.querySelector(".motif-code")) === codeVu);
+  check("commande : bouton vert WhatsApp pré-rempli AVEC le code (« Voici ma preuve de paiement — Outils pratiques Tunisie — code … — Pass Journée »)",
+    waApres.startsWith("https://wa.me/21624321390?text=") && waApres.includes("Voici ma preuve de paiement — Outils pratiques Tunisie — code " + codeVu + " — Pass Journée"));
+  check("commande : ce qui se passe ensuite (activation, code essayé tout seul, 24 heures à partir de l'activation) + filet « code oublié dans le motif »",
+    t(apresP).includes("nous activons ce code") && t(apresP).includes("le code est essayé tout seul") && t(apresP).includes("24 heures à partir de l'activation") &&
+    t(apresP).includes("Vous avez oublié le code dans le motif ? Ce n'est pas grave : envoyez quand même la preuve sur WhatsApp, nous retrouvons votre demande."));
+  check("commande : le MÊME code part à Formspree (champ code) et dans la ligne pour_activer (« … ; code: ABCD-EF23 »), sujet de l'e-mail avec le code",
+    envoi.code === codeVu && String(envoi.pour_activer) === "action: paye ; nom: Test Client ; telephone: 98765432 ; code: " + codeVu && String(envoi._subject).includes(codeVu));
+  const memo = JSON.parse(w.localStorage.getItem("pass-commande") || "{}");
+  check("commande : le téléphone s'en souvient (pass-commande = {code, formule, date} SEULEMENT)",
+    Object.keys(memo).join() === "code,formule,date" && memo.code === codeBrut && /Pass Journée/.test(memo.formule) && /^\d{4}-\d{2}-\d{2}$/.test(memo.date));
+  { const tout = Object.keys(w.localStorage).map(k => k + "=" + w.localStorage.getItem(k)).join(" ");
+    check("commande : aucune donnée personnelle dans le stockage du téléphone (ni nom, ni téléphone, ni e-mail)", !/Test Client|98765432|client@exemple/.test(tout)); }
+  {  // un 2e envoi (nouvelle commande) donne un AUTRE code ; un envoi raté garde le même code pour le nouvel essai
+    const wx = await ouvrir("pass/index.html"), dx = wx.document, fx = dx.getElementById("pass-form"), envois = [];
+    let panne = true;
+    wx.fetch = (u, o) => { envois.push(Object.fromEntries(o.body.entries())); return panne ? Promise.reject(new TypeError("x")) : Promise.resolve({ ok: true, status: 200 }); };
+    fx.querySelector("[name=nom]").value = "Test Client"; fx.querySelector("[name=telephone]").value = "98765432";
+    fx.querySelector("[name=email]").value = "client@exemple.com"; fx.querySelector("[name=conditions]").checked = true;
+    fx.dispatchEvent(new wx.Event("submit", { bubbles: true, cancelable: true })); await pause(30);
+    panne = false;
+    fx.dispatchEvent(new wx.Event("submit", { bubbles: true, cancelable: true })); await pause(30);
+    check("commande : envoi raté puis nouvel essai = le MÊME code (rien gardé tant que l'envoi n'a pas réussi)",
+      envois.length === 2 && envois[0].code === envois[1].code && FORME.test(envois[0].code) && JSON.parse(wx.localStorage.getItem("pass-commande")).code === envois[0].code.replace("-", ""));
+    check("commande : code différent d'une commande à l'autre", envois[0].code !== codeVu);
+    dx.getElementById("nouvelle-commande").dispatchEvent(new wx.MouseEvent("click", { bubbles: true }));
+    check("commande : bouton « Nouvelle commande » -> mémoire effacée, formulaire de nouveau visible", !wx.localStorage.getItem("pass-commande") && !fx.hidden && dx.getElementById("apres-pass").hidden);
+    const codes = new Set(Array.from({ length: 300 }, () => wx.eval("nouveauCodeCommande()")));
+    check("commande : 300 codes créés par crypto.getRandomValues, tous au format des codes d'accès, tous différents",
+      codes.size === 300 && [...codes].every(c => wx.eval(`formeCodeOk("${c}")`)) && /crypto\.getRandomValues/.test(lire("assets/pass.js")) && !/Math\.random/.test(lire("assets/pass.js")));
+  }
+  {  // retour sur la page avec une commande en attente : bandeau + 3 étapes + WhatsApp ; code activé = Pass ouvert + clé effacée
+    const CMD = { code: "WXYZK7M3", formule: "Pass Journée - 7 DT - 24 heures", date: AUJ };
+    const avecCommande = (liste, cmd = CMD) => x => { x.localStorage.setItem("pass-commande", JSON.stringify(cmd)); reseau(x, liste); };
+    let wx = await ouvrir("pass/index.html", { avant: avecCommande(LISTE) }); await pause(300);
+    let dx = wx.document, ban = dx.getElementById("commande-attente");
+    check("retour (code pas encore activé) : bandeau « Votre commande en attente : code WXYZ-K7M3 — Pass Journée … » + « En attente de votre paiement »",
+      !ban.hidden && t(ban).includes("Votre commande en attente : code WXYZ-K7M3 — Pass Journée") && t(dx.getElementById("commande-statut")).includes("En attente de votre paiement") && wx.fautes.length === 0);
+    check("retour : les 3 étapes du paiement (motif = le code) et le bouton WhatsApp avec le code, formulaire caché, mémoire gardée",
+      dx.getElementById("pass-form").hidden && !dx.getElementById("apres-pass").hidden && t(dx.querySelector("#apres-pass .motif-code")) === "WXYZ-K7M3" &&
+      decodeURIComponent(dx.getElementById("pass-preuve-apres").href).includes("code WXYZ-K7M3") && decodeURIComponent(dx.getElementById("pass-preuve").href).includes("code WXYZ-K7M3") &&
+      !!wx.localStorage.getItem("pass-commande") && !wx.eval("passActif()"));
+    const ACTIVE = { ...LISTE, codes: [...LISTE.codes, { h: h("WXYZK7M3"), fin: futur }] };
+    wx = await ouvrir("pass/index.html", { avant: avecCommande(ACTIVE) }); await pause(300); dx = wx.document;
+    check("retour (code activé par Ahmed) : le site essaie le code tout seul -> Pass ouvert, clé pass-commande effacée, bandeau caché, formulaire revenu",
+      wx.eval("passActif()") && JSON.parse(wx.localStorage.getItem("opt-pass-v1")).code === "WXYZK7M3" && !wx.localStorage.getItem("pass-commande") &&
+      dx.getElementById("commande-attente").hidden && !dx.getElementById("pass-etat").hidden && !dx.getElementById("pass-form").hidden && dx.getElementById("apres-pass").hidden);
+    wx = await ouvrir("pass/index.html", { avant: avecCommande(LISTE) }); await pause(300); dx = wx.document;
+    reseau(wx, ACTIVE);
+    const cfx = dx.getElementById("code-form"); cfx.querySelector("input[name=code]").value = "wxyz-k7m3";
+    cfx.dispatchEvent(new wx.Event("submit", { bubbles: true, cancelable: true })); await pause(300);
+    check("code de commande tapé dans « J'ai un code » : accepté (même vérification), commande en attente effacée", wx.eval("passActif()") && !wx.localStorage.getItem("pass-commande") && dx.getElementById("commande-attente").hidden);
+    wx = await ouvrir("pass/index.html", { avant: avecCommande(LISTE, { ...CMD, date: JOUR(new Date(Date.now() - 61 * 864e5)) }) }); await pause(300);
+    check("commande de plus de 60 jours : oubliée (clé effacée, pas de bandeau)", !wx.localStorage.getItem("pass-commande") && wx.document.getElementById("commande-attente").hidden && !wx.document.getElementById("pass-form").hidden);
+    wx = await ouvrir("pass/index.html", { avant: x => { x.localStorage.setItem("pass-commande", "{abîmé"); reseau(x, LISTE); } }); await pause(100);
+    check("commande abîmée dans le stockage : pas de plantage, formulaire normal", wx.fautes.length === 0 && !wx.document.getElementById("pass-form").hidden);
+    wx = await ouvrir("pass/index.html", { avant: x => reseau(x, LISTE) }); await pause(100);
+    check("sans commande gardée : rien n'est demandé au réseau par la commande, pas de bandeau", wx.n === 0 && wx.document.getElementById("commande-attente").hidden);
+    // en arabe
+    wx = await ouvrir("pass/index.html", { lang: "ar", avant: avecCommande(LISTE) }); await pause(300); dx = wx.document;
+    const ap = t(dx.getElementById("apres-pass"));
+    check("retour en arabe : bandeau « طلبك المعلّق » + « في انتظار دفعتك », phrase « هذا رقم طلبك… », « يصلك أيضًا… », filet « نسيت الرمز… »",
+      t(dx.getElementById("commande-attente")).includes("طلبك المعلّق") && t(dx.getElementById("commande-statut")).includes("في انتظار دفعتك") &&
+      ap.includes("هذا رقم طلبك: اكتبه في خانة سبب الدفع، يساعدنا على التعرّف على دفعتك.") && ap.includes("يصلك أيضًا عبر البريد الإلكتروني.") &&
+      ap.includes("نسيت الرمز في سبب الدفع؟ لا بأس: أرسل الوصل على واتساب وسنجد طلبك.") && ap.includes("24321390") && !/[A-Za-z]{4,}/.test(ap.replace(/WXYZ-K7M3|D17|IZI|iPhone/g, "")));
+    check("WhatsApp en arabe : « هذا وصل الدفع — أدوات عملية تونس — الرمز WXYZ-K7M3 — باقة اليوم … »",
+      decodeURIComponent(dx.getElementById("pass-preuve-apres").href).includes("هذا وصل الدفع — أدوات عملية تونس — الرمز WXYZ-K7M3 — باقة اليوم"));
+    wx = await ouvrir("pass/index.html", { lang: "ar" }); dx = wx.document; const fa = dx.getElementById("pass-form"), ea = [];
+    wx.fetch = (u, o) => { ea.push(Object.fromEntries(o.body.entries())); return Promise.resolve({ ok: true, status: 200 }); };
+    fa.querySelector("[name=nom]").value = "Test"; fa.querySelector("[name=telephone]").value = "98765432"; fa.querySelector("[name=email]").value = "a@b.tn";
+    fa.dispatchEvent(new wx.Event("submit", { bubbles: true, cancelable: true })); await pause(30);
+    check("formulaire arabe : conditions obligatoires aussi (rien envoyé sans la case)", ea.length === 0);
+    fa.querySelector("[name=conditions]").checked = true;
+    fa.dispatchEvent(new wx.Event("submit", { bubbles: true, cancelable: true })); await pause(30);
+    check("formulaire arabe : après l'envoi, code au bon format, même code à Formspree et dans pour_activer",
+      ea.length === 1 && FORME.test(t(dx.getElementById("code-commande"))) && ea[0].code === t(dx.getElementById("code-commande")) && ea[0].pour_activer.endsWith("; code: " + ea[0].code));
+  }
+  {  // les 5 champs obligatoires (FR + AR) et plus aucun « motif : nom et téléphone »
+    const mal = ["pass/index.html", "ar/pass/index.html"].filter(p => { const f = (lire(p).match(/<form id="pass-form"[\s\S]*?<\/form>/) || [""])[0];
+      return !(['id="pass-nom" name="nom" required', 'id="pass-tel" name="telephone" required', 'name="email" required', 'name="conditions" value="oui" required', 'name="formule" value="Pass Journée - 7 DT - 24 heures"'].every(x => f.includes(x))); });
+    check(`formulaire du Pass : nom, téléphone, e-mail, conditions obligatoires + formule (FR et AR) ${mal}`, mal.length === 0);
+    const vieux = ["pass/index.html", "ar/pass/index.html", "pass/conditions/index.html", "ar/pass/conditions/index.html", "a-propos/index.html", "ar/a-propos/index.html",
+      "tools/sources/pass/index.html", "tools/sources/pass/conditions/index.html", "tools/sources/a-propos/index.html", "assets/pass.js"]
+      .filter(p => /nom et (votre |le )?téléphone|Nom et téléphone|اسمك ورقم هاتفك|اسم المشتري ورقم هاتفه|motif[^.]{0,40}nom/i.test(lire(p)));
+    check(`plus aucun « motif : nom et téléphone » (page du Pass, conditions, a-propos, pass.js) ${vieux}`, vieux.length === 0);
+    check("motif du paiement = le code de commande, écrit dans les conditions et « Comment fonctionne le site ? » (FR + AR)",
+      lire("pass/conditions/index.html").includes("avec pour motif ce code de commande") && lire("ar/pass/conditions/index.html").includes("مع كتابة رقم الطلب هذا في خانة سبب الدفع") &&
+      lire("a-propos/index.html").includes("motif du paiement = votre code de commande") && lire("ar/a-propos/index.html").includes("سبب الدفع = رقم طلبك"));
+    check("conditions : le Pass dure 24 heures à partir de l'ACTIVATION (pas du formulaire)", lire("pass/conditions/index.html").includes("24 heures à partir de l'activation du code, c'est-à-dire du moment où le paiement est validé et le code de commande activé"));
+  }
   w = await ouvrir("pass/conditions/index.html"); d = w.document;
   const tc = t(d.querySelector(".conditions"));
   check("conditions : vendeur « l'éditeur du site », 7 DT, 24 heures à partir de l'activation, 1 calcul gratuit par jour, pas de renouvellement, aucune période payée remboursée, INPDP",

@@ -67,7 +67,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
    `node tools/test_sw.mjs` (service worker : réseau d'abord, exclusions, meta iPhone ; accepte un dossier en argument),
    `node tools/test_avis.mjs` (Votre avis : section, pied de page de toutes les pages, CSP, envoi simulé ; accepte un dossier en argument).
    jsdom s'installe une fois par PC : `npm install --no-save --no-package-lock jsdom` (node_modules ignoré).
-2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261124a`) — les tests le vérifient.
+2. Changer le `?v=` des fichiers `assets/` dans **toutes** les pages, **une seule version pour tout le site** (actuelle : `20261125a`) — les tests le vérifient.
 3. Capture mobile 340/390 px en français ET en arabe si l'affichage change : Chrome sans écran sur une page HTML locale
    contenant deux `<iframe>` (340 et 390 px) vers les fichiers `file:///…?lang=fr|ar` (la fenêtre de Chrome sans écran ne descend
    pas sous ~500 px ; l'anti-iframe de page.js laisse passer `file:`).
@@ -152,7 +152,7 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
 - **Pass Journée = 7 DT, 24 heures à partir de l'activation** (appui d'Ahmed sur « paye »), heure de fin écrite dans le message.
   Nouveau paiement pendant un Pass : +24 h après la fin en cours. Pas de renouvellement automatique, aucune période payée remboursée,
   vendeur « l'éditeur du site » (JAMAIS le nom de la société), prix non TTC, INPDP (accord, sans numéro).
-- Pages : `pass/` (prix, avantages, « Paiement » <details> D17/IZI 24 321 390, motif nom + téléphone, bouton vert WhatsApp,
+- Pages : `pass/` (prix, avantages, « Paiement » <details> D17/IZI 24 321 390, motif = code de commande (depuis le 25/11/2026, voir plus bas), bouton vert WhatsApp,
   « J'ai un code » `#code-acces`, formulaire Formspree `mwlpakqj` avec `pour_activer`), `pass/conditions/`. Sitemap : `pass/` (8 pages).
 - **Bouton doré « Pass Journée »** dans l'en-tête SEULEMENT sur `<body data-pass>` (5 calculateurs + 2 pages du Pass) ;
   **jamais sur l'accueil** (décision d'Ahmed : le visiteur partirait) — ni bouton ni lien vers pass/ sur l'accueil (test).
@@ -253,3 +253,21 @@ Fichier lu automatiquement par Claude Code au début de chaque session dans ce d
   juste après le téléphone ; `assets/pass.js` refuse l'envoi si l'e-mail est vide ou invalide (`^[^\s@]+@[^\s@]+\.[^\s@]{2,}$`) et l'envoie à Formspree.
   Texte « données » du formulaire et des conditions du Pass : e-mail ajouté (nom, téléphone, e-mail). Tests « e-mail » dans test_site.mjs
   (champ required FR + AR + source, envoi refusé sans e-mail ou avec un e-mail invalide, e-mail transmis). Version 20261124a.
+
+## 25/11/2026 — CODE DE COMMANDE créé AU FORMULAIRE (décision d'Ahmed, règle commune § 70 ; référence : `outils communs/pass-commun/CONSIGNES.md` de projets-ahmed)
+- Formulaire valide (nom, téléphone 8 chiffres, e-mail, conditions ; formule cachée) -> `nouveauCodeCommande()` de `assets/pass.js` crée le code
+  (`crypto.getRandomValues`, MÊME alphabet et MÊME longueur que les codes d'accès : 8 caractères sans O/0/I/1, affiché `ABCD-EF23`).
+  Envoyé à Formspree (champ `code`, sujet « … — code ABCD-EF23 », ligne `pour_activer` = `action: paye ; nom: … ; telephone: … ; code: ABCD-EF23`).
+  Envoi raté = même code au nouvel essai.
+- « Dernière étape » (`#apres-pass`, FR + AR) : code en gros (`#code-commande`, dir=ltr) + « C'est votre numéro de commande… » + « Vous le recevez aussi
+  par e-mail » ; paiement en 3 étapes avec MOTIF = le code (24 321 390 ; en arabe 24321390) ; WhatsApp pré-rempli avec le code (`lienPreuve()`) ;
+  « Ensuite » ; filet « code oublié dans le motif » ; bouton « Nouvelle commande ».
+- Mémoire `pass-commande` = `{code, formule, date}` SEULEMENT (60 jours). Retour sur pass/ : bandeau `#commande-attente` + étapes + WhatsApp,
+  le code est essayé tout seul (`verifierCommandeAttente()` -> `activerCode`) : activé = Pass ouvert + clé effacée ; sinon « En attente de votre paiement ».
+  Un code tapé dans « J'ai un code » qui est celui de la commande l'efface aussi (`finCommande`).
+- Le Pass dure toujours 24 heures à partir de l'ACTIVATION (appui d'Ahmed), pas du formulaire. Motif = le code partout (page, conditions, a-propos) ;
+  plus jamais « nom et téléphone » (test).
+- Activation (dépôt privé outils-pass, bouton « pass ») : action `paye` + `code` + `nom` + `telephone` (recopiés de `pour_activer`) -> CE code activé tel
+  quel ; refusé si mauvais format ou déjà utilisé ; code vide = ancien comportement ; code seul d'un client connu = réactivation (codes déjà vendus OK).
+- Tests : bloc « CODE DE COMMANDE » de test_site.mjs (FR + AR, mémoire, retour, activation, 60 jours, données perso, 300 codes) + ligne FONCTIONS ;
+  version 20261125a.
